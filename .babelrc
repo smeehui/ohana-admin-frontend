@@ -3,10 +3,12 @@
         [
             "module-resolver",
             {
+                "root": ["./src"],
                 "alias": {
                     "~": "./src"
                 }
             }
         ]
-    ]
+    ],
+    "presets": ["@babel/preset-react"]
 }

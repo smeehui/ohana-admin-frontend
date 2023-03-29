@@ -1,0 +1,30 @@
+.wrapper {
+    background-color: var(--secondary-bg-color);
+}
+
+.img-preview {
+    margin: 0;
+    padding: 0;
+    max-height: 188px;
+    max-width: 188px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.select-text {
+    position: absolute;
+    // top: 50%;
+    // left: 50%;
+    // max-height: 188px;
+    // max-width: 188px;
+    // transform: translate(-50%, -50%);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: aliceblue;
+    opacity: 0;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.2;
+    }
+}
