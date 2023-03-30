@@ -1,6 +1,14 @@
 module.exports = function (api) {
-   return {
-     plugins: ['macros'],
-   }
- }
- 
+    api.cache(true);
+    console.log("aaaaaaaaaaaaaaa")
+    return {
+        plugins: [
+            ["module-resolver", {
+                "alias": {
+                    "~": "./src"
+                },
+            }]
+        ],
+        presets: ["@babel/preset-react"],
+    }
+}

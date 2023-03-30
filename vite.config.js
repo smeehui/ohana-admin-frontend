@@ -1,17 +1,17 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react"
-import envCompatible from "vite-plugin-env-compatible";
+import * as path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    resolve:{
+        alias:{
+            '~' : path.resolve(__dirname, './src')
+        },
+    },
     plugins: [
-        react({
-            babel: {
-                babelrc: true,
-                plugins: ['module-resolver'],
-            },
-        }),
+        react(),
         // envCompatible()
     ],
-    loader: { '.js': 'jsx' }
+
 });
