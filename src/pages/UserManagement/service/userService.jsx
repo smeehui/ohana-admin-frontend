@@ -1,5 +1,5 @@
 import { default as axios } from "axios";
-import {GET_ALL_USER, SEARCH_USER, UPDATE_USER} from "~/config/api";
+import { GET_ALL_USER, SEARCH_USER, UPDATE_USER } from "~/config/api";
 
 const getAllUsers = async () => {
     console.log("getting all user....");
@@ -32,13 +32,12 @@ const searchUsers = async (query) => {
     });
     return result.data.data.search;
 };
-const updateUserById = async (id,param) => {
-    console.log(param)
-    let user  = await axios({
+const updateUserById = async (id, param) => {
+    let user = await axios({
         url: UPDATE_USER + `/${id}`,
         method: "patch",
-        data: param
-    })
+        data: param,
+    });
     return user;
-}
-export { getAllUsers, searchUsers,updateUserById };
+};
+export { getAllUsers, searchUsers, updateUserById };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import SidebarCustom from "./scenes/global/SidebarCustom";
@@ -12,11 +12,15 @@ import Line from "./scenes/line";
 import Pie from "./scenes/pie";
 import FAQ from "./scenes/faq";
 import Geography from "./scenes/geography";
-import 'react-toastify/dist/ReactToastify.css';
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme.jsx";
 import { publicRoutes } from "~/routes/index.jsx";
-import {ProSidebarProvider} from "react-pro-sidebar";
+import { ProSidebarProvider } from "react-pro-sidebar";
+
+import "react-toastify/dist/ReactToastify.css";
+import "ag-grid-community/styles/ag-grid.min.css"; // Core grid CSS, always needed
+import "ag-grid-community/styles/ag-theme-alpine.min.css"; // Optional theme CSS
+
 // import Calendar from "./scenes/calendar/calendar";
 
 function App() {
@@ -27,9 +31,9 @@ function App() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <div className="app">
-                   <ProSidebarProvider>
-                       <SidebarCustom isSidebar={isSidebar} />
-                   </ProSidebarProvider>
+                    <ProSidebarProvider>
+                        <SidebarCustom isSidebar={isSidebar} />
+                    </ProSidebarProvider>
                     <main className="content">
                         <Topbar setIsSidebar={setIsSidebar} />
                         <Routes>
@@ -40,7 +44,13 @@ function App() {
                                     <Route
                                         key={path}
                                         path={path}
-                                        element={<Page />}
+                                        element={
+                                            <Suspense
+                                                fallback={<h1>Loading....</h1>}
+                                            >
+                                                <Page />
+                                            </Suspense>
+                                        }
                                     />
                                 );
                             })}

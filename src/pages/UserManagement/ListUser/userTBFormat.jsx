@@ -1,54 +1,87 @@
+const RoleRender = ({ value }) => (
+    <span>{value === "ADMIN" ? "Quản trị viên" : "Người dùng"}</span>
+);
+const StatusRender = ({ value }) => (
+    <span>
+        {value === "CONFIRM_EMAIL"
+            ? "Đang xác thực email"
+            : value === "ACTIVATED"
+            ? "Đã kích hoạt"
+            : "Đã huỷ kích hoạt"}
+    </span>
+);
 const columns = [
+    {
+        field: "id",
+        headerName: "#",
+        checkboxSelection: true,
+        width: 90,
+        type: "numericColumn",
+        sortable: true,
+    },
     {
         field: "fullName",
         headerName: "Họ tên",
-        flex: 1,
-        cellClassName: "name-column--cell",
+        filter: true,
         editable: true,
+
+        sortable: true,
     },
     {
         field: "email",
         headerName: "Email",
-        flex: 1,
-        cellClassName: "email-column--cell",
+        filter: true,
         editable: true,
+        sortable: true,
     },
     {
         field: "description",
         headerName: "Mô tả",
-        flex: 1,
-        cellClassName: "desc-column--cell",
+        filter: true,
         editable: true,
+
+        sortable: true,
     },
     {
         field: "phone",
         headerName: "Số ĐT",
-        flex: 1,
-        cellClassName: "phone-column--cell",
+        filter: true,
         editable: true,
+
+        sortable: true,
     },
     {
         field: "address",
         headerName: "Địa chỉ",
-        flex: 1,
-        cellClassName: "address-column--cell",
+        filter: true,
         editable: true,
+
+        sortable: true,
     },
     {
         field: "role",
         headerName: "Role",
-        flex: 1,
-        cellClassName: "role-column--cell",
-        type: "",
+        filter: true,
         editable: true,
+        sortable: true,
+        cellEditor: "agSelectCellEditor",
+        cellRenderer: RoleRender,
+        cellEditorParams: {
+            values: ["ADMIN", "USER"],
+        },
     },
     {
         field: "status",
         headerName: "Trạng thái",
-        flex: 1,
-        cellClassName: "status-column--cell",
+        filter: true,
         editable: true,
+        sortable: true,
+        cellRenderer: StatusRender,
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+            values: ["CONFIRM_EMAIL", "ACTIVATED", "NOT_ACTIVATED"],
+        },
     },
-]
+];
 
-export {columns};
+export { columns };

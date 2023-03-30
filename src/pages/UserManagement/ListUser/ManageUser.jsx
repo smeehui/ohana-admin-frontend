@@ -1,5 +1,4 @@
-import { Box, useTheme } from "@mui/material";
-import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
+import { Box, Button, useTheme } from "@mui/material";
 import { tokens } from "~/theme";
 import Header from "~/components/Header";
 import { columns } from "./userTBFormat";
@@ -9,31 +8,16 @@ import {
     updateUserById,
 } from "~/pages/UserManagement/service/userService";
 import { toast, ToastContainer } from "react-toastify";
-
-function useApiRef() {
-    const apiRef = useRef(null);
-    const _columns = useMemo(
-      () =>
-        columns.concat({
-          field: "__HIDDEN__",
-          width: 0,
-          renderCell: (params) => {
-            apiRef.current = params.api;
-            return null;
-          }
-        }),
-      [columns]
-    );
-  
-    return { apiRef, columns: _columns };
-  }
+import { AgGridReact } from "ag-grid-react";
+import { Title } from "@mui/icons-material";
 
 const ManageUser = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [data, setData] = useState([]);
-    const [currRow, setCurrRow] = useState({});
-    const { apiRef, columns } = useApiRef();
+    const [reloadData, setReloadData] = useState(false);
+    const [selectedRows, setSelectedRows] = useState([]);
+    const apiRef = useRef();
     const toastOption = useMemo(() => {
         return {
             position: "top-right",
@@ -56,25 +40,53 @@ const ManageUser = () => {
                 toast.error("Lấy dữ liệu thất bại");
             }
         };
-    }, []);
+    }, [reloadData]);
 
-    const handleUpdateUser = async (params) => {
-        const { id, field, value } = params;
-        if (currRow[field] === value) return;
+    const handleCellValueChanged = useCallback(async (event) => {
+        const { oldValue, newValue, data, colDef } = event;
+        if (oldValue === newValue) return;
         try {
-            let user = await updateUserById(id, { id: id, [field]: value });
+            let user = await updateUserById(data.id, {
+                id: data.id,
+                [colDef.field]: newValue,
+            });
             toast.success("Chỉnh sửa thành công!");
         } catch (err) {
             toast.error("Chỉnh sửa thất bại!");
-            console.log(apiRef.current);
-            // apiRef.current.startCellEditMode({id,field,ignoreModifications:true})
+            setReloadData((reloadData) => !reloadData);
+        } finally {
+            console.log(apiRef.current.api);
+            apiRef.current.api.refreshCells();
         }
-    };
-
+    });
+    const handleSelectionChanged = useCallback((event) => {
+        setSelectedRows(apiRef.current.api.getSelectedRows());
+    });
+    console.log(selectedRows.length);
     return (
         <Box m="20px">
             <ToastContainer {...toastOption} />
-            <Header title="INVOICES" subtitle="List of Invoice Balances" />
+            <Header
+                title="Tất cả người dùng"
+                subtitle={
+                    <Box display={"flex"}>
+                        <Box flex={1}> Danh sách người dùng</Box>
+                        {selectedRows.length >= 1 ? (
+                            <span className="float-end">
+                                <Button
+                                    style={{
+                                        backgroundColor: colors.redAccent[500],
+                                        color: colors.grey[100],
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    Delete
+                                </Button>
+                            </span>
+                        ) : null}
+                    </Box>
+                }
+            />
             <Box
                 m="40px 0 0 0"
                 height="75vh"
@@ -104,17 +116,22 @@ const ManageUser = () => {
                     },
                 }}
             >
-                <DataGrid
-                    apiRef={apiRef}
-                    checkboxSelection
-                    rows={data}
-                    columns={columns}
-                    onCellEditCommit={(params, e) => {
-                        handleUpdateUser(params);
-                    }}
-                    onCellEditStart={({ row }) => {
-                        setCurrRow(row);
-                    }}
+                <AgGridReact
+                    className={
+                        theme.palette.mode === "dark"
+                            ? "ag-theme-alpine-dark"
+                            : "ag-theme-alpine"
+                    }
+                    columnDefs={columns}
+                    rowData={data}
+                    pagination
+                    editable="true"
+                    editType="cell"
+                    onCellValueChanged={handleCellValueChanged}
+                    onSelectionChanged={handleSelectionChanged}
+                    rowSelection={"multiple"}
+                    sidebar
+                    ref={apiRef}
                 />
             </Box>
         </Box>
