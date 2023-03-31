@@ -67,10 +67,10 @@ const ManageUser = () => {
         <Box m="20px">
             <ToastContainer {...toastOption} />
             <Header
-                title="Tất cả người dùng"
+                title="Danh sách"
                 subtitle={
                     <Box display={"flex"}>
-                        <Box flex={1}> Danh sách người dùng</Box>
+                        <Box flex={1}> Danh sách quản trị viên</Box>
                         {selectedRows.length >= 1 ? (
                             <span className="float-end">
                                 <Button

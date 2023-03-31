@@ -12,19 +12,21 @@
 }
 .select-text {
     position: absolute;
-    // top: 50%;
-    // left: 50%;
-    // max-height: 188px;
-    // max-width: 188px;
-    // transform: translate(-50%, -50%);
+    height: 188px;
+    width: 188px;
     top: 0;
     bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: aliceblue;
+    margin: auto;
     opacity: 0;
     cursor: pointer;
     &:hover {
         opacity: 0.2;
     }
+}
+
+.form {
+    background-color: #2226281e;
+    background-blend-mode: color;
+    padding: 10px;
+    border-radius: 10ox;
 }
