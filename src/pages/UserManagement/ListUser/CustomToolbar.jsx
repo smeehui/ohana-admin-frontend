@@ -11,7 +11,6 @@ import React, { memo } from "react";
 
 function CustomToolbar({ selectedRows, colors }) {
     const toolStyle = { color: colors.greenAccent[300] };
-    console.log(selectedRows);
     return (
         <GridToolbarContainer className="d-flex justify-content-between">
             <div>

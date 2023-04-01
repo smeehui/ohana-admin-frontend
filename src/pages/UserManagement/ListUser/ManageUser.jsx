@@ -55,20 +55,15 @@ const ManageUser = () => {
         setIsLoading(false);
     };
 
-    const handleCellValueChanged = useCallback(async (event) => {
-        const { field, value, id } = event;
-        if (value === currRow[field]) return;
-        try {
-            let result = await updateUserById(id, {
-                id,
-                [field]: value,
-            });
-            toast.success("Chỉnh sửa thành công!");
-        } catch (err) {
-            toast.error("Chỉnh sửa thất bại!");
-            setReloadData((reloadData) => !reloadData);
-        }
+    const handleCellValueChanged = useCallback(async (row) => {
+        let result = await updateUserById(row.id, row);
+        toast.success("Chỉnh sửa thành công!");
+        return row;
     });
+
+    const handleProcessRowUpdateError = useCallback(async (event) => {
+        toast.error("Chỉnh sửa thất bại!");
+    }, []);
     useEffect(() => {
         (async () => {
             setIsLoading(true);
@@ -142,11 +137,10 @@ const ManageUser = () => {
                         ),
                     }}
                     columns={columns}
-                    rows={tableState.rows}
                     pagination
                     loading={isLoading}
-                    editMode={"row"}
-                    onRowEditCommit={handleCellValueChanged}
+                    processRowUpdate={handleCellValueChanged}
+                    onProcessRowUpdateError={handleProcessRowUpdateError}
                     onRowDoubleClick={(row) => setCurrRow(row.row)}
                     rowSelection
                     pageSizeOptions={[10, 20, 50, 100]}
@@ -160,8 +154,7 @@ const ManageUser = () => {
                     filterMode="server"
                     checkboxSelection
                     paginationMode="server"
-                    rowCount={tableState.rowCount}
-                    pageSize={tableState.pageSize}
+                    {...tableState}
                     onFilterModelChange={handleFilter}
                     onRowSelectionModelChange={(rows) =>
                         setTableState((prev) => ({
