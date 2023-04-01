@@ -1,23 +1,35 @@
-import { Box, Button, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { tokens } from "~/theme";
 import Header from "~/components/Header";
 import { columns } from "./userTBFormat";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+    filterUsers,
     getAllUsers,
     updateUserById,
 } from "~/pages/UserManagement/service/userService";
 import { toast, ToastContainer } from "react-toastify";
-import { AgGridReact } from "ag-grid-react";
-import { Title } from "@mui/icons-material";
+import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
+import CustomToolbar from "./CustomToolbar";
 
 const ManageUser = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [data, setData] = useState([]);
+    const apiRef = useGridApiRef();
+
+    const [currRow, setCurrRow] = useState({});
+    const [tableState, setTableState] = useState({
+        pageSize: 10,
+        page: 0,
+        rowCount: 0,
+        rows: [],
+        selectedRows: [],
+    });
+    const [isLoading, setIsLoading] = useState(false);
     const [reloadData, setReloadData] = useState(false);
-    const [selectedRows, setSelectedRows] = useState([]);
-    const apiRef = useRef();
+
+    const [filter, setFilter] = useState({});
+
     const toastOption = useMemo(() => {
         return {
             position: "top-right",
@@ -31,65 +43,67 @@ const ManageUser = () => {
         };
     }, []);
 
-    useEffect(() => {
-        return async () => {
-            try {
-                let result = await getAllUsers();
-                setData(result);
-            } catch (err) {
-                toast.error("Lấy dữ liệu thất bại");
-            }
-        };
-    }, [reloadData]);
+    const addPaginationProperties = (result) => {
+        const { totalElements, number, size, content } = result;
+        setTableState((prev) => ({
+            ...prev,
+            rowCount: totalElements,
+            pageSize: size,
+            page: number,
+            rows: content,
+        }));
+        setIsLoading(false);
+    };
 
     const handleCellValueChanged = useCallback(async (event) => {
-        const { oldValue, newValue, data, colDef } = event;
-        if (oldValue === newValue) return;
+        const { field, value, id } = event;
+        if (value === currRow[field]) return;
         try {
-            let user = await updateUserById(data.id, {
-                id: data.id,
-                [colDef.field]: newValue,
+            let result = await updateUserById(id, {
+                id,
+                [field]: value,
             });
             toast.success("Chỉnh sửa thành công!");
         } catch (err) {
             toast.error("Chỉnh sửa thất bại!");
             setReloadData((reloadData) => !reloadData);
-        } finally {
-            console.log(apiRef.current.api);
-            apiRef.current.api.refreshCells();
         }
     });
-    const handleSelectionChanged = useCallback((event) => {
-        setSelectedRows(apiRef.current.api.getSelectedRows());
-    });
-    console.log(selectedRows.length);
+    useEffect(() => {
+        (async () => {
+            setIsLoading(true);
+            let paginationParams = {
+                page: tableState.page,
+                size: tableState.pageSize,
+            };
+            try {
+                let result = await getAllUsers(paginationParams);
+                addPaginationProperties(result);
+            } catch {
+                toast.error("Lấy dữ liệu thất bại!");
+            }
+        })();
+    }, [tableState.pageSize, tableState.page, reloadData]);
+    const handleFilter = async ({ quickFilterValues }) => {
+        let value = quickFilterValues.join("");
+        const filter = { keyword: value };
+
+        try {
+            let result = await filterUsers(filter, {
+                page: tableState.page,
+                size: tableState.pageSize,
+            });
+            addPaginationProperties(result);
+        } catch (error) {
+            toast.error("Filter errror!");
+        }
+    };
     return (
         <Box m="20px">
             <ToastContainer {...toastOption} />
-            <Header
-                title="Danh sách"
-                subtitle={
-                    <Box display={"flex"}>
-                        <Box flex={1}> Danh sách quản trị viên</Box>
-                        {selectedRows.length >= 1 ? (
-                            <span className="float-end">
-                                <Button
-                                    style={{
-                                        backgroundColor: colors.redAccent[500],
-                                        color: colors.grey[100],
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    Delete
-                                </Button>
-                            </span>
-                        ) : null}
-                    </Box>
-                }
-            />
+            <Header title="Danh sách" />
             <Box
-                m="40px 0 0 0"
-                height="75vh"
+                width={"70vw"}
                 sx={{
                     "& .MuiDataGrid-root": {
                         border: "none",
@@ -116,22 +130,45 @@ const ManageUser = () => {
                     },
                 }}
             >
-                <AgGridReact
-                    className={
-                        theme.palette.mode === "dark"
-                            ? "ag-theme-alpine-dark"
-                            : "ag-theme-alpine"
-                    }
-                    columnDefs={columns}
-                    rowData={data}
+                <DataGrid
+                    apiRef={apiRef}
+                    autoHeight
+                    slots={{
+                        toolbar: () => (
+                            <CustomToolbar
+                                colors={colors}
+                                selectedRows={tableState.selectedRows}
+                            />
+                        ),
+                    }}
+                    columns={columns}
+                    rows={tableState.rows}
                     pagination
-                    editable="true"
-                    editType="cell"
-                    onCellValueChanged={handleCellValueChanged}
-                    onSelectionChanged={handleSelectionChanged}
-                    rowSelection={"multiple"}
-                    sidebar
-                    ref={apiRef}
+                    loading={isLoading}
+                    editMode={"row"}
+                    onRowEditCommit={handleCellValueChanged}
+                    onRowDoubleClick={(row) => setCurrRow(row.row)}
+                    rowSelection
+                    pageSizeOptions={[10, 20, 50, 100]}
+                    paginationModel={tableState}
+                    onPaginationModelChange={(paginationModel) =>
+                        setTableState((prev) => ({
+                            ...prev,
+                            ...paginationModel,
+                        }))
+                    }
+                    filterMode="server"
+                    checkboxSelection
+                    paginationMode="server"
+                    rowCount={tableState.rowCount}
+                    pageSize={tableState.pageSize}
+                    onFilterModelChange={handleFilter}
+                    onRowSelectionModelChange={(rows) =>
+                        setTableState((prev) => ({
+                            ...prev,
+                            selectedRows: [...rows],
+                        }))
+                    }
                 />
             </Box>
         </Box>

@@ -40,7 +40,7 @@ function NewUserForm() {
             email: "",
             phone: "",
             addresss: "",
-            file: null
+            file: null,
         },
         validationSchema: Yup.object({
             fullName: Yup.string()
@@ -63,7 +63,7 @@ function NewUserForm() {
             formData.append("email", email);
             formData.append("phone", phone);
             formData.append("address", address);
-            formData.append("file",imgRef.current.files[0])
+            formData.append("file", imgRef.current.files[0]);
             console.log(Object.fromEntries(formData));
         },
     });
@@ -100,7 +100,11 @@ function NewUserForm() {
     };
 
     return (
-        <Form onSubmit={formik.handleSubmit} className={clsx(styles.form)}>
+        <Form
+            onSubmit={formik.handleSubmit}
+            style={{ backgroundColor: colors.grey[800] }}
+            className={clsx(styles.form)}
+        >
             <Row className="mb-3">
                 <Col lg={4} md={6} sm={12}>
                     <FormGroup>

@@ -1,6 +1,6 @@
-const RoleRender = ({ value }) => (
-    <span>{value === "ADMIN" ? "Quản trị viên" : "Người dùng"}</span>
-);
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useGridApiContext } from "@mui/x-data-grid";
+
 const StatusRender = ({ value }) => (
     <span>
         {value === "CONFIRM_EMAIL"
@@ -14,7 +14,6 @@ const columns = [
     {
         field: "id",
         headerName: "#",
-        checkboxSelection: true,
         width: 90,
         type: "numericColumn",
         sortable: true,
@@ -24,8 +23,8 @@ const columns = [
         headerName: "Họ tên",
         filter: true,
         editable: true,
-
         sortable: true,
+        flex: 1,
     },
     {
         field: "email",
@@ -33,6 +32,7 @@ const columns = [
         filter: true,
         editable: true,
         sortable: true,
+        flex: 1,
     },
     {
         field: "description",
@@ -41,13 +41,13 @@ const columns = [
         editable: true,
 
         sortable: true,
+        flex: 1,
     },
     {
         field: "phone",
         headerName: "Số ĐT",
         filter: true,
         editable: true,
-
         sortable: true,
     },
     {
@@ -57,6 +57,7 @@ const columns = [
         editable: true,
 
         sortable: true,
+        flex: 1,
     },
     {
         field: "role",
@@ -64,11 +65,8 @@ const columns = [
         filter: true,
         editable: true,
         sortable: true,
-        cellEditor: "agSelectCellEditor",
-        cellRenderer: RoleRender,
-        cellEditorParams: {
-            values: ["ADMIN", "USER"],
-        },
+        type: "singleSelect",
+        valueOptions: ["ADMIN", "USER"],
     },
     {
         field: "status",
@@ -76,11 +74,9 @@ const columns = [
         filter: true,
         editable: true,
         sortable: true,
-        cellRenderer: StatusRender,
-        cellEditor: "agSelectCellEditor",
-        cellEditorParams: {
-            values: ["CONFIRM_EMAIL", "ACTIVATED", "NOT_ACTIVATED"],
-        },
+        width: 150,
+        type: "singleSelect",
+        valueOptions: ["CONFIRM_EMAIL", "ACTIVATED", "NOT_ACTIVATED"],
     },
 ];
 

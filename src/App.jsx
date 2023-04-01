@@ -16,11 +16,8 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme.jsx";
 import { publicRoutes } from "~/routes/index.jsx";
 import { ProSidebarProvider } from "react-pro-sidebar";
-import "bootstrap/dist/css/bootstrap.min.css"
-
+import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
-import "ag-grid-community/styles/ag-grid.min.css"; // Core grid CSS, always needed
-import "ag-grid-community/styles/ag-theme-alpine.min.css"; // Optional theme CSS
 
 // import Calendar from "./scenes/calendar/calendar";
 

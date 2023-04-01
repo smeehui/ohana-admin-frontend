@@ -1,36 +1,20 @@
 import { default as axios } from "axios";
-import { GET_ALL_USER, SEARCH_USER, UPDATE_USER } from "~/config/api";
+import { GET_ALL_USER, FILTER_USER, UPDATE_USER } from "~/config/api";
 
-const getAllUsers = async () => {
-    console.log("getting all user....");
-    let result = await axios({
-        url: GET_ALL_USER,
-        method: "get",
-    }).catch((jqXHR) => console.log(jqXHR));
+const getAllUsers = async (params) => {
+    let result = await axios
+        .get(GET_ALL_USER, { params: params })
+        .catch((jqXHR) => console.log(jqXHR));
     return result.data;
 };
-const searchUsers = async (query) => {
+const filterUsers = async (filter, paginationParams) => {
     console.log("searching....");
-    const graphqlQuery = {
-        query: `query SearchUsers{
-                    search(q:"${query}"){
-                        id
-                        fullName
-                        email
-                        password
-                    }
-                }`,
-        variables: {},
-    };
-    let result = await axios({
-        url: SEARCH_USER,
-        method: "post",
-        headers: {
-            "content-type": "application/json",
-        },
-        data: JSON.stringify(graphqlQuery),
-    });
-    return result.data.data.search;
+    let result = await axios
+        .post(FILTER_USER, filter, {
+            params: paginationParams,
+        })
+        .catch((jqXHR) => console.log(jqXHR));
+    return result.data;
 };
 const updateUserById = async (id, param) => {
     let user = await axios({
@@ -40,4 +24,4 @@ const updateUserById = async (id, param) => {
     });
     return user;
 };
-export { getAllUsers, searchUsers, updateUserById };
+export { getAllUsers, filterUsers, updateUserById };
