@@ -1,6 +1,13 @@
 import { useTheme } from "@emotion/react";
-import { FilterAltSharp, Remove } from "@mui/icons-material";
-import { Button, MenuItem, TextField } from "@mui/material";
+import {
+    FilterAlt,
+    FilterAltOff,
+    FilterAltSharp,
+    Remove,
+    Restore,
+    Search,
+} from "@mui/icons-material";
+import { Button, InputLabel, MenuItem, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import {
     GridToolbarColumnsButton,
@@ -22,6 +29,7 @@ function CustomToolbar({ selectedRows, handleFilter }) {
         status: undefined,
         role: undefined,
     });
+    const [filter, setFilter] = useState(false);
 
     const isMounted = useIsMount();
 
@@ -29,18 +37,23 @@ function CustomToolbar({ selectedRows, handleFilter }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setFilter((filter) => !filter);
     };
     const handleChange = (e) => {
-        if (e.target.value === "#") return filterParams;
+        if (e.target.value === "#")
+            return (prev) => ({
+                ...prev,
+                [e.target.name]: "",
+            });
         setFilterParams((prev) => {
             return { ...prev, [e.target.name]: e.target.value };
         });
     };
     useEffect(() => {
         if (!isMounted) handleFilter(filterParams);
-    }, [debouncedFilter]);
+    }, [debouncedFilter, filter]);
     return (
-        <GridToolbarContainer className="d-flex justify-content-between">
+        <GridToolbarContainer className="d-flex justify-content-between my-1">
             <div>
                 <GridToolbarColumnsButton style={toolStyle} />
                 <GridToolbarDensitySelector style={toolStyle} />
@@ -54,11 +67,30 @@ function CustomToolbar({ selectedRows, handleFilter }) {
                     spacing={2}
                 >
                     <TextField
+                        id="kw"
                         name="keyword"
                         variant="standard"
                         onChange={handleChange}
                         value={filterParams.keyword}
+                        placeholder="Tìm kiếm..."
                     />
+
+                    <TextField
+                        select
+                        onChange={handleChange}
+                        variant="standard"
+                        defaultValue={"#"}
+                        sx={{ m: 0, minWidth: 120 }}
+                        title="Lọc theo quyền"
+                        name="role"
+                        value={filterParams.role || "#"}
+                    >
+                        <MenuItem value="#">
+                            <em>Quyền</em>
+                        </MenuItem>
+                        <MenuItem value={"ADMIN"}>Quản trị viên</MenuItem>
+                        <MenuItem value={"USER"}>Người dùng</MenuItem>
+                    </TextField>
                     <TextField
                         select
                         variant="standard"
@@ -80,24 +112,22 @@ function CustomToolbar({ selectedRows, handleFilter }) {
                             Đang xác nhận mail
                         </MenuItem>
                     </TextField>
-                    <TextField
-                        select
-                        onChange={handleChange}
-                        variant="standard"
-                        defaultValue={"#"}
-                        sx={{ m: 0, minWidth: 120 }}
-                        title="Lọc theo quyền"
-                        name="role"
-                        value={filterParams.role || "#"}
+                    <Button
+                        variant="outlined"
+                        color="warning"
+                        title="Reset filter"
+                        onClick={() =>
+                            setFilterParams({
+                                keyword: "",
+                                status: undefined,
+                                role: undefined,
+                            })
+                        }
                     >
-                        <MenuItem value="#">
-                            <em>Quyền</em>
-                        </MenuItem>
-                        <MenuItem value={"ADMIN"}>Quản trị viên</MenuItem>
-                        <MenuItem value={"USER"}>Người dùng</MenuItem>
-                    </TextField>
-                    <Button>
-                        <FilterAltSharp style={toolStyle} />
+                        <Restore />
+                    </Button>
+                    <Button variant="outlined" color="success" title="Filter">
+                        <FilterAlt style={toolStyle} />
                     </Button>
                 </Stack>
             </form>
@@ -111,6 +141,7 @@ function CustomToolbar({ selectedRows, handleFilter }) {
                         endIcon={<Remove />}
                         color="error"
                         variant="contained"
+                        onClick={() => handleFilter(filterParams)}
                     >
                         Deactivate
                     </Button>

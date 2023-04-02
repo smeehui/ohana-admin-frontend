@@ -24,6 +24,7 @@ const ManageUser = () => {
         rowCount: 0,
         rows: [],
         selectedRows: [],
+        currentRow: {},
         isLoading: true,
     });
 
@@ -149,6 +150,9 @@ const ManageUser = () => {
                             ...prev,
                             ...paginationModel,
                         }))
+                    }
+                    onRowEditStart={(row) =>
+                        setTableState((prev) => ({ ...prev, currentRow: row }))
                     }
                     filterMode="server"
                     checkboxSelection
