@@ -8,10 +8,12 @@ const getAllUsers = async (params) => {
     return result.data;
 };
 const filterUsers = async (filter, paginationParams) => {
-    console.log("searching....");
     let result = await axios
-        .post(FILTER_USER, filter, {
+        .post(FILTER_USER, JSON.stringify(filter), {
             params: paginationParams,
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
         .catch((jqXHR) => console.log(jqXHR));
     return result.data;

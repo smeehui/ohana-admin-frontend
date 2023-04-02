@@ -16,19 +16,16 @@ const ManageUser = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const apiRef = useGridApiRef();
+    console.log("tb rerender");
 
-    const [currRow, setCurrRow] = useState({});
     const [tableState, setTableState] = useState({
         pageSize: 10,
         page: 0,
         rowCount: 0,
         rows: [],
         selectedRows: [],
+        isLoading: true,
     });
-    const [isLoading, setIsLoading] = useState(false);
-    const [reloadData, setReloadData] = useState(false);
-
-    const [filter, setFilter] = useState({});
 
     const toastOption = useMemo(() => {
         return {
@@ -51,22 +48,35 @@ const ManageUser = () => {
             pageSize: size,
             page: number,
             rows: content,
+            isLoading: false,
         }));
-        setIsLoading(false);
     };
 
-    const handleCellValueChanged = useCallback(async (row) => {
+    const handleCellValueChanged = async (row) => {
         let result = await updateUserById(row.id, row);
         toast.success("Chỉnh sửa thành công!");
         return row;
-    });
+    };
 
-    const handleProcessRowUpdateError = useCallback(async (event) => {
+    const handleProcessRowUpdateError = async (event) => {
         toast.error("Chỉnh sửa thất bại!");
+    };
+
+    const handleFilter = useCallback(async (filterParams) => {
+        try {
+            let result = await filterUsers(filterParams, {
+                page: tableState.page,
+                size: tableState.pageSize,
+            });
+            addPaginationProperties(result);
+        } catch (error) {
+            toast.error("Filter errror!");
+            console.log(error);
+        }
     }, []);
+
     useEffect(() => {
         (async () => {
-            setIsLoading(true);
             let paginationParams = {
                 page: tableState.page,
                 size: tableState.pageSize,
@@ -78,21 +88,19 @@ const ManageUser = () => {
                 toast.error("Lấy dữ liệu thất bại!");
             }
         })();
-    }, [tableState.pageSize, tableState.page, reloadData]);
-    const handleFilter = async ({ quickFilterValues }) => {
-        let value = quickFilterValues.join("");
-        const filter = { keyword: value };
+    }, [tableState.pageSize, tableState.page]);
 
-        try {
-            let result = await filterUsers(filter, {
-                page: tableState.page,
-                size: tableState.pageSize,
-            });
-            addPaginationProperties(result);
-        } catch (error) {
-            toast.error("Filter errror!");
-        }
-    };
+    const toolBar = useMemo(
+        () => ({
+            toolbar: () => (
+                <CustomToolbar
+                    selectedRows={tableState.selectedRows}
+                    handleFilter={handleFilter}
+                />
+            ),
+        }),
+        [],
+    );
     return (
         <Box m="20px">
             <ToastContainer {...toastOption} />
@@ -128,23 +136,14 @@ const ManageUser = () => {
                 <DataGrid
                     apiRef={apiRef}
                     autoHeight
-                    slots={{
-                        toolbar: () => (
-                            <CustomToolbar
-                                colors={colors}
-                                selectedRows={tableState.selectedRows}
-                            />
-                        ),
-                    }}
+                    slots={toolBar}
                     columns={columns}
                     pagination
-                    loading={isLoading}
+                    loading={tableState.isLoading}
                     processRowUpdate={handleCellValueChanged}
                     onProcessRowUpdateError={handleProcessRowUpdateError}
-                    onRowDoubleClick={(row) => setCurrRow(row.row)}
                     rowSelection
                     pageSizeOptions={[10, 20, 50, 100]}
-                    paginationModel={tableState}
                     onPaginationModelChange={(paginationModel) =>
                         setTableState((prev) => ({
                             ...prev,
@@ -155,7 +154,7 @@ const ManageUser = () => {
                     checkboxSelection
                     paginationMode="server"
                     {...tableState}
-                    onFilterModelChange={handleFilter}
+                    // onFilterModelChange={handleFilter}
                     onRowSelectionModelChange={(rows) =>
                         setTableState((prev) => ({
                             ...prev,
