@@ -1,13 +1,28 @@
-import {Menu, MenuItem, Sidebar, SubMenu, useProSidebar} from "react-pro-sidebar";
-import {Box, IconButton, Typography, useTheme} from "@mui/material";
-import {Link} from "react-router-dom";
-import {tokens} from "~/theme";
+import {
+    Menu,
+    MenuItem,
+    Sidebar,
+    SubMenu,
+    useProSidebar,
+} from "react-pro-sidebar";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Link } from "react-router-dom";
+import { tokens } from "~/theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import {sideBarData} from "~/scenes/global/sideBarData";
-import {useState} from "react";
+import { sideBarData } from "~/scenes/global/sideBarData";
+import { useState } from "react";
+import { HomeIcon } from "~/assets/icons/icons";
 
-const Item = ({title, to, icon, selected, setSelected, className,itemKey}) => {
+const Item = ({
+    title,
+    to,
+    icon,
+    selected,
+    setSelected,
+    className,
+    itemKey,
+}) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     return (
@@ -16,20 +31,20 @@ const Item = ({title, to, icon, selected, setSelected, className,itemKey}) => {
             active={selected === title}
             rootStyles={{
                 background: `${colors.primary[400]} !important`,
-                "a": {
-                    color: "black"
-                }
+                a: {
+                    color: "black",
+                },
             }}
             style={{
                 color: "#868dfb !important",
                 backgroundColor: "transparent",
                 "&:hover": {
                     backgroundColor: "transparent !important",
-                }
+                },
             }}
             onClick={() => setSelected(title)}
             icon={icon}
-            component={to ? <Link to={to}></Link>:null}
+            component={to ? <Link to={to}></Link> : null}
         >
             {title}
         </MenuItem>
@@ -41,14 +56,14 @@ const SidebarCustom = () => {
     const colors = tokens(theme.palette.mode);
     // const [collapsed, collapseSidebar] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
-    const {collapseSidebar, collapsed} = useProSidebar();
+    const { collapseSidebar, collapsed } = useProSidebar();
 
     return (
         <Box
             sx={{
                 "& .pro-sidebar-inner": {
                     background: `${colors.primary[400]} !important`,
-                    height: "100%"
+                    height: "100%",
                 },
                 "& .pro-icon-wrapper": {
                     backgroundColor: "transparent !important",
@@ -65,18 +80,24 @@ const SidebarCustom = () => {
                 },
             }}
         >
-            <Sidebar style={{height: "100%", background: `${colors.primary[400]} !important`}} collapsed={collapsed}>
+            <Sidebar
+                style={{
+                    height: "100%",
+                    background: `${colors.primary[400]} !important`,
+                }}
+                collapsed={collapsed}
+            >
                 <Menu className={"pro-sidebar-inner"} iconShape="square">
                     {/* LOGO AND MENU ICON */}
                     <MenuItem
                         onClick={() => collapseSidebar(!collapsed)}
-                        icon={collapsed ? <MenuOutlinedIcon/> : undefined}
+                        icon={collapsed ? <MenuOutlinedIcon /> : undefined}
                         style={{
                             color: "red !important",
                             backgroundColor: "transparent",
                             "&:hover": {
                                 backgroundColor: "transparent !important",
-                            }
+                            },
                         }}
                     >
                         {!collapsed && (
@@ -86,11 +107,11 @@ const SidebarCustom = () => {
                                 alignItems="center"
                                 ml="15px"
                             >
-                                <Typography variant="h3" color={colors.grey[100]}>
-                                    ADMINIS
-                                </Typography>
-                                <IconButton onClick={() => collapseSidebar(!collapsed)}>
-                                    <MenuOutlinedIcon/>
+                                <HomeIcon textColor={colors.greenAccent[500]} />
+                                <IconButton
+                                    onClick={() => collapseSidebar(!collapsed)}
+                                >
+                                    <MenuOutlinedIcon />
                                 </IconButton>
                             </Box>
                         )}
@@ -128,20 +149,17 @@ const SidebarCustom = () => {
                             title="Dashboard"
                             to="/"
                             className={"pro-inner-item"}
-                            icon={<HomeOutlinedIcon/>}
+                            icon={<HomeOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
-
-
                         <Typography
                             variant="h6"
                             color={colors.grey[300]}
-                            sx={{m: "15px 0 5px 20px"}}
+                            sx={{ m: "15px 0 5px 20px" }}
                         >
                             Data
                         </Typography>
-
                         {sideBarData.map((item, index) => {
                             const Icon = item.icon;
                             if (item.subMenu)
@@ -151,22 +169,23 @@ const SidebarCustom = () => {
                                             color: "#868dfb !important",
                                             backgroundColor: "transparent",
                                             "&:hover": {
-                                                backgroundColor: "transparent !important",
+                                                backgroundColor:
+                                                    "transparent !important",
                                             },
-                                            "div": {
-                                                marginLeft: "45px"
-                                            }
-
+                                            div: {
+                                                marginLeft: "45px",
+                                            },
                                         }}
                                         style={{
                                             color: "#868dfb !important",
                                             backgroundColor: "transparent",
                                             "&:hover": {
-                                                backgroundColor: "transparent !important",
+                                                backgroundColor:
+                                                    "transparent !important",
                                             },
                                         }}
                                         key={index}
-                                        icon={<Icon/>}
+                                        icon={<Icon />}
                                         label={item.title}
                                     >
                                         {item.subMenu.map((sub, index) => {
@@ -178,7 +197,7 @@ const SidebarCustom = () => {
                                                     selected={selected}
                                                     setSelected={setSelected}
                                                 />
-                                            )
+                                            );
                                         })}
                                     </SubMenu>
                                 );
@@ -188,11 +207,12 @@ const SidebarCustom = () => {
                                     setSelected={setSelected}
                                     to={item.path && item.path}
                                     key={index}
-                                    icon={<Icon/>}
+                                    icon={<Icon />}
                                     title={item.title}
                                 />
                             );
-                        })} {/*<Item*/}
+                        })}{" "}
+                        {/*<Item*/}
                         {/*  title="Manage Team"*/}
                         {/*  to="/team"*/}
                         {/*  icon={<PeopleOutlinedIcon />}*/}
@@ -213,7 +233,6 @@ const SidebarCustom = () => {
                         {/*  selected={selected}*/}
                         {/*  setSelected={setSelected}*/}
                         {/*/>*/}
-
                         {/*<Typography*/}
                         {/*    variant="h6"*/}
                         {/*    color={colors.grey[300]}*/}
@@ -242,7 +261,6 @@ const SidebarCustom = () => {
                         {/*  selected={selected}*/}
                         {/*  setSelected={setSelected}*/}
                         {/*/>*/}
-
                         {/*<Typography*/}
                         {/*  variant="h6"*/}
                         {/*  color={colors.grey[300]}*/}

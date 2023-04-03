@@ -1,6 +1,13 @@
 import { useTheme } from "@emotion/react";
-import { Add, FilterAlt, Remove, Restore } from "@mui/icons-material";
-import { Button, MenuItem, TextField } from "@mui/material";
+import {
+    Add,
+    FilterAlt,
+    Lock,
+    LockOpen,
+    Remove,
+    Restore,
+} from "@mui/icons-material";
+import { Button, IconButton, MenuItem, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import {
     GridToolbarColumnsButton,
@@ -12,8 +19,33 @@ import useDebounce from "~/hooks/useDebounce";
 import { useIsMount } from "~/hooks/useIsMount";
 import { tokens } from "~/theme";
 import ConfirmationDialog from "./ConfirmationDialog";
+import { updateStatusAll } from "../../../service/userService";
+import { toast } from "react-toastify";
 
-function CustomToolbar({ selectedRows, handleFilter }) {
+const LockButton = ({ onClick }) => (
+    <Button
+        color="error"
+        variant="contained"
+        onClick={() => onClick("deactivate")}
+        title="Huỷ kích hoạt"
+    >
+        <Lock />
+    </Button>
+);
+
+const UnlockButton = ({ onClick }) => (
+    <Button
+        className="align-self-end"
+        color="success"
+        variant="contained"
+        onClick={() => onClick("activate")}
+        title="Kích hoạt"
+    >
+        <LockOpen />
+    </Button>
+);
+
+function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const toolStyle = { color: colors.greenAccent[300] };
@@ -52,13 +84,39 @@ function CustomToolbar({ selectedRows, handleFilter }) {
         if (!isMounted) handleFilter(filterParams);
     }, [debouncedFilter, filter]);
 
-    const handleAction = (type) => {
-        setAction((prev) => ({ ...prev, type: type, isShow: true }));
-    };
+    const handleAction = useCallback(
+        (type) => {
+            setAction((prev) => ({ ...prev, type: type, isShow: true }));
+        },
+        [action.isShow],
+    );
 
     const handleCloseDialog = useCallback((type) => {
         setAction((prev) => ({ ...prev, type: type, isShow: false }));
     }, []);
+    const handleConfirmAction = useCallback(() => {
+        const { data, type } = action;
+        console.log(action);
+        try {
+            let result = updateStatusAll(
+                action.data.map((item) => item.id),
+                type,
+            );
+            console.log(result);
+            data.forEach((element) => {
+                toast.success(
+                    `${
+                        type === "deactivate" ? "Huỷ kích hoạt" : "Kích hoạt"
+                    } tài khoản ${element.fullName} thành công`,
+                );
+            });
+            forceReload();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            handleCloseDialog();
+        }
+    }, [action.type]);
     return (
         <GridToolbarContainer className="d-flex justify-content-between my-1">
             <div>
@@ -122,7 +180,7 @@ function CustomToolbar({ selectedRows, handleFilter }) {
                     <Button
                         variant="outlined"
                         color="warning"
-                        title="Reset filter"
+                        title="Xoá bộ lọc"
                         onClick={() =>
                             setFilterParams({
                                 keyword: "",
@@ -133,39 +191,31 @@ function CustomToolbar({ selectedRows, handleFilter }) {
                     >
                         <Restore />
                     </Button>
-                    <Button variant="outlined" color="success" title="Filter">
+                    <Button variant="outlined" color="success" title="Lọc">
                         <FilterAlt style={toolStyle} />
                     </Button>
                 </Stack>
             </form>
             {selectedRows.length > 0 &&
                 (selectedRows.every((row) => row.status === "ACTIVATED") ? (
-                    <Button
-                        className="align-self-end"
-                        endIcon={<Remove />}
-                        color="error"
-                        variant="contained"
-                        onClick={() => handleAction("deactivate")}
-                    >
-                        Huỷ kích hoạt
-                    </Button>
+                    <LockButton onClick={handleAction} />
                 ) : selectedRows.every(
                       (row) => row.status === "DEACTIVATED",
                   ) ? (
-                    <Button
-                        className="align-self-end"
-                        endIcon={<Add />}
-                        color="success"
-                        variant="contained"
-                        onClick={() => handleAction("activate")}
-                    >
-                        Kích hoạt
-                    </Button>
+                    <UnlockButton onClick={handleAction} />
+                ) : selectedRows.every(
+                      (row) => row.status === "CONFIRM_EMAIL",
+                  ) ? (
+                    <>
+                        <LockButton onClick={handleAction} />
+                        <UnlockButton onClick={handleAction} />
+                    </>
                 ) : null)}
             {action.isShow && (
                 <ConfirmationDialog
                     action={action}
                     onClose={handleCloseDialog}
+                    onAgree={handleConfirmAction}
                 />
             )}
         </GridToolbarContainer>

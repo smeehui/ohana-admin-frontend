@@ -1,5 +1,7 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid";
+import { Link } from "react-router-dom";
+import { config } from "~/config";
 
 const StatusRender = ({ value }) => (
     <span>
@@ -21,45 +23,45 @@ const columns = [
     {
         field: "fullName",
         headerName: "Họ tên",
-        filter: true,
         sortable: true,
         flex: 1,
+        renderCell: ({ row }) => {
+            return (
+                <Link to={config.routes.userDetails + `:${row.id}`}>
+                    {row.fullName}
+                </Link>
+            );
+        },
     },
     {
         field: "email",
         headerName: "Email",
-        filter: true,
         sortable: true,
         flex: 1,
     },
     {
         field: "description",
         headerName: "Mô tả",
-        filter: true,
         sortable: true,
         flex: 1,
     },
     {
         field: "phone",
         headerName: "Số ĐT",
-        filter: true,
         sortable: true,
     },
     {
         field: "address",
         headerName: "Địa chỉ",
-        filter: true,
         sortable: true,
         flex: 1,
+        editable: false,
     },
     {
         field: "role",
         headerName: "Role",
         filter: true,
-        editable: true,
         sortable: true,
-        type: "singleSelect",
-        valueOptions: ["ADMIN", "USER"],
     },
     {
         field: "status",
@@ -69,7 +71,7 @@ const columns = [
         sortable: true,
         width: 150,
         type: "singleSelect",
-        valueOptions: ["CONFIRM_EMAIL", "ACTIVATED", "DEACTIVATED"],
+        valueOptions: ["ACTIVATED", "DEACTIVATED"],
     },
 ];
 

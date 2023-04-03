@@ -6,34 +6,16 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-import { updateStatusAll } from "../service/userService";
+import { updateStatusAll } from "../../../service/userService";
 import { toast } from "react-toastify";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ConfirmationDialog({ action, onClose }) {
+export default function ConfirmationDialog({ action, onClose, onAgree }) {
     const { isShow, type, data } = action;
-    const handleAgree = async () => {
-        try {
-            let result = updateStatusAll(
-                data.map((item) => item.id),
-                type,
-            );
-            data.forEach((element) => {
-                toast.success(
-                    `${
-                        type === "deactivated" ? "Huỷ kích hoạt" : "Kích hoạt"
-                    } tài khoản ${element.fullName} thành công`,
-                );
-            });
-        } catch (error) {
-            console.log(error);
-        } finally {
-            onClose();
-        }
-    };
+    console.log(type);
     return (
         <div>
             <Dialog
@@ -47,7 +29,7 @@ export default function ConfirmationDialog({ action, onClose }) {
                 <DialogContent>
                     <h4>
                         {`Bạn có chắc chắn muốn ${
-                            type === "deactivated"
+                            type === "deactivate"
                                 ? "huỷ kích hoạt"
                                 : "kích hoạt"
                         }:`}
@@ -63,8 +45,8 @@ export default function ConfirmationDialog({ action, onClose }) {
                     ))}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose}>Disagree</Button>
-                    <Button onClick={handleAgree}>Agree</Button>
+                    <Button onClick={() => onClose()}>Disagree</Button>
+                    <Button onClick={() => onAgree()}>Agree</Button>
                 </DialogActions>
             </Dialog>
         </div>

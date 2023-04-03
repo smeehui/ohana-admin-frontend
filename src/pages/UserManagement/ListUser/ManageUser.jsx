@@ -7,7 +7,7 @@ import {
     filterUsers,
     getAllUsers,
     updateUserStatusById,
-} from "~/pages/UserManagement/service/userService";
+} from "~/service/userService";
 import { toast, ToastContainer } from "react-toastify";
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
 import CustomToolbar from "./CustomToolbar";
@@ -19,15 +19,20 @@ const ManageUser = () => {
     const apiRef = useGridApiRef();
 
     const [tableState, setTableState] = useState({
-        pageSize: 10,
+        pageSize: 100,
         page: 0,
         rowCount: 0,
         rows: [],
         selectedRows: [],
         currentRow: {},
         isLoading: true,
+        forceReload: false,
     });
 
+    const forceReload = useCallback(() => {
+        console.log("reloading");
+        setTableState((prev) => ({ ...prev, forceReload: !prev.forceReload }));
+    }, [tableState.forceReload]);
 
     const addPaginationProperties = (result) => {
         const { totalElements, number, size, content } = result;
@@ -42,13 +47,12 @@ const ManageUser = () => {
     };
 
     const handleCellValueChanged = async (row) => {
-       try{
-        await updateUserStatusById(row.id, row.status);
-        toast.success("Chỉnh sửa thành công!");
-       }
-       catch(error){
-        console.log(error);
-       }
+        try {
+            await updateUserStatusById(row.id, row.status);
+            toast.success("Chỉnh sửa thành công!");
+        } catch (error) {
+            console.log(error);
+        }
         return row;
     };
 
@@ -82,7 +86,7 @@ const ManageUser = () => {
                 toast.error("Lấy dữ liệu thất bại!");
             }
         })();
-    }, [tableState.pageSize, tableState.page]);
+    }, [tableState.pageSize, tableState.page, tableState.forceReload]);
 
     const toolBar = useMemo(
         () => ({
@@ -90,6 +94,7 @@ const ManageUser = () => {
                 <CustomToolbar
                     selectedRows={tableState.selectedRows}
                     handleFilter={handleFilter}
+                    forceReload={forceReload}
                 />
             ),
         }),
@@ -135,6 +140,7 @@ const ManageUser = () => {
                     loading={tableState.isLoading}
                     processRowUpdate={handleCellValueChanged}
                     onProcessRowUpdateError={handleProcessRowUpdateError}
+                    isCellEditable={({ row }) => row.role !== "ADMIN"}
                     rowSelection
                     pageSizeOptions={[10, 20, 50, 100]}
                     onPaginationModelChange={(paginationModel) =>
