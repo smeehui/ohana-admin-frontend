@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import SidebarCustom from "./scenes/global/SidebarCustom";
@@ -18,12 +18,25 @@ import { publicRoutes } from "~/routes/index.jsx";
 import { ProSidebarProvider } from "react-pro-sidebar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 // import Calendar from "./scenes/calendar/calendar";
 
 function App() {
     const [theme, colorMode] = useMode();
     const [isSidebar, setIsSidebar] = useState(true);
+    const toastOption = useMemo(() => {
+        return {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: theme.palette.mode,
+        };
+    }, []);
     return (
         <ColorModeContext.Provider value={colorMode}>
             <ThemeProvider theme={theme}>
@@ -34,6 +47,7 @@ function App() {
                     </ProSidebarProvider>
                     <main className="content">
                         <Topbar setIsSidebar={setIsSidebar} />
+                        <ToastContainer {...toastOption} />
                         <Routes>
                             {publicRoutes.map((route) => {
                                 const { path } = route;

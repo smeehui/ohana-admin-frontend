@@ -6,17 +6,17 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
     filterUsers,
     getAllUsers,
-    updateUserById,
+    updateUserStatusById,
 } from "~/pages/UserManagement/service/userService";
 import { toast, ToastContainer } from "react-toastify";
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
 import CustomToolbar from "./CustomToolbar";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 const ManageUser = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const apiRef = useGridApiRef();
-    console.log("tb rerender");
 
     const [tableState, setTableState] = useState({
         pageSize: 10,
@@ -28,18 +28,6 @@ const ManageUser = () => {
         isLoading: true,
     });
 
-    const toastOption = useMemo(() => {
-        return {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: theme.palette.mode,
-        };
-    }, []);
 
     const addPaginationProperties = (result) => {
         const { totalElements, number, size, content } = result;
@@ -54,8 +42,13 @@ const ManageUser = () => {
     };
 
     const handleCellValueChanged = async (row) => {
-        let result = await updateUserById(row.id, row);
+       try{
+        await updateUserStatusById(row.id, row.status);
         toast.success("Chỉnh sửa thành công!");
+       }
+       catch(error){
+        console.log(error);
+       }
         return row;
     };
 
@@ -100,11 +93,10 @@ const ManageUser = () => {
                 />
             ),
         }),
-        [],
+        [tableState.selectedRows],
     );
     return (
         <Box m="20px">
-            <ToastContainer {...toastOption} />
             <Header title="Danh sách" />
             <Box
                 width={"70vw"}
@@ -162,7 +154,13 @@ const ManageUser = () => {
                     onRowSelectionModelChange={(rows) =>
                         setTableState((prev) => ({
                             ...prev,
-                            selectedRows: [...rows],
+                            selectedRows: [
+                                ...rows.map((row) =>
+                                    tableState.rows.find(
+                                        (tRow) => tRow.id === row,
+                                    ),
+                                ),
+                            ],
                         }))
                     }
                 />

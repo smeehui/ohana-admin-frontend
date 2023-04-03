@@ -1,24 +1,17 @@
 import { useTheme } from "@emotion/react";
-import {
-    FilterAlt,
-    FilterAltOff,
-    FilterAltSharp,
-    Remove,
-    Restore,
-    Search,
-} from "@mui/icons-material";
-import { Button, InputLabel, MenuItem, TextField } from "@mui/material";
+import { Add, FilterAlt, Remove, Restore } from "@mui/icons-material";
+import { Button, MenuItem, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import {
     GridToolbarColumnsButton,
     GridToolbarContainer,
     GridToolbarDensitySelector,
-    GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import { memo, useCallback, useEffect, useState } from "react";
 import useDebounce from "~/hooks/useDebounce";
 import { useIsMount } from "~/hooks/useIsMount";
 import { tokens } from "~/theme";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 function CustomToolbar({ selectedRows, handleFilter }) {
     const theme = useTheme();
@@ -30,6 +23,12 @@ function CustomToolbar({ selectedRows, handleFilter }) {
         role: undefined,
     });
     const [filter, setFilter] = useState(false);
+
+    const [action, setAction] = useState({
+        type: "",
+        isShow: false,
+        data: selectedRows,
+    });
 
     const isMounted = useIsMount();
 
@@ -52,6 +51,14 @@ function CustomToolbar({ selectedRows, handleFilter }) {
     useEffect(() => {
         if (!isMounted) handleFilter(filterParams);
     }, [debouncedFilter, filter]);
+
+    const handleAction = (type) => {
+        setAction((prev) => ({ ...prev, type: type, isShow: true }));
+    };
+
+    const handleCloseDialog = useCallback((type) => {
+        setAction((prev) => ({ ...prev, type: type, isShow: false }));
+    }, []);
     return (
         <GridToolbarContainer className="d-flex justify-content-between my-1">
             <div>
@@ -105,7 +112,7 @@ function CustomToolbar({ selectedRows, handleFilter }) {
                             <em>Trạng thái</em>
                         </MenuItem>
                         <MenuItem value={"ACTIVATED"}>Đã kích hoạt</MenuItem>
-                        <MenuItem value={"NOT_ACTIVATED"}>
+                        <MenuItem value={"DEACTIVATED"}>
                             Đã huỷ kích hoạt
                         </MenuItem>
                         <MenuItem value={"CONFIRM_EMAIL"}>
@@ -132,20 +139,35 @@ function CustomToolbar({ selectedRows, handleFilter }) {
                 </Stack>
             </form>
             {selectedRows.length > 0 &&
-                selectedRows.every((row) => {
-                    console.log(row);
-                    return row.status === "ACTIVATED";
-                }) && (
+                (selectedRows.every((row) => row.status === "ACTIVATED") ? (
                     <Button
                         className="align-self-end"
                         endIcon={<Remove />}
                         color="error"
                         variant="contained"
-                        onClick={() => handleFilter(filterParams)}
+                        onClick={() => handleAction("deactivate")}
                     >
-                        Deactivate
+                        Huỷ kích hoạt
                     </Button>
-                )}
+                ) : selectedRows.every(
+                      (row) => row.status === "DEACTIVATED",
+                  ) ? (
+                    <Button
+                        className="align-self-end"
+                        endIcon={<Add />}
+                        color="success"
+                        variant="contained"
+                        onClick={() => handleAction("activate")}
+                    >
+                        Kích hoạt
+                    </Button>
+                ) : null)}
+            {action.isShow && (
+                <ConfirmationDialog
+                    action={action}
+                    onClose={handleCloseDialog}
+                />
+            )}
         </GridToolbarContainer>
     );
 }

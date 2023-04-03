@@ -1,5 +1,11 @@
 import { default as axios } from "axios";
-import { GET_ALL_USER, FILTER_USER, UPDATE_USER } from "~/config/api";
+import {
+    GET_ALL_USER,
+    FILTER_USER,
+    UPDATE_USER_STATUS,
+    DEACTIVATE_ALL,
+    ACTIVATE_ALL,
+} from "~/config/api";
 
 const getAllUsers = async (params) => {
     let result = await axios
@@ -18,12 +24,27 @@ const filterUsers = async (filter, paginationParams) => {
         .catch((jqXHR) => console.log(jqXHR));
     return result.data;
 };
-const updateUserById = async (id, param) => {
+const updateUserStatusById = async (id, stt) => {
     let user = await axios({
-        url: UPDATE_USER + `/${id}`,
+        url: UPDATE_USER_STATUS + `/${id}/status`,
         method: "patch",
-        data: param,
+        params: {
+            status: stt,
+        },
     });
     return user;
 };
-export { getAllUsers, filterUsers, updateUserById };
+
+const updateStatusAll = async (idList, type) => {
+    const url = type === "deactivate" ? DEACTIVATE_ALL : ACTIVATE_ALL;
+    let status = axios({
+        url: url,
+        method:"patch",
+        data: JSON.stringify(idList),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+};
+
+export { getAllUsers, filterUsers, updateUserStatusById,updateStatusAll };

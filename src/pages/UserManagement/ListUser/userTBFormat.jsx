@@ -22,7 +22,6 @@ const columns = [
         field: "fullName",
         headerName: "Họ tên",
         filter: true,
-        editable: true,
         sortable: true,
         flex: 1,
     },
@@ -30,7 +29,6 @@ const columns = [
         field: "email",
         headerName: "Email",
         filter: true,
-        editable: true,
         sortable: true,
         flex: 1,
     },
@@ -38,8 +36,6 @@ const columns = [
         field: "description",
         headerName: "Mô tả",
         filter: true,
-        editable: true,
-
         sortable: true,
         flex: 1,
     },
@@ -47,14 +43,12 @@ const columns = [
         field: "phone",
         headerName: "Số ĐT",
         filter: true,
-        editable: true,
         sortable: true,
     },
     {
         field: "address",
         headerName: "Địa chỉ",
         filter: true,
-        editable: true,
         sortable: true,
         flex: 1,
     },
@@ -75,7 +69,7 @@ const columns = [
         sortable: true,
         width: 150,
         type: "singleSelect",
-        valueOptions: ["CONFIRM_EMAIL", "ACTIVATED", "NOT_ACTIVATED"],
+        valueOptions: ["CONFIRM_EMAIL", "ACTIVATED", "DEACTIVATED"],
     },
 ];
 
