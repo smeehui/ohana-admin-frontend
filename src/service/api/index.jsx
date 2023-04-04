@@ -7,3 +7,4 @@ export const FILTER_USER = MAIN_API + MIDDLE_PATH + "/api/users/filter";
 export const UPDATE_USER_STATUS = MAIN_API + MIDDLE_PATH + "/api/users";
 export const ACTIVATE_ALL = MAIN_API + MIDDLE_PATH + "/api/users/activate";
 export const DEACTIVATE_ALL = MAIN_API + MIDDLE_PATH + "/api/users/deactivate";
+

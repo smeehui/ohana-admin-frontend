@@ -8,6 +8,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { updateStatusAll } from "../../../service/userService";
 import { toast } from "react-toastify";
+import { Stack } from "@mui/system";
+import { Chip } from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -15,7 +17,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function ConfirmationDialog({ action, onClose, onAgree }) {
     const { isShow, type, data } = action;
-    console.log(type);
     return (
         <div>
             <Dialog
@@ -25,7 +26,6 @@ export default function ConfirmationDialog({ action, onClose, onAgree }) {
                 onClose={onClose}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle>{"Use Google's location service?"}</DialogTitle>
                 <DialogContent>
                     <h4>
                         {`Bạn có chắc chắn muốn ${
@@ -35,18 +35,34 @@ export default function ConfirmationDialog({ action, onClose, onAgree }) {
                         }:`}
                     </h4>
 
-                    {data.map((item) => (
-                        <DialogContentText
-                            id="alert-dialog-slide-description"
-                            key={item.id}
-                        >
-                            {item.fullName}
-                        </DialogContentText>
-                    ))}
+                    <Stack direction="row" spacing={1}>
+                        {data.map((item) => (
+                            <Chip
+                                key={item.id}
+                                variant="outlined"
+                                label={item.fullName}
+                                color={
+                                    type === "deactivate" ? "error" : "success"
+                                }
+                            ></Chip>
+                        ))}
+                    </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => onClose()}>Disagree</Button>
-                    <Button onClick={() => onAgree()}>Agree</Button>
+                    <Button
+                        variant="contained"
+                        color="warning"
+                        onClick={() => onClose()}
+                    >
+                        Huỷ
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => onAgree()}
+                    >
+                        Xác nhận
+                    </Button>
                 </DialogActions>
             </Dialog>
         </div>

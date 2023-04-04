@@ -1,5 +1,5 @@
 import {default as axios} from "axios";
-import {GET_ALL_POST} from "~/config/api.jsx";
+import {GET_ALL_POST} from "~/service/api/index.jsx";
 
 const getAllPosts = async () => {
     console.log("getting all posts....");

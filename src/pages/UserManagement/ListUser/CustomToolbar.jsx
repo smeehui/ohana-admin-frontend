@@ -110,11 +110,11 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                     } tài khoản ${element.fullName} thành công`,
                 );
             });
-            forceReload();
         } catch (error) {
             console.log(error);
         } finally {
             handleCloseDialog();
+            forceReload();
         }
     }, [action.type]);
     return (

@@ -14,31 +14,19 @@ export const sideBarData = [
         icon: AdminIcon,
         subMenu: [
             {
-                title: "Thêm mới",
-                path: routes.newUser,
-            },
-            {
                 title: "Danh sách",
                 path: routes.userManagement,
             },
         ],
     },
     {
-        title: "Người dùng",
-        icon: UserGroupIcon,
-    },
-    {
         title: "Bài viết",
         icon: PostIcon,
         subMenu: [
             {
-                title: "Chưa phê duyệt",
+                title: "Danh sách bài viết",
                 path: routes.postManagement,
-            },
-            {
-                title: "Đã phê duyệt",
-                path: routes.userManagement,
-            },
+            }
         ],
     },
 

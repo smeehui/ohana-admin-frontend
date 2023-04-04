@@ -58,11 +58,7 @@ function App() {
                                         key={path}
                                         path={path}
                                         element={
-                                            <Suspense
-                                                fallback={<h1>Loading....</h1>}
-                                            >
-                                                <Page />
-                                            </Suspense>
+                                            <Page />
                                         }
                                     />
                                 );

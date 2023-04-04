@@ -5,7 +5,7 @@ import {
     UPDATE_USER_STATUS,
     DEACTIVATE_ALL,
     ACTIVATE_ALL,
-} from "~/config/api";
+} from "~/service/api";
 
 const getAllUsers = async (params) => {
     let result = await axios
@@ -25,26 +25,16 @@ const filterUsers = async (filter, paginationParams) => {
     return result.data;
 };
 const updateUserStatusById = async (id, stt) => {
-    let user = await axios({
-        url: UPDATE_USER_STATUS + `/${id}/status`,
-        method: "patch",
-        params: {
-            status: stt,
-        },
-    });
+    let user = await axios.patch(UPDATE_USER_STATUS + `/${id}/status`,null,{params: {status: stt}})
+    
     return user;
 };
 
 const updateStatusAll = async (idList, type) => {
     const url = type === "deactivate" ? DEACTIVATE_ALL : ACTIVATE_ALL;
-    let status = axios({
-        url: url,
-        method: "patch",
-        data: JSON.stringify(idList),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+    let status = axios.patch(url,JSON.stringify(idList),{headers: {
+        "Content-Type": "application/json"
+    }});
     return status;
 };
 
