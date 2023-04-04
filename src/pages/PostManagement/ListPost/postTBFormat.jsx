@@ -21,6 +21,7 @@ const columns = [
         headerName: "BÀI VIẾT",
         sortable: true,
         renderCell: ({row})=><Link to={"/"}>{row.title}</Link>,
+        flex: 1
     },
     {
         field: "thumbnailId",
@@ -78,6 +79,9 @@ const columns = [
         field: "status",
         headerName: "Trạng thái",
         sortable: true,
+        editable: true,
+        type: "singleSelect",
+        valueOptions: ["PUBLISHED", "REFUSED"],
     },
 ];
 

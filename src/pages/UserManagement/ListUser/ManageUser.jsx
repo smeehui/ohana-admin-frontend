@@ -108,10 +108,10 @@ const ManageUser = () => {
     );
     return (
         <Suspense fallback={(<h1>Loading...</h1>)}>
-            <Box m="20px">
+            <Box m="20px" display={"flex"} flexDirection={"column"}>
                 <Header title="Danh sách" />
                 <Box
-                    width={"70vw"}
+                    flex={1}
                     sx={{
                         "& .MuiDataGrid-root": {
                             border: "none",
@@ -166,15 +166,17 @@ const ManageUser = () => {
                         checkboxSelection
                         paginationMode="server"
                         {...tableState}
-                        // onFilterModelChange={handleFilter}
                         onRowSelectionModelChange={(rows) =>
                             setTableState((prev) => ({
                                 ...prev,
                                 selectedRows: [
                                     ...rows.map((row) =>
-                                        tableState.rows.find(
-                                            (tRow) => tRow.id === row,
-                                        ),
+                                        {
+                                            console.log(rows)
+                                            return tableState.rows.find(
+                                                (tRow) => tRow.id === row,
+                                            )
+                                        },
                                     ),
                                 ],
                             }))

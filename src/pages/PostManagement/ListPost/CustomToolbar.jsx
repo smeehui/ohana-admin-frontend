@@ -4,7 +4,7 @@ import {
     FilterAlt,
     Lock,
     LockOpen,
-    Remove,
+    Remove, RemoveDoneOutlined,
     Restore,
 } from "@mui/icons-material";
 import { Button, IconButton, MenuItem, TextField } from "@mui/material";
@@ -29,7 +29,7 @@ const LockButton = ({ onClick }) => (
         onClick={() => onClick("deactivate")}
         title="Huỷ kích hoạt"
     >
-        <Lock />
+        <RemoveDoneOutlined />
     </Button>
 );
 
@@ -41,7 +41,7 @@ const UnlockButton = ({ onClick }) => (
         onClick={() => onClick("activate")}
         title="Kích hoạt"
     >
-        <LockOpen />
+        <Done />
     </Button>
 );
 
@@ -197,14 +197,14 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                 </Stack>
             </form>
             {selectedRows.length > 0 &&
-                (selectedRows.every((row) => row.status === "ACTIVATED") ? (
+                (selectedRows.every((row) => row.status === "PUBLISHED") ? (
                     <LockButton onClick={handleAction} />
                 ) : selectedRows.every(
-                      (row) => row.status === "DEACTIVATED",
+                      (row) => row.status === "REFUSED",
                   ) ? (
                     <UnlockButton onClick={handleAction} />
                 ) : selectedRows.every(
-                      (row) => row.status === "CONFIRM_EMAIL",
+                      (row) => row.status === "PENDING_REVIEW",
                   ) ? (
                     <>
                         <LockButton onClick={handleAction} />

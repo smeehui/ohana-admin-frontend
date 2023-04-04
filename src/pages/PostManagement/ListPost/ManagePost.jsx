@@ -10,8 +10,8 @@ import {
 } from "~/service/userService";
 import { toast, ToastContainer } from "react-toastify";
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
-import CustomToolbar from "./CustomToolbar";
 import { getAllPosts } from "~/service/postService";
+import CustomToolbar from "~/pages/PostManagement/ListPost/CustomToolbar";
 const ManagePost = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -80,7 +80,6 @@ const ManagePost = () => {
         })();
     }, [tableState.pageSize, tableState.page, tableState.forceReload]);
 
-    console.log(tableState.isLoading);
     const toolBar = useMemo(
         () => ({
             toolbar: () => (
@@ -133,7 +132,6 @@ const ManagePost = () => {
                 loading={tableState.isLoading}
                 processRowUpdate={handleCellValueChanged}
                 onProcessRowUpdateError={handleProcessRowUpdateError}
-                isCellEditable={({ row }) => row.role !== "ADMIN"}
                 rowSelection
                 pageSizeOptions={[5, 20, 50, 100]}
                 onPaginationModelChange={(paginationModel) =>
