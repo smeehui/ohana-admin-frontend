@@ -83,7 +83,7 @@ const SidebarCustom = () => {
             <Sidebar
                 style={{
                     height: "100%",
-                    background: `${colors.primary[400]} !important`,
+                    background: `${colors.primary[400]} !important`
                 }}
                 collapsed={collapsed}
             >

@@ -1,155 +1,84 @@
 import imageFormatter from "~/utils/imageFormater.jsx";
 import dateTimeFormatter from "~/utils/dateTimeFormatter.jsx";
-import noImage from "~/assets/img/no-img.png"
+import noImage from "~/assets/img/no-img.png";
+import { Link } from "react-router-dom";
+import { config } from "~/config";
+import { Image } from "@mui/icons-material";
+import CldImage from "~/components/CldImage";
 
-const {formatter} = dateTimeFormatter();
+const { formatter } = dateTimeFormatter();
 
 const columns = [
     {
-        name: "BÀI VIẾT",
-        selector: (row) => {
-            const {thumbnailUrl} = row;
-            const {setThumbnail} = imageFormatter();
-            let thumbnail;
-            if (thumbnailUrl) {
-                thumbnail = setThumbnail(thumbnailUrl.fileUrl);
-            }
+        field: "id",
+        headerName: "#",
+        width: 50,
+        type: "numericColumn",
+        sortable: true,
+    },
+    {
+        field: "title",
+        headerName: "BÀI VIẾT",
+        sortable: true,
+        renderCell: ({row})=><Link to={"/"}>{row.title}</Link>,
+    },
+    {
+        field: "thumbnailId",
+        headerName: "ẢNH BÌA",
+        renderCell: ({ row }) => {
+            return <CldImage id={row.thumbnailId} />;
+        },
+        align: "center"
+    },
+    {
+        field: "user",
+        headerName: "TÊN NGƯỜI ĐĂNG",
+        renderCell: ({ row }) => {
             return (
-                <>
-                    {thumbnail
-                        ? (<img className="rounded-circle p-1" src={thumbnail}/>)
-                        : (<img className="rounded-circle p-1" src={noImage}/>)
-                    }
-                    {row.title}
-                </>
+                <Link to={config.routes.userDetails + `${row.user.id}`}>
+                    {row.user.fullName}
+                </Link>
             );
         },
         sortable: true,
+        flex: 1
     },
     {
-        name: "THÀNH PHỐ",
-        selector: (row) => {
-            const { locationDetail, wardName, districtName, provinceName } =
-                row.location;
-            return `${locationDetail && locationDetail + " ,"}${
-                wardName && wardName + " ,"
-            }${districtName && districtName + " ,"}${
-                provinceName && provinceName
-            }`;
-        },
+        field: "location.wardName",
+        headerName: "PHƯỜNG/QUẬN",
         sortable: true,
-    },
-    {
-        name: "TÊN NGƯỜI DÙNG",
-        selector: (row) => {
-            const {fullName} = row.user;
-            return fullName;
+        renderCell: ({row})=>{
+            const {wardName} = row.location;
+            return <strong>{wardName}</strong>
         },
-        sortable: true,
+        maxWidtd: "200px",
+        flex: 1
     },
     {
-        name: "NGÀY ĐĂNG",
-        selector: (row) => formatter(row.createdAt),
+        field: "location.line1",
+        headerName: "ĐỊA CHỈ",
         sortable: true,
-    },
-    {
-        name: "TRẠNG THÁI",
-        selector: (row) => {
-            switch (row.status) {
-                case "REFUSED":
-                    return "Từ chối";
-                case "PUBLISHED":
-                    return "Đã đăng";
-            }
+        renderCell: ({row})=>{
+            const {line1} = row.location;
+            return <strong>{line1}</strong>
         },
+        flex: 1
+    },
+    {
+        field: "category",
+        headerName: "DANH MỤC",
+        sortable: true,
+        renderCell: ({row})=>{
+            const {category} = row;
+            return <strong>{category.title}</strong>
+        },
+        flex: 1
+    },
+    {
+        field: "status",
+        headerName: "Trạng thái",
         sortable: true,
     },
 ];
-// const userData = [
-//     {
-//         id: 1,
-//         fullName: "Beetlejuice",
-//         email: "blj@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 2,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 3,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 4,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 5,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 6,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 7,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 8,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 9,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 10,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 11,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 12,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 13,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-//     {
-//         id: 14,
-//         fullName: "Ghostbusters",
-//         email: "gbst@co.cc",
-//         password: "smee@9123",
-//     },
-// ];
 
 export { columns };
