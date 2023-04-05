@@ -1,39 +1,39 @@
-import imageFormatter from "~/utils/imageFormater.jsx";
-import dateTimeFormatter from "~/utils/dateTimeFormatter.jsx";
-import noImage from "~/assets/img/no-img.png";
+
 import { Link } from "react-router-dom";
 import { config } from "~/config";
-import { Image } from "@mui/icons-material";
 import CldImage from "~/components/CldImage";
-
-const { formatter } = dateTimeFormatter();
+import * as React from "react";
+import GridCellExpand from "~/pages/PostManagement/ListPost/components/GridCellExpand";
+import {publicRoutes} from "~/routes";
+function renderCellExpand(params) {
+    return (
+        <GridCellExpand params={params} value={params.value || ''} width={params.colDef.computedWidth} />
+    );
+}
 
 const columns = [
     {
         field: "id",
-        headerName: "#",
+        headerName: "ID",
+        align: "center",
         width: 50,
-        type: "numericColumn",
         sortable: true,
     },
     {
         field: "title",
         headerName: "BÀI VIẾT",
         sortable: true,
-        renderCell: ({row})=><Link to={"/"}>{row.title}</Link>,
-        flex: 1
+        renderCell: ({row})=><Link to={config.routes.postDetails + row.id}>{row.title}</Link>,
+        flex: 1,
     },
     {
         field: "thumbnailId",
         headerName: "ẢNH BÌA",
-        renderCell: ({ row }) => {
-            return <CldImage id={row.thumbnailId} />;
-        },
-        align: "center"
+        renderCell: renderCellExpand,
     },
     {
         field: "user",
-        headerName: "TÊN NGƯỜI ĐĂNG",
+        headerName: "NGƯỜI DÙNG",
         renderCell: ({ row }) => {
             return (
                 <Link to={config.routes.userDetails + `${row.user.id}`}>
@@ -48,10 +48,7 @@ const columns = [
         field: "location.wardName",
         headerName: "PHƯỜNG/QUẬN",
         sortable: true,
-        renderCell: ({row})=>{
-            const {wardName} = row.location;
-            return <strong>{wardName}</strong>
-        },
+        renderCell: ({row})=>row.location.wardName,
         maxWidtd: "200px",
         flex: 1
     },
@@ -59,12 +56,24 @@ const columns = [
         field: "location.line1",
         headerName: "ĐỊA CHỈ",
         sortable: true,
-        renderCell: ({row})=>{
-            const {line1} = row.location;
-            return <strong>{line1}</strong>
-        },
+        renderCell: ({row})=>row.location.line1,
         flex: 1
     },
+    {
+        field: "createdAt",
+        headerName: "NGÀY ĐĂNG",
+        sortable: true,
+        type: "dateTime",
+        valueGetter: ({value})=> value && new Date(value),
+    }
+    ,
+    {
+        field: "descriptionContent",
+        headerName: "MÔ TẢ",
+        sortable: true,
+        renderCell: renderCellExpand
+    }
+    ,
     {
         field: "category",
         headerName: "DANH MỤC",

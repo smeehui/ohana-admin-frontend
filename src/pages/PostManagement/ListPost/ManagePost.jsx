@@ -4,14 +4,12 @@ import Header from "~/components/Header";
 import { columns } from "./postTBFormat";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import {
-    filterUsers,
-    getAllUsers,
     updateUserStatusById,
 } from "~/service/userService";
 import { toast, ToastContainer } from "react-toastify";
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
 import { getAllPosts } from "~/service/postService";
-import CustomToolbar from "~/pages/PostManagement/ListPost/CustomToolbar";
+import CustomToolbar from "~/pages/PostManagement/ListPost/components/CustomToolbar";
 const ManagePost = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);

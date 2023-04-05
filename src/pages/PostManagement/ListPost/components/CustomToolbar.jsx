@@ -1,26 +1,13 @@
-import { useTheme } from "@emotion/react";
-import {
-    Add,
-    FilterAlt,
-    Lock,
-    LockOpen,
-    Remove, RemoveDoneOutlined,
-    Restore,
-} from "@mui/icons-material";
-import { Button, IconButton, MenuItem, TextField } from "@mui/material";
-import { Stack } from "@mui/system";
-import {
-    GridToolbarColumnsButton,
-    GridToolbarContainer,
-    GridToolbarDensitySelector,
-} from "@mui/x-data-grid";
-import { memo, useCallback, useEffect, useState } from "react";
+import {useTheme} from "@emotion/react";
+import {Done, FilterAlt, RemoveDoneOutlined, Restore,} from "@mui/icons-material";
+import {Button, MenuItem, TextField} from "@mui/material";
+import {Stack} from "@mui/system";
+import {GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector,} from "@mui/x-data-grid";
+import {memo, useCallback, useEffect, useState} from "react";
 import useDebounce from "~/hooks/useDebounce";
-import { useIsMount } from "~/hooks/useIsMount";
-import { tokens } from "~/theme";
-import ConfirmationDialog from "./ConfirmationDialog";
-import { updateStatusAll } from "../../../service/userService";
-import { toast } from "react-toastify";
+import {useIsMount} from "~/hooks/useIsMount";
+import {tokens} from "~/theme";
+import {DRAFT, OVER_ROOM, PENDING_REVIEW, PUBLISHED, REFUSED} from "~/pages/PostManagement/ListPost/constants";
 
 const LockButton = ({ onClick }) => (
     <Button
@@ -52,7 +39,6 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
     const [filterParams, setFilterParams] = useState({
         keyword: "",
         status: undefined,
-        role: undefined,
     });
     const [filter, setFilter] = useState(false);
 
@@ -95,27 +81,27 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
         setAction((prev) => ({ ...prev, type: type, isShow: false }));
     }, []);
     const handleConfirmAction = useCallback(() => {
-        const { data, type } = action;
-        console.log(action);
-        try {
-            let result = updateStatusAll(
-                action.data.map((item) => item.id),
-                type,
-            );
-            console.log(result);
-            data.forEach((element) => {
-                toast.success(
-                    `${
-                        type === "deactivate" ? "Huỷ kích hoạt" : "Kích hoạt"
-                    } tài khoản ${element.fullName} thành công`,
-                );
-            });
-        } catch (error) {
-            console.log(error);
-        } finally {
-            handleCloseDialog();
-            forceReload();
-        }
+        // const { data, type } = action;
+        // console.log(action);
+        // try {
+        //     let result = updateStatusAll(
+        //         action.data.map((item) => item.id),
+        //         type,
+        //     );
+        //     console.log(result);
+        //     data.forEach((element) => {
+        //         toast.success(
+        //             `${
+        //                 type === "deactivate" ? "Huỷ kích hoạt" : "Kích hoạt"
+        //             } tài khoản ${element.fullName} thành công`,
+        //         );
+        //     });
+        // } catch (error) {
+        //     console.log(error);
+        // } finally {
+        //     handleCloseDialog();
+        //     forceReload();
+        // }
     }, [action.type]);
     return (
         <GridToolbarContainer className="d-flex justify-content-between my-1">
@@ -139,23 +125,6 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                         value={filterParams.keyword}
                         placeholder="Tìm kiếm..."
                     />
-
-                    <TextField
-                        select
-                        onChange={handleChange}
-                        variant="standard"
-                        defaultValue={"#"}
-                        sx={{ m: 0, minWidth: 120 }}
-                        title="Lọc theo quyền"
-                        name="role"
-                        value={filterParams.role || "#"}
-                    >
-                        <MenuItem value="#">
-                            <em>Quyền</em>
-                        </MenuItem>
-                        <MenuItem value={"ADMIN"}>Quản trị viên</MenuItem>
-                        <MenuItem value={"USER"}>Người dùng</MenuItem>
-                    </TextField>
                     <TextField
                         select
                         variant="standard"
@@ -169,12 +138,18 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                         <MenuItem value="#">
                             <em>Trạng thái</em>
                         </MenuItem>
-                        <MenuItem value={"ACTIVATED"}>Đã kích hoạt</MenuItem>
-                        <MenuItem value={"DEACTIVATED"}>
-                            Đã huỷ kích hoạt
+                        <MenuItem value={PUBLISHED}>Đã đăng</MenuItem>
+                        <MenuItem value={REFUSED}>
+                            Đã chặn
                         </MenuItem>
-                        <MenuItem value={"CONFIRM_EMAIL"}>
-                            Đang xác nhận mail
+                        <MenuItem value={PENDING_REVIEW}>
+                            Đang chờ xác nhận
+                        </MenuItem>
+                        <MenuItem value={DRAFT}>
+                            Đang lưu nháp
+                        </MenuItem>
+                        <MenuItem value={OVER_ROOM}>
+                            Hết phòng
                         </MenuItem>
                     </TextField>
                     <Button
@@ -197,14 +172,14 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                 </Stack>
             </form>
             {selectedRows.length > 0 &&
-                (selectedRows.every((row) => row.status === "PUBLISHED") ? (
+                (selectedRows.every((row) => row.status === PUBLISHED) ? (
                     <LockButton onClick={handleAction} />
                 ) : selectedRows.every(
-                      (row) => row.status === "REFUSED",
+                      (row) => row.status === REFUSED,
                   ) ? (
                     <UnlockButton onClick={handleAction} />
                 ) : selectedRows.every(
-                      (row) => row.status === "PENDING_REVIEW",
+                      (row) => row.status === PENDING_REVIEW,
                   ) ? (
                     <>
                         <LockButton onClick={handleAction} />
