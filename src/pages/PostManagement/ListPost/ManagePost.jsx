@@ -1,15 +1,13 @@
-import { Box, useTheme } from "@mui/material";
-import { tokens } from "~/theme";
+import {Box, useTheme} from "@mui/material";
+import {tokens} from "~/theme";
 import Header from "~/components/Header";
-import { columns } from "./postTBFormat";
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
-import {
-    updateUserStatusById,
-} from "~/service/userService";
-import { toast, ToastContainer } from "react-toastify";
-import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
-import { getAllPosts } from "~/service/postService";
+import {columns} from "./postTBFormat";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {toast} from "react-toastify";
+import {DataGrid, useGridApiRef} from "@mui/x-data-grid";
 import CustomToolbar from "~/pages/PostManagement/ListPost/components/CustomToolbar";
+import {postService} from "~/service";
+
 const ManagePost = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -45,21 +43,26 @@ const ManagePost = () => {
     };
 
     const handleCellValueChanged = async (row) => {
-        try {
-            await updateUserStatusById(row.id, row.status);
-            toast.success("Chỉnh sửa thành công!");
-        } catch (error) {
-            console.log(error);
-        }
-        return row;
+
     };
 
     const handleProcessRowUpdateError = async (event) => {
         toast.error("Chỉnh sửa thất bại!");
     };
 
-    const handleFilter = useCallback(async (filterParams) => {
-
+    const handleFilter = useCallback(
+        async (filter) => {
+            try {
+                let result = await postService.filterPosts(filter, {
+                    page: tableState.page,
+                    size: tableState.pageSize,
+                });
+                setTableState({...tableState,rows: result.content,isLoading: false})
+            } catch (err){
+                console.log(err)
+            }
+            finally {
+            }
     }, []);
 
     useEffect(() => {
@@ -70,7 +73,7 @@ const ManagePost = () => {
             };
             try {
                 setTableState({...tableState,isLoading:true})
-                let result = await getAllPosts(paginationParams);
+                let result = await postService.getAllPosts(paginationParams);
                 addPaginationProperties(result);
             } catch {
                 toast.error("Lấy dữ liệu thất bại!");

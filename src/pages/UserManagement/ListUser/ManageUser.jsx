@@ -3,14 +3,10 @@ import { tokens } from "~/theme";
 import Header from "~/components/Header";
 import { columns } from "./userTBFormat";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
-import {
-    filterUsers,
-    getAllUsers,
-    updateUserStatusById,
-} from "~/service/userService";
 import { toast, ToastContainer } from "react-toastify";
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
 import CustomToolbar from "./CustomToolbar";
+import {userService} from "~/service";
 const ManageUser = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -51,7 +47,7 @@ const ManageUser = () => {
     const handleCellValueChanged = async (row) => {
         toggleLoading(true)
         try {
-            await updateUserStatusById(row.id, row.status);
+            await userService.updateUserStatusById(row.id, row.status);
             toast.success("Chỉnh sửa thành công!");
         } catch (error) {
             console.log(error);
@@ -67,7 +63,7 @@ const ManageUser = () => {
     const handleFilter = useCallback(async (filterParams) => {
         try {
             toggleLoading(true)
-            let result = await filterUsers(filterParams, {
+            let result = await userService.filterUsers(filterParams, {
                 page: tableState.page,
                 size: tableState.pageSize,
             });
@@ -85,7 +81,7 @@ const ManageUser = () => {
                 size: tableState.pageSize,
             };
             try {
-                let result = await getAllUsers(paginationParams);
+                let result = await userService.getAllUsers(paginationParams);
                 addPaginationProperties(result);
             } catch {
                 toast.error("Lấy dữ liệu thất bại!");

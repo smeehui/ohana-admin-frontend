@@ -4,8 +4,8 @@ import {
     USER_DETAILS,
     FILTER_USER,
     UPDATE_USER_STATUS,
-    DEACTIVATE_ALL,
-    ACTIVATE_ALL,
+    DEACTIVATE_USER_ALL,
+    ACTIVATE_USER_ALL,
 } from "~/service/api";
 
 const getAllUsers = async (params) => {
@@ -43,11 +43,11 @@ const updateUserStatusById = async (id, stt) => {
 };
 
 const updateStatusAll = async (idList, type) => {
-    const url = type === "deactivate" ? DEACTIVATE_ALL : ACTIVATE_ALL;
+    const url = type === "deactivate" ? DEACTIVATE_USER_ALL : ACTIVATE_USER_ALL;
     let status = axios.patch(url,JSON.stringify(idList),{headers: {
         "Content-Type": "application/json"
     }});
     return status;
 };
 
-export { getAllUsers, findById, filterUsers, updateUserStatusById, updateStatusAll };
+export default { getAllUsers, findById, filterUsers, updateUserStatusById, updateStatusAll };

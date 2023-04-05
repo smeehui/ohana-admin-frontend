@@ -108,7 +108,7 @@ const GridCellExpand = React.memo(function GridCellExpand(props) {
                                     {value}
                                 </Typography>
                                 : postMedia ?
-                                    <Box boderRadius={5}>
+                                    <Box borderRadius={5}>
                                         <Typography className="px-2" style={{flex: 1}}>Tất cả ảnh</Typography>
                                         <Container className={"d-flex flex-wrap overflow-scroll"}
                                                    style={{maxHeight: "500px"}}>

@@ -3,13 +3,13 @@ import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import Header from "~/components/Header";
 import Form from "react-bootstrap/Form";
-import { findById } from "~/service/userService";
 import { toast } from 'react-toastify';
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { USER_DETAILS } from "~/service/api";
 import user from "~/assets/img/default-user.png";
 import { Row } from "react-bootstrap";
+import {userService} from "~/service";
 
 
 
@@ -25,7 +25,7 @@ const UserDetails = () => {
     (async () => {
       try {
         
-        let result = await findById(id);
+        let result = await userService.findById(id);
 
         setState({...state,
           user: result.data
@@ -37,7 +37,7 @@ const UserDetails = () => {
         
     })();
   }, []);
-  
+
   console.log(state);
 
   return (

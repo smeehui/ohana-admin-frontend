@@ -42,7 +42,6 @@ const columns = [
             );
         },
         sortable: true,
-        flex: 1
     },
     {
         field: "location.wardName",
@@ -65,13 +64,15 @@ const columns = [
         sortable: true,
         type: "dateTime",
         valueGetter: ({value})=> value && new Date(value),
+        flex: 1
     }
     ,
     {
         field: "descriptionContent",
         headerName: "MÔ TẢ",
         sortable: true,
-        renderCell: renderCellExpand
+        renderCell: renderCellExpand,
+        flex: 1
     }
     ,
     {

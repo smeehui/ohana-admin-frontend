@@ -19,8 +19,8 @@ import useDebounce from "~/hooks/useDebounce";
 import { useIsMount } from "~/hooks/useIsMount";
 import { tokens } from "~/theme";
 import ConfirmationDialog from "./ConfirmationDialog";
-import { updateStatusAll } from "../../../service/userService";
 import { toast } from "react-toastify";
+import {userService} from "~/service";
 
 const LockButton = ({ onClick }) => (
     <Button
@@ -98,7 +98,7 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
         const { data, type } = action;
         console.log(action);
         try {
-            let result = updateStatusAll(
+            let result = userService.updateStatusAll(
                 action.data.map((item) => item.id),
                 type,
             );
