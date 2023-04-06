@@ -7,9 +7,11 @@ import { toast } from 'react-toastify';
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { USER_DETAILS } from "~/service/api";
-import user from "~/assets/img/default-user.png";
+import user from "~/assets/img/Avatar-Profile-Vector.png";
 import { Row } from "react-bootstrap";
 import {userService} from "~/service";
+import { thumbnail } from '@cloudinary/url-gen/actions/resize';
+import CldImage from "~/components/CldImage";
 
 
 
@@ -91,9 +93,11 @@ const UserDetails = () => {
         </div>
 
             <div className="col-4">
-              {/* <div className="d-flex justify-content-center">Avatar</div> */}
-              <img className="w-75 d-flex justify-content-center img-thumbnail rounded-circle" src={user} alt="" />
-              
+              <div>
+                { state.user.thumbnailId ?
+                  <CldImage id={state.user.thumbnailId} w={275} h={275} r={210} /> : 
+                  <img className="w-75 d-flex justify-content-center img-thumbnail rounded-circle" src={user} alt="" />}
+              </div>
             </div>
 
         </div>
