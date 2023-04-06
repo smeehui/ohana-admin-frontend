@@ -89,7 +89,7 @@ const GridCellExpand = React.memo(function GridCellExpand(props) {
                 ref={cellValue}
                 sx={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}
             >
-                {field !== "thumbnailId" ? value : <CldImage id={value}/>}
+                {field !== "thumbnailId" ? value : <CldImage id={value} w={80} h={80}/>}
             </Box>
             {showPopper && (
                 <Popper

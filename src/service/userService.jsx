@@ -1,6 +1,6 @@
 import { default as axios } from "axios";
 import {
-    GET_ALL_USER,
+    GET_ALL_USERS,
     USER_DETAILS,
     FILTER_USER,
     UPDATE_USER_STATUS,
@@ -10,7 +10,7 @@ import {
 
 const getAllUsers = async (params) => {
     let result = await axios
-        .get(GET_ALL_USER, { params: params })
+        .get(GET_ALL_USERS, { params: params })
         .catch((jqXHR) => console.log(jqXHR));
     return result.data;
 };
