@@ -2273,6 +2273,11 @@ react-fast-compare@^2.0.1:
   resolved "https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-2.0.4.tgz"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
 
+react-image-gallery@^1.2.11:
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/react-image-gallery/-/react-image-gallery-1.2.11.tgz#707331e71b02964f00c1f3ab98e9efe071ff9f15"
+  integrity sha512-YLMCdNSCf3YPhRmnjEOdEZGEXghTMx4o3dlAqd0rz0nAyebUvTz/xJnIHPActbPSHCvVJgt5A09EPHYbGqw++w==
+
 react-is@^16.13.1, react-is@^16.3.2, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
