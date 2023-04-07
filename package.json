@@ -33,7 +33,11 @@
     "react-bootstrap": "^2.7.2",
     "react-chartjs-2": "^4.3.1",
     "react-dom": "^18.2.0",
+<<<<<<< HEAD
     "react-icons": "^4.8.0",
+=======
+    "react-image-gallery": "^1.2.11",
+>>>>>>> b9df4d42435ca6523bac4a00a362423cde0bdabd
     "react-pro-sidebar": "1.0.0",
     "react-redux": "^8.0.2",
     "react-router-dom": "^6.3.0",
