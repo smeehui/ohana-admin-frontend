@@ -9,18 +9,24 @@ import axios from "axios";
 import { USER_DETAILS } from "~/service/api";
 import user from "~/assets/img/Avatar-Profile-Vector.png";
 import { Row } from "react-bootstrap";
-import {userService} from "~/service";
+import {postService, userService} from "~/service";
 import { thumbnail } from '@cloudinary/url-gen/actions/resize';
 import CldImage from "~/components/CldImage";
-
+import Table from 'react-bootstrap/Table';
+import {DataGrid} from "@mui/x-data-grid";
+import dateTimeFormatter from "~/utils/dateTimeFormatter";
+import { background } from "@cloudinary/url-gen/qualifiers/focusOn";
 
 
 const UserDetails = () => {
 
   const { id } = useParams();
 
+  const {formatter} = dateTimeFormatter();
+
   const [state, setState] = useState({
-    user: {}
+    user: {},
+    content: []
   })
 
   useEffect(() => {
@@ -29,23 +35,31 @@ const UserDetails = () => {
         
         let result = await userService.findById(id);
 
+        let listPosts = await postService.findAllByUserId(id, result);
+        
+        console.log(listPosts);
+
         setState({...state,
-          user: result.data
+          user: result,
+          content: listPosts.content
         })
 
-        } catch {
+        } catch (
+          error
+        ){
             toast.error("Lấy dữ liệu thất bại!");
+            console.log(error);
         }
         
     })();
   }, []);
 
-  console.log(state);
 
   return (
+    <>
     <div className="ps-5">
     <div>
-      <Header title="User Details" subtitle="User Profile Infomation" />
+      <Header title="Thông tin khách hàng" subtitle="User Profile Infomation" />
     </div>
       <Form>
         <div className="row col-12">
@@ -103,7 +117,41 @@ const UserDetails = () => {
         </div>
       </Form>
     </div>
-  );
+
+    <Table className="ms-5 me-2 mt-4" bordered hover style={{width: 1200, height: 200}}>
+      <thead style={{backgroundColor: "rgba(32, 241, 139, 0.8)"}}>
+        <tr>
+          <th className="text-center">#</th>
+          <th>BÀI VIẾT</th>
+          <th className="text-center">ẢNH BÌA</th>
+          <th>PHƯỜNG/QUẬN</th>
+          <th>ĐỊA CHỈ</th>
+          <th>NGÀY ĐĂNG</th>
+          <th>DANH MỤC</th>
+          <th>Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody style={{backgroundColor: "rgba(255, 255, 255, 100)"}}>
+        {
+          state.content.map(
+            post => (<tr>
+              <td className="text-center">{post.id}</td>
+              <td>{post.title}</td>
+              <td className="text-center p-0">{<CldImage id={post.thumbnailId} w={100} h={50} />}</td>
+              <td>{post.location.districtName}</td>
+              <td>{post.location.line1}</td>
+              <td>{formatter(post.createdAt)}</td>
+              <td>{post.category.title}</td>
+              <td>{post.status}</td>
+            </tr>)
+          )
+        }
+       
+      </tbody>
+    </Table>
+
+    </>
+  )
 }
 
 export default UserDetails;

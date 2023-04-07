@@ -105,7 +105,7 @@ const ManageUser = () => {
     return (
         <Suspense fallback={(<h1>Loading...</h1>)}>
             <Box m="20px" display={"flex"} flexDirection={"column"}>
-                <Header title="Danh sách" />
+                <Header title="Danh sách khách hàng" />
                 <Box
                     flex={1}
                     sx={{

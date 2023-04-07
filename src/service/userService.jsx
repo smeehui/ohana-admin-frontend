@@ -16,10 +16,8 @@ const getAllUsers = async (params) => {
 };
 
 const findById = async (id) => {
-    // console.log(USER_DETAILS + `/${id}`);
     let user = await axios.get(USER_DETAILS + `/${id}`)
-    
-    return user;
+    return user.data;
 };
 
 const filterUsers = async (filter, paginationParams) => {

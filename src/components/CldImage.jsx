@@ -13,7 +13,7 @@ function CldImage({ id,w = 80,h=80,r=5 }) {
         img.resize(thumbnail().width(w).height(h))
             .roundCorners(byRadius(r))
     return (
-        <div className="p-2">
+        <div className="p-2 r-50">
             <AdvancedImage
                 cldImg={img}
             />

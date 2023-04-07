@@ -5,6 +5,7 @@ import Report from "~/pages/Report/Report";
 import UserDetails from "~/pages/UserManagement/UserDetails/UserDetails";
 import config from "~/config/config";
 import PostDetails from "~/pages/PostManagement/PostDetails/PostDetails";
+import Category from "~/pages/CategoryManagement/Category";
 
 const { routes } = config;
 
@@ -16,6 +17,7 @@ const publicRoutes = [
     { path: routes.postManagement, element: ManagePost },
     { path: routes.postDetails + ":id", element: PostDetails },
     { path: routes.report, element: Report },
+    { path: routes.category, element: Category },
 ];
 
 export { publicRoutes };
