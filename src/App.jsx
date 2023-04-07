@@ -22,6 +22,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import { NavigateNext } from "@mui/icons-material";
 import { Box } from "@mui/system";
+import BreadCrumbs from "./components/BreadCrumbs";
 
 function App() {
     const [theme, colorMode] = useMode();
@@ -38,32 +39,6 @@ function App() {
             theme: theme.palette.mode,
         };
     }, []);
-
-    const paths = useLocation().pathname.substring(1).split("/");
-    const navigate = useNavigate();
-
-    const onClick = useMemo(
-        () => (e, index) => {
-            e.preventDefault();
-            const currentPath = paths
-                .filter((path, i) => i <= index)
-                .reduce((acc, curr) => acc + "/" + curr, "");
-            navigate(currentPath);
-        },
-        [paths],
-    );
-
-    const breadcrumbs = paths.map((path, index) => (
-        <Link
-            underline="hover"
-            sx={{ cursor: "pointer" }}
-            key={index}
-            color="inherit"
-            onClick={(e) => onClick(e, index)}
-        >
-            {path}
-        </Link>
-    ));
 
     return (
         <ColorModeContext.Provider value={colorMode}>
@@ -83,12 +58,7 @@ function App() {
                             paddingLeft={2}
                             marginY={2}
                         >
-                            <Breadcrumbs
-                                separator={<NavigateNext fontSize="small" />}
-                                aria-label="breadcrumb"
-                            >
-                                {breadcrumbs}
-                            </Breadcrumbs>
+                            <BreadCrumbs />
                         </Box>
 
                         <Routes>
