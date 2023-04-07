@@ -389,7 +389,7 @@ function PostDetails() {
                                 fontWeight={"bold"}
                                 fontSize={30}
                             >
-                                Thông tin phòng
+                                Thông tin chủ phòng
                             </Typography>
                         </Box>
                         <Stack
