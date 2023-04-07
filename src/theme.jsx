@@ -60,6 +60,17 @@ export const tokens = (mode) => ({
                   800: "#2a2d64",
                   900: "#151632",
               },
+              pink: {
+                  900: "#fdd6e7",
+                  800: "#fcaecf",
+                  700: "#fa85b6",
+                  600: "#f95d9e",
+                  500: "#f73486",
+                  400: "#c62a6b",
+                  300: "#941f50",
+                  200: "#631536",
+                  100: "#310a1b",
+              },
           }
         : {
               grey: {
@@ -117,6 +128,17 @@ export const tokens = (mode) => ({
                   800: "#c3c6fd",
                   900: "#e1e2fe",
               },
+              pink: {
+                  100: "#fdd6e7",
+                  200: "#fcaecf",
+                  300: "#fa85b6",
+                  400: "#f95d9e",
+                  500: "#f73486",
+                  600: "#c62a6b",
+                  700: "#941f50",
+                  800: "#631536",
+                  900: "#310a1b",
+              },
           }),
 });
 
@@ -158,7 +180,7 @@ export const themeSettings = (mode) => {
                           light: colors.grey[100],
                       },
                       background: {
-                          default: "#fcfcfc",
+                          default: "#e1e1e1",
                       },
                   }),
         },

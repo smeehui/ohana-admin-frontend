@@ -1,7 +1,7 @@
 import { Suspense, useMemo, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { Breadcrumbs, CssBaseline, Link, ThemeProvider } from "@mui/material";
 
 import Topbar from "./scenes/global/Topbar";
 import SidebarCustom from "./scenes/global/SidebarCustom";
@@ -20,8 +20,8 @@ import { publicRoutes } from "~/routes/index.jsx";
 import { ProSidebarProvider } from "react-pro-sidebar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
-
-// import Calendar from "./scenes/calendar/calendar";
+import { NavigateNext } from "@mui/icons-material";
+import { Box } from "@mui/system";
 
 function App() {
     const [theme, colorMode] = useMode();
@@ -38,6 +38,33 @@ function App() {
             theme: theme.palette.mode,
         };
     }, []);
+
+    const paths = useLocation().pathname.substring(1).split("/");
+    const navigate = useNavigate();
+
+    const onClick = useMemo(
+        () => (e, index) => {
+            e.preventDefault();
+            const currentPath = paths
+                .filter((path, i) => i <= index)
+                .reduce((acc, curr) => acc + "/" + curr, "");
+            navigate(currentPath);
+        },
+        [paths],
+    );
+
+    const breadcrumbs = paths.map((path, index) => (
+        <Link
+            underline="hover"
+            sx={{ cursor: "pointer" }}
+            key={index}
+            color="inherit"
+            onClick={(e) => onClick(e, index)}
+        >
+            {path}
+        </Link>
+    ));
+
     return (
         <ColorModeContext.Provider value={colorMode}>
             <ThemeProvider theme={theme}>
@@ -49,6 +76,21 @@ function App() {
                     <main className="content">
                         <Topbar setIsSidebar={setIsSidebar} />
                         <ToastContainer {...toastOption} />
+                        <Box
+                            flex={1}
+                            display="flex"
+                            justifyContent="flex-start"
+                            paddingLeft={2}
+                            marginY={2}
+                        >
+                            <Breadcrumbs
+                                separator={<NavigateNext fontSize="small" />}
+                                aria-label="breadcrumb"
+                            >
+                                {breadcrumbs}
+                            </Breadcrumbs>
+                        </Box>
+
                         <Routes>
                             {publicRoutes.map((route) => {
                                 const { path } = route;
@@ -57,9 +99,7 @@ function App() {
                                     <Route
                                         key={path}
                                         path={path}
-                                        element={
-                                            <Page />
-                                        }
+                                        element={<Page />}
                                     />
                                 );
                             })}

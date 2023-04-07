@@ -7,15 +7,16 @@ import {byRadius} from "@cloudinary/url-gen/actions/roundCorners";
 import {focusOn} from "@cloudinary/url-gen/qualifiers/gravity";
 import {FocusOn} from "@cloudinary/url-gen/qualifiers/focusOn";
 
-function CldImage({ id,w = 80,h=80,r=5 }) {
+function CldImage({ id,w = 80,h=80,r=5,alt = "image" }) {
     const img =cldConfig.cld.image(cldConfig.CLOUD_FOLDER + `/${id}`)
 
         img.resize(thumbnail().width(w).height(h))
             .roundCorners(byRadius(r))
     return (
-        <div className="p-2 r-50">
+        <div className={r===50 ? "rounded-circle overflow-hidden":null}>
             <AdvancedImage
                 cldImg={img}
+                alt={alt}
             />
         </div>
     );

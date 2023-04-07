@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme } from "@mui/material";
+import { Box, Breadcrumbs, IconButton, Link, useTheme } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme.jsx";
 import InputBase from "@mui/material/InputBase";
@@ -8,6 +8,8 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
+import { NavLink, useLocation } from "react-router-dom";
+import { NavigateNext } from "@mui/icons-material";
 
 const Topbar = () => {
     const theme = useTheme();
@@ -15,7 +17,14 @@ const Topbar = () => {
     const colorMode = useContext(ColorModeContext);
 
     return (
-        <Box display="flex" justifyContent="space-between" p={2}>
+        <Box
+            display="flex"
+            justifyContent="space-between"
+            bgcolor={colors.pink[400]}
+            p={1}
+            marginBottom={1}
+            borderRadius={2}
+        >
             {/* SEARCH BAR */}
             <Box
                 display="flex"
