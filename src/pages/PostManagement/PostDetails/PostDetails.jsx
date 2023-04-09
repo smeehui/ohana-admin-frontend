@@ -1,38 +1,24 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Col, Container, Row } from "react-bootstrap";
-import {
-    Box,
-    Grid,
-    IconButton,
-    ImageList,
-    ImageListItem,
-    Stack,
-    Typography,
-    useTheme,
-} from "@mui/material";
-import { toast } from "react-toastify";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useParams} from "react-router-dom";
+import {Col, Container, Row} from "react-bootstrap";
+import {Box, Grid, IconButton, ImageList, ImageListItem, Stack, Typography, useTheme,} from "@mui/material";
+import {toast} from "react-toastify";
 
-import { cloudinayService, postService } from "~/service";
+import {cloudinayService, postService} from "~/service";
 import styles from "./PostDetails.module.scss";
 import clsx from "clsx";
 import PostImagesModal from "~/pages/PostManagement/PostDetails/PostImagesModal";
-import { tokens } from "~/theme";
-import {
-    ErrorOutlined,
-    HouseRounded,
-    LocalLaundryService,
-    Person,
-} from "@mui/icons-material";
-import { currencyFormatter } from "~/utils";
+import {tokens} from "~/theme";
+import {ErrorOutlined, HouseRounded, LocalLaundryService, Person,} from "@mui/icons-material";
+import {currencyFormatter} from "~/utils";
 import CldImage from "~/components/CldImage";
 import dateTimeFormatter from "~/utils/dateTimeFormatter";
 import "~/assets/css/ohanaIcons.css";
 
 function PostDetails() {
-    const { id } = useParams();
+    const {id} = useParams();
     const theme = useTheme();
-    const { formatter } = dateTimeFormatter();
+    const {formatter} = dateTimeFormatter();
     const colors = tokens(theme.palette.mode);
     const [state, setState] = useState({
         post: {},
@@ -99,8 +85,8 @@ function PostDetails() {
     }
 
     const handleClick = useCallback(
-        (e) => {
-            setState({ ...state, imageClicked: !state.imageClicked });
+        () => {
+            setState({...state, imageClicked: !state.imageClicked});
         },
         [state],
     );
@@ -122,8 +108,8 @@ function PostDetails() {
                                 "rounded rounded-3 overflow-hidden",
                                 {
                                     [styles["load-more"]]:
-                                        img.index === 4 &&
-                                        state.postImages.length > 5,
+                                    img.index === 4 &&
+                                    state.postImages.length > 5,
                                 },
                             )}
                             hidden={img.isHidden}
@@ -138,14 +124,14 @@ function PostDetails() {
                             cols={img.cols || 1}
                             rows={img.rows || 1}
                         >
-                            <img alt={"Post image"} src={img.url} />
+                            <img alt={"Post image"} src={img.url}/>
                         </ImageListItem>
                     ))}
                 </ImageList>
             </Box>
             <h2>{state.post.title}</h2>
-            <Box display="flex" height={800}>
-                <Col lg={8} className="pe-2">
+            <Box display="flex" className={"flex-md-column flex-lg-row"}>
+                <Col lg={7} md={12} className="pe-2">
                     <Stack direction={"column"} spacing={2}>
                         <Box {...boxStyles}>
                             <Box
@@ -156,10 +142,10 @@ function PostDetails() {
                                 width={"fit-content"}
                                 padding={0.5}
                             >
-                                <IconButton sx={{ backgroundColor: "#eee" }}>
+                                <IconButton sx={{backgroundColor: "#eee"}}>
                                     <HouseRounded
                                         fontSize={"large"}
-                                        sx={{ color: colors.pink[400] }}
+                                        sx={{color: colors.pink[400]}}
                                     />
                                 </IconButton>
                                 <Typography
@@ -183,17 +169,17 @@ function PostDetails() {
                                         <Typography textTransform={"uppercase"}>
                                             GIÁ PHÒNG
                                         </Typography>
-                                        <Typography textTransform={"uppercase"}>
-                                            {currencyFormatter.vndFormatter(
+                                        <Typography>
+                                            {currencyFormatter.formatVnd(
                                                 state.rentHouse.price,
-                                            )}
+                                            )} Đồng
                                         </Typography>
                                     </Col>
                                     <Col lg={3}>
                                         <Typography textTransform={"uppercase"}>
                                             DIỆN TÍCH
                                         </Typography>
-                                        <Typography textTransform={"uppercase"}>
+                                        <Typography>
                                             {state.rentHouse.area} mét vuông
                                         </Typography>
                                     </Col>
@@ -201,7 +187,7 @@ function PostDetails() {
                                         <Typography textTransform={"uppercase"}>
                                             ĐẶT CỌC
                                         </Typography>
-                                        <Typography textTransform={"uppercase"}>
+                                        <Typography>
                                             1,0000,000 Đồng
                                         </Typography>
                                     </Col>
@@ -209,7 +195,7 @@ function PostDetails() {
                                         <Typography textTransform={"uppercase"}>
                                             SỨC CHỨA
                                         </Typography>
-                                        <Typography textTransform={"uppercase"}>
+                                        <Typography >
                                             {state.rentHouse.capacity}
                                         </Typography>
                                     </Col>
@@ -219,7 +205,7 @@ function PostDetails() {
                                         <Typography textTransform={"uppercase"}>
                                             ĐIỆN
                                         </Typography>
-                                        <Typography textTransform={"uppercase"}>
+                                        <Typography>
                                             1,0000,000 Đồng
                                         </Typography>
                                     </Col>
@@ -227,7 +213,7 @@ function PostDetails() {
                                         <Typography textTransform={"uppercase"}>
                                             NƯỚC
                                         </Typography>
-                                        <Typography textTransform={"uppercase"}>
+                                        <Typography>
                                             1,0000,000 Đồng
                                         </Typography>
                                     </Col>
@@ -235,7 +221,7 @@ function PostDetails() {
                                         <Typography textTransform={"uppercase"}>
                                             WIFI
                                         </Typography>
-                                        <Typography textTransform={"uppercase"}>
+                                        <Typography>
                                             1,0000,000 Đồng
                                         </Typography>
                                     </Col>
@@ -279,10 +265,10 @@ function PostDetails() {
                                 width={"fit-content"}
                                 padding={0.5}
                             >
-                                <IconButton sx={{ backgroundColor: "#eee" }}>
+                                <IconButton sx={{backgroundColor: "#eee"}}>
                                     <LocalLaundryService
                                         fontSize={"large"}
-                                        sx={{ color: colors.greenAccent[500] }}
+                                        sx={{color: colors.greenAccent[500]}}
                                     />
                                 </IconButton>
                                 <Typography
@@ -306,18 +292,18 @@ function PostDetails() {
                                         state.post.utilities.map((util) => (
                                             <Grid
                                                 key={util.id}
-                                                style={{ fontSize: "2rem" }}
+                                                style={{fontSize: "2rem"}}
                                                 item
                                                 xs={3}
                                                 display={"flex"}
+                                                title={util.title}
                                             >
                                                 <i
                                                     className={clsx(util.icon)}
                                                 ></i>
                                                 <Typography
                                                     fontSize={16}
-                                                    marginX={3}
-                                                    sx={3}
+                                                    marginX={1}
                                                     alignContent={"center"}
                                                     lineHeight={2.5}
                                                 >
@@ -337,10 +323,10 @@ function PostDetails() {
                                 width={"fit-content"}
                                 padding={0.5}
                             >
-                                <IconButton sx={{ backgroundColor: "#eee" }}>
+                                <IconButton sx={{backgroundColor: "#eee"}}>
                                     <ErrorOutlined
                                         fontSize={"large"}
-                                        sx={{ color: colors.blueAccent[500] }}
+                                        sx={{color: colors.blueAccent[500]}}
                                     />
                                 </IconButton>
                                 <Typography
@@ -368,7 +354,7 @@ function PostDetails() {
                         </Box>
                     </Stack>
                 </Col>
-                <Col className="position-sticky ps-2" style={{ top: 0 }} lg={4}>
+                <Col className="position-sticky ps-2" style={{top: 0}} lg={5} md={12}>
                     <Box {...boxStyles}>
                         <Box
                             display={"flex"}
@@ -377,25 +363,28 @@ function PostDetails() {
                             bgcolor={colors.grey[900]}
                             width={"fit-content"}
                             padding={0.5}
+                            flex={1}
                         >
-                            <IconButton sx={{ backgroundColor: "#eee" }}>
+                            <IconButton sx={{backgroundColor: "#eee"}}>
                                 <Person
                                     fontSize={"large"}
-                                    sx={{ color: colors.blueAccent[500] }}
+                                    sx={{color: colors.blueAccent[500]}}
                                 />
                             </IconButton>
                             <Typography
-                                paddingX={5}
+                                paddingX={2}
                                 fontWeight={"bold"}
                                 fontSize={30}
+                                whiteSpace={"nowrap"}
                             >
                                 Thông tin chủ phòng
                             </Typography>
+
                         </Box>
                         <Stack
                             sx={{
                                 marginTop: 2,
-                                "& .MuiTypography-root": { fontWeight: "bold" },
+                                "& .MuiTypography-root": {fontWeight: "bold"},
                             }}
                         >
                             <Grid container direction={"row"}>
@@ -408,6 +397,7 @@ function PostDetails() {
                                             "1px solid" + colors.grey[500],
                                     }}
                                 >
+
                                     <div
                                         style={{
                                             width: "60px",
@@ -415,6 +405,7 @@ function PostDetails() {
                                             borderRadius: "50%",
                                             backgroundColor: colors.grey[900],
                                             margin: "0 5px",
+                                            float: "right",
                                         }}
                                     >
                                         <CldImage
@@ -434,7 +425,7 @@ function PostDetails() {
                                             {state.user.fullName}
                                         </Typography>
                                         <Typography
-                                            sx={{ cursor: "pointer" }}
+                                            sx={{cursor: "pointer"}}
                                             lineHeight={2}
                                             fontSize={16}
                                             className={"w-100"}
@@ -451,9 +442,9 @@ function PostDetails() {
                                             state.user.phone
                                                 ? state.user.phone
                                                 : state.user.phone.substring(
-                                                      0,
-                                                      7,
-                                                  ) + "xxx"}
+                                                0,
+                                                7,
+                                            ) + "xxx"}
                                         </Typography>
                                     </div>
                                 </Grid>
@@ -483,9 +474,6 @@ function PostDetails() {
                         </Stack>
                     </Box>
                 </Col>
-            </Box>
-            <Box position="fixed" bottom={0} height={30}>
-                Footer
             </Box>
         </Container>
     );

@@ -23,6 +23,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { NavigateNext } from "@mui/icons-material";
 import { Box } from "@mui/system";
 import BreadCrumbs from "./components/BreadCrumbs";
+import  styles from "~/assets/css/GlobalStyles.module.scss"
+import clsx from "clsx";
 
 function App() {
     const [theme, colorMode] = useMode();
@@ -48,7 +50,7 @@ function App() {
                     <ProSidebarProvider>
                         <SidebarCustom isSidebar={isSidebar} />
                     </ProSidebarProvider>
-                    <main className="content">
+                    <main className={clsx(styles["content"])}>
                         <Topbar setIsSidebar={setIsSidebar} />
                         <ToastContainer {...toastOption} />
                         <Box

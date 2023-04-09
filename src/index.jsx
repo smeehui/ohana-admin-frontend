@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import {BrowserRouter} from "react-router-dom";
 import {DevSupport} from "@react-buddy/ide-toolbox";
 import {ComponentPreviews, useInitial} from "./dev";
+import {AppContext} from "./store"
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -13,7 +14,9 @@ root.render(
             <DevSupport ComponentPreviews={ComponentPreviews}
                         useInitialHook={useInitial}
             >
-                <App/>
+             <AppContext>
+                 <App/>
+             </AppContext>
             </DevSupport>
         </BrowserRouter>
     </React.StrictMode>

@@ -8,7 +8,7 @@ import useDebounce from "~/hooks/useDebounce";
 import {useIsMount} from "~/hooks/useIsMount";
 import {tokens} from "~/theme";
 import {DRAFT, OVER_ROOM, PENDING_REVIEW, PUBLISHED, REFUSED} from "~/pages/PostManagement/ListPost/constants";
-import {provinceService} from "~/service";
+import {locationService} from "~/service";
 import {toast} from "react-toastify";
 
 const LockButton = ({onClick}) => (
@@ -86,10 +86,14 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
     }, [debouncedFilter, action.isFilter]);
 
     useEffect(() => {
+       fetchProvinces()
+    }, []);
+
+    const fetchProvinces = useCallback(() => {
         (async () => {
             try {
-                let provinces = await provinceService.getAllProvinces();
-                let districts = await provinceService.getAllDistrictsByProvinceId(location.province_id);
+                let provinces = await locationService.getAllProvinces();
+                let districts = await locationService.getAllDistrictsByProvinceId(location.province_id);
                 setLocation({
                     ...location,
                     provinces: provinces,

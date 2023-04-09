@@ -8,8 +8,8 @@ import { tokens } from "~/theme";
 function BreadCrumbs() {
     const paths = useLocation().pathname.substring(1).split("/");
     const navigate = useNavigate();
-    const theme = useMemo(() => useTheme());
-    const colors = useMemo(() => tokens(theme));
+    const theme =  useTheme();
+    const colors = tokens(theme);
     const onClick = useMemo(
         () => (e, index) => {
             e.preventDefault();
@@ -37,6 +37,7 @@ function BreadCrumbs() {
     ));
     return (
         <Breadcrumbs
+            sx={{paddingLeft: 1}}
             separator={<NavigateNext fontSize="small" />}
             aria-label="breadcrumb"
         >
