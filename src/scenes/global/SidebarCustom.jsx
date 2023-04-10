@@ -153,13 +153,13 @@ const SidebarCustom = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
-                        <Typography
+                        {/* <Typography
                             variant="h6"
                             color={colors.grey[300]}
                             sx={{ m: "15px 0 5px 20px" }}
                         >
                             Data
-                        </Typography>
+                        </Typography> */}
                         {sideBarData.map((item, index) => {
                             const Icon = item.icon;
                             if (item.subMenu)

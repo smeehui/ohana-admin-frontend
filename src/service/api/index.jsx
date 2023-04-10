@@ -17,6 +17,7 @@ export const GET_POST_BY_ID = MAIN_API + MIDDLE_PATH + "/api/posts";
 export const FILTER_POST = MAIN_API + MIDDLE_PATH + "/api/posts/filter";
 
 
+export const GET_ALL_CATEGORY = MAIN_API + MIDDLE_PATH + "/api/categories";
 
 export const GET_ALL_PROVINCES = BASE_PROVINCE_API;
 export const GET_ALL_DISTRICTS_BY_PROVINCE_ID = BASE_PROVINCE_API +"/district";

@@ -1,10 +1,10 @@
-// import { HOME, DASHBOARD, MANAGE_USER, MANAGE_PRODUCT } from "./routes" ;
 
 import {
     DASHBOARD,
     HOME,
     MANAGE_POST,
-    MANAGE_USER, POST_DETAILS,
+    MANAGE_USER, 
+    POST_DETAILS,
     REPORT,
     USER_DETAILS,
     CATEGORY,

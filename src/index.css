@@ -12,6 +12,8 @@ body,
 .app {
     display: flex;
     position: relative;
+    align-items: stretch;
+    height: 100vh;
 }
 
 ::-webkit-scrollbar {
