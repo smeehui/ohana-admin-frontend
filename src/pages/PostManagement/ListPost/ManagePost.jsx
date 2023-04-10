@@ -51,8 +51,10 @@ const ManagePost = () => {
     };
 
     const handleFilter = useCallback(
-        async (filter) => {
+
+    async (filter) => {
             try {
+                setTableState({...tableState,isLoading: true})
                 let result = await postService.filterPosts(filter, {
                     page: tableState.page,
                     size: tableState.pageSize,
@@ -126,9 +128,11 @@ const ManagePost = () => {
         >
             <DataGrid
                 apiRef={apiRef}
+                columns={columns}
+                {...tableState}
+
                 autoHeight
                 slots={toolBar}
-                columns={columns}
                 pagination
                 loading={tableState.isLoading}
                 processRowUpdate={handleCellValueChanged}
@@ -150,7 +154,6 @@ const ManagePost = () => {
                 filterMode="server"
                 checkboxSelection
                 paginationMode="server"
-                {...tableState}
                 resizable
                 // onFilterModelChange={handleFilter}
                 onRowSelectionModelChange={(rows) =>

@@ -14,10 +14,11 @@ export const DEACTIVATE_USER_ALL = MAIN_API + MIDDLE_PATH + "/api/users/deactiva
 export const GET_ALL_POSTS = MAIN_API + MIDDLE_PATH + "/api/posts";
 export const GET_ALL_POSTS_BY_USERID = MAIN_API + MIDDLE_PATH + "/api/posts";
 export const GET_POST_BY_ID = MAIN_API + MIDDLE_PATH + "/api/posts";
+export const UPDATE_POST_STATUS_BY_ID = MAIN_API + MIDDLE_PATH + "/api/posts";
 export const FILTER_POST = MAIN_API + MIDDLE_PATH + "/api/posts/filter";
 
 
 
-export const GET_ALL_PROVINCES = BASE_PROVINCE_API;
+export const GET_ALL_PROVINCES = BASE_PROVINCE_API +"/";
 export const GET_ALL_DISTRICTS_BY_PROVINCE_ID = BASE_PROVINCE_API +"/district";
 

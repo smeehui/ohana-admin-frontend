@@ -1,15 +1,15 @@
+import {memo, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {useTheme} from "@emotion/react";
 import {Done, FilterAlt, RemoveDoneOutlined, Restore,} from "@mui/icons-material";
 import {Button, MenuItem, TextField} from "@mui/material";
 import {Stack} from "@mui/system";
 import {GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector,} from "@mui/x-data-grid";
-import {memo, useCallback, useEffect, useMemo, useState} from "react";
 import useDebounce from "~/hooks/useDebounce";
 import {useIsMount} from "~/hooks/useIsMount";
 import {tokens} from "~/theme";
 import {DRAFT, OVER_ROOM, PENDING_REVIEW, PUBLISHED, REFUSED} from "~/pages/PostManagement/ListPost/constants";
-import {locationService} from "~/service";
-import {toast} from "react-toastify";
+import {LocationContext} from "~/store/contexts";
+import {CHANGE_DISTRICT} from "~/store/actionConstants";
 
 const LockButton = ({onClick}) => (
     <Button
@@ -22,7 +22,7 @@ const LockButton = ({onClick}) => (
     </Button>
 );
 
-const UnlockButton = ({ onClick }) => (
+const UnlockButton = ({onClick}) => (
     <Button
         className="align-self-end"
         color="success"
@@ -30,13 +30,14 @@ const UnlockButton = ({ onClick }) => (
         onClick={() => onClick("activate")}
         title="Kích hoạt"
     >
-        <Done />
+        <Done/>
     </Button>
 );
 
-function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
+function CustomToolbar({selectedRows, handleFilter, forceReload}) {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const [locationState, locationDispatch] = useContext(LocationContext);
     const toolStyle = {color: colors.greenAccent[300]};
     const [filterParams, setFilterParams] = useState({
         keyword: "",
@@ -47,22 +48,12 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
         }
     });
 
-    let initLocation = useMemo(() => ({
-        provinces: [],
-        districts: [],
-        province_id: 46,
-        district_id: 474
-    }), []);
-    const [location, setLocation] = useState(initLocation)
-
     const [action, setAction] = useState({
         type: "",
         isShow: false,
         data: selectedRows,
         isFilter: false
     });
-
-
     const isMounted = useIsMount();
 
     const debouncedFilter = useDebounce(filterParams, 500);
@@ -84,28 +75,6 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
     useEffect(() => {
         if (!isMounted) handleFilter(filterParams);
     }, [debouncedFilter, action.isFilter]);
-
-    useEffect(() => {
-       fetchProvinces()
-    }, []);
-
-    const fetchProvinces = useCallback(() => {
-        (async () => {
-            try {
-                let provinces = await locationService.getAllProvinces();
-                let districts = await locationService.getAllDistrictsByProvinceId(location.province_id);
-                setLocation({
-                    ...location,
-                    provinces: provinces,
-                    districts: districts,
-                    district_id: isMounted ? 474 : districts[0].district_id
-                });
-            } catch (err) {
-                toast.error("Lấy dữ liệu tỉnh thành thất bại!");
-            }
-        })();
-    }, [location.province_id])
-
     const handleAction = useCallback(
         (type) => {
             setAction((prev) => ({...prev, type: type, isShow: true}));
@@ -141,13 +110,15 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
     }, [action.type]);
 
     const handleChangeProvince = (e) => {
-        setLocation(prevState => ({...prevState, province_id: e.target.value}))
+        // setLocation(prevState => ({...prevState, province_id: e.target.value}))
         setFilterParams(prevState => ({...prevState, location: {...prevState.location, provinceId: e.target.value}}))
     }
 
     const handleChangeDistrict = (e) => {
-        setLocation(prevState => ({...prevState, district_id: e.target.value}))
-        setFilterParams(prevState => ({...prevState, location: {...prevState.location, districtId: e.target.value}}))
+       locationDispatch({
+           type: CHANGE_DISTRICT,
+           payload: e.target.value
+       },locationState)
     }
 
     return (
@@ -173,68 +144,6 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                         value={filterParams.keyword}
                         placeholder="Tìm kiếm..."
                     />
-
-
-                    <TextField
-                        select
-                        variant="standard"
-                        defaultValue={"#"}
-                        style={{maxHeight: "500px"}}
-                        title="Lọc theo tỉnh/thành"
-                        onChange={handleChangeProvince}
-                        sx={{
-                            "& .MuiPaper-root": {
-                                maxHeight: 400
-                            }
-                        }}
-                        name="provinceId"
-                        value={location.province_id}
-                    >
-                        <MenuItem value={-1}>
-                            <em>Tỉnh/Thành phố</em>
-                        </MenuItem>
-                        {
-                            location.provinces.map(
-                                province =>
-                                    (<MenuItem
-                                        key={province.province_id}
-                                        value={province.province_id}
-                                    >
-                                        {province.province_name}
-                                    </MenuItem>)
-                            )
-                        }
-                    </TextField>
-                    <TextField
-                        select
-                        variant="standard"
-                        defaultValue={-1}
-                        style={{maxHeight: "500px"}}
-                        title="Lọc theo quận/huyện"
-                        onChange={handleChangeDistrict}
-                        sx={{
-                            "& .MuiPaper-root": {
-                                maxHeight: 400
-                            }
-                        }}
-                        name="districtId"
-                        value={location.district_id || 474}
-                    >
-                        <MenuItem value={-1}>
-                            <em>Quận/Huyện</em>
-                        </MenuItem>
-                        {
-                            location.districts.map(
-                                district =>
-                                    (<MenuItem
-                                        key={district.district_id}
-                                        value={district.district_id}
-                                    >
-                                        {district.district_name}
-                                    </MenuItem>)
-                            )
-                        }
-                    </TextField>
                     <TextField
                         select
                         variant="standard"
@@ -284,17 +193,17 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
             </form>
             {selectedRows.length > 0 &&
                 (selectedRows.every((row) => row.status === PUBLISHED) ? (
-                    <LockButton onClick={handleAction} />
+                    <LockButton onClick={handleAction}/>
                 ) : selectedRows.every(
-                      (row) => row.status === REFUSED,
-                  ) ? (
-                    <UnlockButton onClick={handleAction} />
+                    (row) => row.status === REFUSED,
+                ) ? (
+                    <UnlockButton onClick={handleAction}/>
                 ) : selectedRows.every(
-                      (row) => row.status === PENDING_REVIEW,
-                  ) ? (
+                    (row) => row.status === PENDING_REVIEW,
+                ) ? (
                     <>
-                        <LockButton onClick={handleAction} />
-                        <UnlockButton onClick={handleAction} />
+                        <LockButton onClick={handleAction}/>
+                        <UnlockButton onClick={handleAction}/>
                     </>
                 ) : null)}
             {/* {action.isShow && (
