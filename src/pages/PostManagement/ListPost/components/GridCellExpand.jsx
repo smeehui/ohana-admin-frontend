@@ -14,7 +14,7 @@ function isOverflown(element) {
 }
 
 function isImage(element) {
-    return element.tagName === "img"
+    return element.getElementsByTagName("img").length > 0;
 }
 
 const GridCellExpand = React.memo(function GridCellExpand(props) {
@@ -87,7 +87,7 @@ const GridCellExpand = React.memo(function GridCellExpand(props) {
             />
             <Box
                 ref={cellValue}
-                sx={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}
+                sx={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', zIndex: 1000}}
             >
                 {field !== "thumbnailId" ? value : <CldImage id={value} w={80} h={80}/>}
             </Box>

@@ -94,22 +94,18 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
     const handleCloseDialog = useCallback((type) => {
         setAction((prev) => ({ ...prev, type: type, isShow: false }));
     }, []);
-    const handleConfirmAction = useCallback(() => {
+    const handleConfirmAction = useCallback(async () => {
         const { data, type } = action;
-        console.log(action);
         try {
-            let result = userService.updateStatusAll(
+            let result = await userService.updateStatusAll(
                 action.data.map((item) => item.id),
                 type,
             );
-            console.log(result);
-            data.forEach((element) => {
-                toast.success(
-                    `${
-                        type === "deactivate" ? "Huỷ kích hoạt" : "Kích hoạt"
-                    } tài khoản ${element.fullName} thành công`,
-                );
-            });
+            const successfulUsers = data.filter(u => result.succeed.some(rs => rs === u.id));
+            const failedUsers = data.filter(u => result.failed.some(rs => rs === u.id));
+            console.log(successfulUsers, failedUsers);
+            successfulUsers.forEach(u=>toast.success( `${type==="deactivate" ? "Huỷ kích hoạt ": "Kích hoạt "} tài khoản ${u.fullName} thành công!`))
+            failedUsers.forEach(u=>toast.error( `${type==="deactivate" ? "Huỷ kích hoạt ": "Kích hoạt "} tài khoản ${u.fullName} thất bại!`))
         } catch (error) {
             console.log(error);
         } finally {

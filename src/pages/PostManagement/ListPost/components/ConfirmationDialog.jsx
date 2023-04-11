@@ -3,16 +3,12 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-import { updateStatusAll } from "../../../service/userService";
-import { toast } from "react-toastify";
-import { Stack } from "@mui/system";
-import { Chip } from "@mui/material";
+import {Chip, Fade, Grid} from "@mui/material";
+import {REFUSED} from "~/pages/PostManagement/ListPost/constants";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
+    return <Fade easing={"enter"} ref={ref} {...props} />;
 });
 
 export default function ConfirmationDialog({ action, onClose, onAgree }) {
@@ -29,24 +25,26 @@ export default function ConfirmationDialog({ action, onClose, onAgree }) {
                 <DialogContent>
                     <h4>
                         {`Bạn có chắc chắn muốn ${
-                            type === "deactivate"
-                                ? "huỷ kích hoạt"
-                                : "kích hoạt"
-                        }:`}
+                            type === REFUSED
+                                ? "thu hồi"
+                                : "đăng"
+                        } bài viết:`}
                     </h4>
 
-                    <Stack direction="row" spacing={1}>
+                    <Grid container direction={"row"} wrap={"wrap"} spacing={1}>
                         {data.map((item) => (
-                            <Chip
-                                key={item.id}
-                                variant="outlined"
-                                label={item.fullName}
-                                color={
-                                    type === "deactivate" ? "error" : "success"
-                                }
-                            ></Chip>
+                            <Grid item>
+                                <Chip
+                                    key={item.id}
+                                    variant="outlined"
+                                    label={item.title}
+                                    color={
+                                        type === REFUSED ? "error" : "success"
+                                    }
+                                ></Chip>
+                            </Grid>
                         ))}
-                    </Stack>
+                    </Grid>
                 </DialogContent>
                 <DialogActions>
                     <Button

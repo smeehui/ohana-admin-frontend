@@ -42,10 +42,12 @@ const updateUserStatusById = async (id, stt) => {
 
 const updateStatusAll = async (idList, type) => {
     const url = type === "deactivate" ? DEACTIVATE_USER_ALL : ACTIVATE_USER_ALL;
-    let status = axios.patch(url,JSON.stringify(idList),{headers: {
-        "Content-Type": "application/json"
-    }});
-    return status;
+    let status = await axios.patch(url, JSON.stringify(idList), {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    return status.data;
 };
 
 export default { getAllUsers, findById, filterUsers, updateUserStatusById, updateStatusAll };

@@ -1,14 +1,14 @@
-import { NavigateNext } from "@mui/icons-material";
-import { Breadcrumbs, Link, useTheme } from "@mui/material";
-import React from "react";
-import { useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { tokens } from "~/theme";
+import {ArrowBackIos, ArrowForwardIos, NavigateNext} from "@mui/icons-material";
+import {Breadcrumbs, IconButton, Link, Stack, useTheme} from "@mui/material";
+import React, {useMemo} from "react";
+import {useLocation, useNavigate} from "react-router-dom";
+import {tokens} from "~/theme";
 
 function BreadCrumbs() {
-    const paths = useLocation().pathname.substring(1).split("/");
+    const location = useLocation();
+    const paths = location.pathname.substring(1).split("/");
     const navigate = useNavigate();
-    const theme =  useTheme();
+    const theme = useTheme();
     const colors = tokens(theme);
     const onClick = useMemo(
         () => (e, index) => {
@@ -24,7 +24,7 @@ function BreadCrumbs() {
     const breadcrumbs = paths.map((path, index) => (
         <Link
             underline="hover"
-            sx={{ cursor: "pointer" }}
+            sx={{cursor: "pointer"}}
             key={index}
             fontWeight={700}
             color={
@@ -36,13 +36,27 @@ function BreadCrumbs() {
         </Link>
     ));
     return (
-        <Breadcrumbs
-            sx={{paddingLeft: 1}}
-            separator={<NavigateNext fontSize="small" />}
-            aria-label="breadcrumb"
-        >
-            {breadcrumbs}
-        </Breadcrumbs>
+        <Stack direction={"row"} width={"100%"} alignItems={"center"} justifyContent={"space-between"}>
+            <Breadcrumbs
+                sx={{paddingLeft: 1}}
+                separator={<NavigateNext fontSize="small"/>}
+                aria-label="breadcrumb"
+            >
+                {breadcrumbs}
+            </Breadcrumbs>
+            <Stack cursor={"pointer"} direction={"row"} spacing={1} paddingX={2}>
+                <IconButton  onClick={() => {
+                    if (!(location.key === 'default')) navigate(-1)
+                }} disabled={location.key === 'default'}>
+                    <ArrowBackIos style={{color: colors.pink[400]}} sx={{justifySelf: "flex-end"}}/>
+                </IconButton>
+                <IconButton onClick={() => {
+                    if (!(location.key === 'default')) navigate(+1)
+                }} disabled={location.key === 'default'}>
+                    <ArrowForwardIos  style={{color: colors.pink[400]}} sx={{justifySelf: "flex-end"}}/>
+                </IconButton>
+            </Stack>
+        </Stack>
     );
 }
 
