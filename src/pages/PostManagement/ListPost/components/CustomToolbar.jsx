@@ -1,4 +1,4 @@
-import {memo, useCallback, useContext, useEffect, useState} from "react";
+import {memo, useCallback, useEffect, useState} from "react";
 import {useTheme} from "@emotion/react";
 import {Done, FilterAlt, RemoveDoneOutlined, Restore,} from "@mui/icons-material";
 import {Button, MenuItem, TextField} from "@mui/material";
@@ -44,7 +44,6 @@ const UnlockButton = ({onClick}) => (
 function CustomToolbar({selectedRows, handleFilter, forceReload}) {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [locationState, locationDispatch] = useContext(LocationContext);
     const toolStyle = {color: colors.greenAccent[300]};
     const [filterParams, setFilterParams] = useState({
         keyword: "",

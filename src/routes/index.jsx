@@ -6,19 +6,22 @@ import UserDetails from "~/pages/UserManagement/UserDetails/UserDetails";
 import config from "~/config/config";
 import PostDetails from "~/pages/PostManagement/PostDetails/PostDetails";
 import Category from "~/pages/CategoryManagement/Category";
-import {LocationProvider} from "~/store/contexts";
+import GlobalLayout from "~/scenes/global/GlobalLatyout";
+import LoginRegLayout from "~/scenes/global/LoginRegLayout";
+import Login from "~/pages/Login/Login";
 
 const { routes } = config;
 
 const publicRoutes = [
-    { path: routes.home, element: Dashboard },
-    { path: routes.dashboard, element: Dashboard },
-    { path: routes.userManagement, element: ManageUser },
-    { path: routes.userDetails + ":id", element: UserDetails },
-    { path: routes.postManagement, element: ()=><LocationProvider><ManagePost/></LocationProvider> },
-    { path: routes.postDetails + ":id", element: PostDetails },
-    { path: routes.report, element: Report },
-    { path: routes.category, element: Category },
+    {path: routes.home, element: Dashboard,layout: GlobalLayout},
+    {path: routes.login, element: Login,layout: LoginRegLayout},
+    {path: routes.dashboard, element: Dashboard,layout: GlobalLayout},
+    {path: routes.userManagement, element: ManageUser,layout: GlobalLayout},
+    {path: routes.userDetails + ":id", element: UserDetails,layout: GlobalLayout},
+    {path: routes.postManagement, element: ManagePost,layout: GlobalLayout},
+    {path: routes.postDetails + ":id", element: PostDetails,layout: GlobalLayout},
+    {path: routes.report, element: Report,layout: GlobalLayout},
+    {path: routes.category, element: Category,layout: GlobalLayout},
 ];
 
 export { publicRoutes };

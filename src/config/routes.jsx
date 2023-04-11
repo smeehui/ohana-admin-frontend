@@ -1,4 +1,5 @@
 export const HOME = "/";
+export const LOGIN = "/login";
 export const DASHBOARD = "/dashboard/";
 export const MANAGE_USER = "/dashboard/users";
 export const USER_DETAILS = "/dashboard/users/";

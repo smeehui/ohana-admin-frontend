@@ -9,7 +9,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 
-const Topbar = () => {
+const Topbar = ({showSearch = true}) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
@@ -20,23 +20,22 @@ const Topbar = () => {
             justifyContent="space-between"
             bgcolor={colors.pink[400]}
             p={1}
-            marginBottom={1}
             borderRadius={2}
         >
             {/* SEARCH BAR */}
-            <Box
+            {showSearch && <Box
                 display="flex"
                 backgroundColor={colors.primary[400]}
                 borderRadius="3px"
             >
-                <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-                <IconButton type="button" sx={{ p: 1 }}>
-                    <SearchIcon />
+                <InputBase sx={{ml: 2, flex: 1}} placeholder="Search"/>
+                <IconButton type="button" sx={{p: 1}}>
+                    <SearchIcon/>
                 </IconButton>
-            </Box>
+            </Box>}
 
             {/* ICONS */}
-            <Box display="flex">
+            <Box  marginLeft={"auto"} display="flex">
                 <IconButton onClick={colorMode.toggleColorMode}>
                     {theme.palette.mode === "dark" ? (
                         <DarkModeOutlinedIcon />
