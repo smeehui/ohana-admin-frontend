@@ -60,7 +60,10 @@ const SidebarCustom = () => {
 
     return (
         <Box
-            sx={{
+            sx={{ backgroundColor: colors.primary[400],
+                "& .ps-sidebar-root-test-id" : {
+                    backgroundColor: colors.primary[400]
+                },
                 "& .pro-sidebar-inner": {
                     background: `${colors.primary[400]} !important`,
                 },
@@ -81,7 +84,6 @@ const SidebarCustom = () => {
         >
             <Sidebar
                 style={{
-                    height: "100%",
                     background: `${colors.primary[400]} !important`
                 }}
                 collapsed={collapsed}

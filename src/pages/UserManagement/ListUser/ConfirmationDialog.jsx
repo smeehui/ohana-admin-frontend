@@ -5,7 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Slide from "@mui/material/Slide";
 import {Stack} from "@mui/system";
-import {Chip} from "@mui/material";
+import {Chip, Grid} from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -31,18 +31,20 @@ export default function ConfirmationDialog({ action, onClose, onAgree }) {
                         }:`}
                     </h4>
 
-                    <Stack direction="row" spacing={1}>
+                    <Grid container direction={"row"} wrap={"wrap"} spacing={1}>
                         {data.map((item) => (
-                            <Chip
-                                key={item.id}
-                                variant="outlined"
-                                label={item.fullName}
-                                color={
-                                    type === "deactivate" ? "error" : "success"
-                                }
-                            ></Chip>
+                            <Grid item>
+                                <Chip
+                                    key={item.id}
+                                    variant="outlined"
+                                    label={item.fullName}
+                                    color={
+                                        type === "deactivate" ? "error" : "success"
+                                    }
+                                ></Chip>
+                            </Grid>
                         ))}
-                    </Stack>
+                    </Grid>
                 </DialogContent>
                 <DialogActions>
                     <Button

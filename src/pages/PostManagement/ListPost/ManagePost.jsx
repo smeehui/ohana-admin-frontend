@@ -26,12 +26,12 @@ const ManagePost = () => {
 
 
     const forceReload = useCallback(() => {
-        setTableState((prev) => ({ ...prev, forceReload: !prev.forceReload }));
+        setTableState((prev) => ({...prev, forceReload: !prev.forceReload}));
         apiRef.current.setRowSelectionModel([])
     }, []);
 
     const addPaginationProperties = (result) => {
-        const { totalElements, number, size, content } = result;
+        const {totalElements, number, size, content} = result;
         setTableState((prev) => ({
             ...prev,
             rowCount: totalElements,
@@ -42,8 +42,15 @@ const ManagePost = () => {
         }));
     };
 
-    const handleCellValueChanged = async (row) => {
-
+    const handleChangeStatus = async (row) => {
+        const {id, status} = row;
+        try {
+            let post = await postService.updatePostStatusById({id, status})
+            toast.success("Cập nhật bài viết thành công!")
+            return post;
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     const handleProcessRowUpdateError = async (event) => {
@@ -51,21 +58,18 @@ const ManagePost = () => {
     };
 
     const handleFilter = useCallback(
-
-    async (filter) => {
+        async (filter) => {
             try {
-                setTableState({...tableState,isLoading: true})
+                setTableState({...tableState, isLoading: true})
                 let result = await postService.filterPosts(filter, {
                     page: tableState.page,
                     size: tableState.pageSize,
                 });
-                setTableState({...tableState,rows: result.content,isLoading: false})
-            } catch (err){
+                setTableState({...tableState, rows: result.content, isLoading: false})
+            } catch (err) {
                 console.log(err)
             }
-            finally {
-            }
-    }, []);
+        }, []);
 
     useEffect(() => {
         (async () => {
@@ -74,7 +78,7 @@ const ManagePost = () => {
                 size: tableState.pageSize,
             };
             try {
-                setTableState({...tableState,isLoading:true})
+                setTableState({...tableState, isLoading: true})
                 let result = await postService.getAllPosts(paginationParams);
                 addPaginationProperties(result);
             } catch {
@@ -93,84 +97,84 @@ const ManagePost = () => {
                 />
             ),
         }),
-        [tableState.selectedRows,tableState.forceReload],
+        [tableState.selectedRows, tableState.forceReload],
     );
     return (
         <Box m="20px" display={"flex"} flexDirection={"column"}>
-        <Header title="Danh sách" />
-        <Box
-            flex={"1"}
-            sx={{
-                "& .MuiDataGrid-root": {
-                    border: "none",
-                },
-                "& .MuiDataGrid-cell": {
-                    borderBottom: "none",
-                },
-                "& .name-column--cell": {
-                    color: colors.greenAccent[300],
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                    backgroundColor: colors.blueAccent[700],
-                    borderBottom: "none",
-                },
-                "& .MuiDataGrid-virtualScroller": {
-                    backgroundColor: colors.primary[400],
-                },
-                "& .MuiDataGrid-footerContainer": {
-                    borderTop: "none",
-                    backgroundColor: colors.blueAccent[700],
-                },
-                "& .MuiCheckbox-root": {
-                    color: `${colors.greenAccent[200]} !important`,
-                },
-            }}
-        >
-            <DataGrid
-                apiRef={apiRef}
-                columns={columns}
-                {...tableState}
+            <Header title="Danh sách"/>
+            <Box
+                flex={"1"}
+                sx={{
+                    "& .MuiDataGrid-root": {
+                        border: "none",
+                    },
+                    "& .MuiDataGrid-cell": {
+                        borderBottom: "none",
+                    },
+                    "& .name-column--cell": {
+                        color: colors.greenAccent[300],
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: colors.blueAccent[700],
+                        borderBottom: "none",
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                        backgroundColor: colors.primary[400],
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                        borderTop: "none",
+                        backgroundColor: colors.blueAccent[700],
+                    },
+                    "& .MuiCheckbox-root": {
+                        color: `${colors.greenAccent[200]} !important`,
+                    },
+                }}
+            >
+                <DataGrid
+                    apiRef={apiRef}
+                    columns={columns}
+                    {...tableState}
 
-                autoHeight
-                slots={toolBar}
-                pagination
-                loading={tableState.isLoading}
-                processRowUpdate={handleCellValueChanged}
-                onProcessRowUpdateError={handleProcessRowUpdateError}
-                rowSelection
-                pageSizeOptions={[5, 20, 50, 100]}
-                onPaginationModelChange={(paginationModel) =>
-                    setTableState((prev) => ({
-                        ...prev,
-                        ...paginationModel,
-                    }))
-                }
-                onRowEditStart={(row) =>
-                    setTableState((prev) => ({
-                        ...prev,
-                        currentRow: row,
-                    }))
-                }
-                filterMode="server"
-                checkboxSelection
-                paginationMode="server"
-                resizable
-                // onFilterModelChange={handleFilter}
-                onRowSelectionModelChange={(rows) =>
-                    setTableState((prev) => ({
-                        ...prev,
-                        selectedRows: [
-                            ...rows.map((row) =>
-                                tableState.rows.find(
-                                    (tRow) => tRow.id === row,
+                    autoHeight
+                    slots={toolBar}
+                    pagination
+                    loading={tableState.isLoading}
+                    processRowUpdate={handleChangeStatus}
+                    onProcessRowUpdateError={handleProcessRowUpdateError}
+                    rowSelection
+                    pageSizeOptions={[5, 20, 50, 100]}
+                    onPaginationModelChange={(paginationModel) =>
+                        setTableState((prev) => ({
+                            ...prev,
+                            ...paginationModel,
+                        }))
+                    }
+                    onRowEditStart={(row) =>
+                        setTableState((prev) => ({
+                            ...prev,
+                            currentRow: row,
+                        }))
+                    }
+                    filterMode="server"
+                    checkboxSelection
+                    paginationMode="server"
+                    resizable
+                    // onFilterModelChange={handleFilter}
+                    onRowSelectionModelChange={(rows) =>
+                        setTableState((prev) => ({
+                            ...prev,
+                            selectedRows: [
+                                ...rows.map((row) =>
+                                    tableState.rows.find(
+                                        (tRow) => tRow.id === row,
+                                    ),
                                 ),
-                            ),
-                        ],
-                    }))
-                }
-            />
+                            ],
+                        }))
+                    }
+                />
+            </Box>
         </Box>
-    </Box>
     );
 };
 

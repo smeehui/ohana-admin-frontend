@@ -41,7 +41,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Slide from "@mui/material/Slide";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
+    return <Slide easing={"enter"} ref={ref} {...props} />;
 });
 
 function PostDetails() {
@@ -165,7 +165,7 @@ function PostDetails() {
                     />
                 )}
                 <Box borderRadius={2}>
-                    <ImageList variant="quilted" cols={8} rowHeight={121}>
+                    <ImageList style={{overflowY: "hidden"}} variant="quilted" cols={8} rowHeight={121}>
                         {state.postImages.map((img) => (
                             <ImageListItem
                                 onClick={(e) => handleClick(img)}

@@ -1,21 +1,28 @@
-import {memo, useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {memo, useCallback, useContext, useEffect, useState} from "react";
 import {useTheme} from "@emotion/react";
 import {Done, FilterAlt, RemoveDoneOutlined, Restore,} from "@mui/icons-material";
 import {Button, MenuItem, TextField} from "@mui/material";
 import {Stack} from "@mui/system";
-import {GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector,} from "@mui/x-data-grid";
+import {
+    GridToolbarColumnsButton,
+    GridToolbarContainer,
+    GridToolbarDensitySelector,
+    GridToolbarExport,
+} from "@mui/x-data-grid";
 import useDebounce from "~/hooks/useDebounce";
 import {useIsMount} from "~/hooks/useIsMount";
 import {tokens} from "~/theme";
 import {DRAFT, OVER_ROOM, PENDING_REVIEW, PUBLISHED, REFUSED} from "~/pages/PostManagement/ListPost/constants";
 import {LocationContext} from "~/store/contexts";
 import {CHANGE_DISTRICT} from "~/store/actionConstants";
+import {toast} from "react-toastify";
+import ConfirmationDialog from "~/pages/PostManagement/ListPost/components/ConfirmationDialog";
 
 const LockButton = ({onClick}) => (
     <Button
         color="error"
         variant="contained"
-        onClick={() => onClick("deactivate")}
+        onClick={() => onClick(REFUSED)}
         title="Huỷ kích hoạt"
     >
         <RemoveDoneOutlined/>
@@ -27,7 +34,7 @@ const UnlockButton = ({onClick}) => (
         className="align-self-end"
         color="success"
         variant="contained"
-        onClick={() => onClick("activate")}
+        onClick={() => onClick(PUBLISHED)}
         title="Kích hoạt"
     >
         <Done/>
@@ -86,27 +93,22 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
         setAction((prev) => ({...prev, type: type, isShow: false}));
     }, []);
     const handleConfirmAction = useCallback(() => {
-        // const { data, type } = action;
-        // console.log(action);
-        // try {
-        //     let result = updateStatusAll(
-        //         action.data.map((item) => item.id),
-        //         type,
-        //     );
-        //     console.log(result);
-        //     data.forEach((element) => {
-        //         toast.success(
-        //             `${
-        //                 type === "deactivate" ? "Huỷ kích hoạt" : "Kích hoạt"
-        //             } tài khoản ${element.fullName} thành công`,
-        //         );
-        //     });
-        // } catch (error) {
-        //     console.log(error);
-        // } finally {
-        //     handleCloseDialog();
-        //     forceReload();
-        // }
+        const { data, type } = action;
+        console.log(action);
+        try {
+            data.forEach((element) => {
+                toast.success(
+                    `${
+                        type === REFUSED ? "Thu hồi" : "Đăng"
+                    } bài viết ${element.fullName} thành công`,
+                );
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            handleCloseDialog();
+            forceReload();
+        }
     }, [action.type]);
 
     const handleChangeProvince = (e) => {
@@ -115,10 +117,10 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
     }
 
     const handleChangeDistrict = (e) => {
-       locationDispatch({
-           type: CHANGE_DISTRICT,
-           payload: e.target.value
-       },locationState)
+        locationDispatch({
+            type: CHANGE_DISTRICT,
+            payload: e.target.value
+        }, locationState)
     }
 
     return (
@@ -192,27 +194,23 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
                 </Stack>
             </form>
             {selectedRows.length > 0 &&
-                (selectedRows.every((row) => row.status === PUBLISHED) ? (
-                    <LockButton onClick={handleAction}/>
-                ) : selectedRows.every(
-                    (row) => row.status === REFUSED,
-                ) ? (
-                    <UnlockButton onClick={handleAction}/>
-                ) : selectedRows.every(
-                    (row) => row.status === PENDING_REVIEW,
-                ) ? (
-                    <>
-                        <LockButton onClick={handleAction}/>
-                        <UnlockButton onClick={handleAction}/>
-                    </>
-                ) : null)}
-            {/* {action.isShow && (
+                (selectedRows.every((row) => row.status === PUBLISHED)
+                    ? (<LockButton onClick={handleAction}/>)
+                    : selectedRows.every((row) => row.status === REFUSED)
+                        ? (<UnlockButton onClick={handleAction}/>)
+                        : selectedRows.every((row) => row.status === PENDING_REVIEW)
+                            ? (<>
+                                    <LockButton onClick={handleAction}/>
+                                    <UnlockButton onClick={handleAction}/>
+                                </>)
+                            : null)}
+            {action.isShow && (
                 <ConfirmationDialog
                     action={action}
                     onClose={handleCloseDialog}
                     onAgree={handleConfirmAction}
                 />
-            )} */}
+            )}
         </GridToolbarContainer>
     );
 }
