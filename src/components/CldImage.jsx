@@ -13,7 +13,7 @@ function CldImage({ id,w = 80,h=80,r=5,alt = "image" }) {
         img.resize(thumbnail().width(w).height(h))
             .roundCorners(byRadius(r))
     return (
-        <div className={r===50 ? "rounded-circle overflow-hidden":null}>
+        <div style={{width: "fit-content",height: "fit-content"}} className={r===50 ? "rounded-circle overflow-hidden":null}>
             <AdvancedImage
                 cldImg={img}
                 alt={alt}

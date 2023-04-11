@@ -1,5 +1,4 @@
-import { Table } from "react-bootstrap";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
 import { toast } from "react-toastify";
 import { categoryService } from "~/service";
 import { columns } from "./categoryTBFormat";
@@ -8,11 +7,14 @@ import { Box, useTheme } from "@mui/material";
 import { tokens } from "~/theme";
 import Header from "~/components/Header";
 
+export const CategoryTableConText = createContext();
+
 const Category = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [state, setState] = useState({
     category: [],
+    forceReload: false
   });
 
   useEffect(() => {
@@ -26,42 +28,44 @@ const Category = () => {
         console.log(error);
       }
     })();
-  }, []);
+  }, [state.forceReload]);
 
   return (
-    <Box m="20px" display={"flex"} flexDirection={"column"}>
-      <Header title="Danh sách" />
-      <Box
-        flex={"1"}
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-        }}
-      >
-        <DataGrid columns={columns} autoHeight rows={state.category} />
+    <CategoryTableConText.Provider value={{state,setState}}>
+      <Box m="20px" display={"flex"} flexDirection={"column"}>
+        <Header title="Danh mục phòng" />
+        <Box
+          flex={"1"}
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+            },
+            "& .name-column--cell": {
+              color: colors.greenAccent[300],
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[700],
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[400],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: colors.blueAccent[700],
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+          }}
+        >
+          <DataGrid columns={columns} autoHeight rows={state.category} />
+        </Box>
       </Box>
-    </Box>
+    </CategoryTableConText.Provider>
   );
 };
 

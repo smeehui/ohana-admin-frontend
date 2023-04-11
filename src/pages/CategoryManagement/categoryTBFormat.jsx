@@ -1,56 +1,72 @@
-import { Cancel, Delete, Edit } from "@mui/icons-material";
-import { Backdrop, Button, Stack } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import PropTypes from "prop-types";
-import { useSpring, animated } from "@react-spring/web";
-import React from "react";
-import { Modal } from "@mui/material";
-import { Box } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import { Box, Button, Input, Modal, Stack, Typography } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import Category, { CategoryTableConText } from "./Category";
+import { categoryService } from "~/service";
+import { toast } from "react-toastify";
+import { useGridApiContext, useGridApiRef } from "@mui/x-data-grid";
+import { Form } from "react-router-dom";
 
 function ActionButton({ row }) {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const Fade = React.forwardRef(function Fade(props, ref) {
-    const {
-      children,
-      in: open,
-      onClick,
-      onEnter,
-      onExited,
-      ownerState,
-      ...other
-    } = props;
-    const style = useSpring({
-      from: { opacity: 0 },
-      to: { opacity: open ? 1 : 0 },
-      onStart: () => {
-        if (open && onEnter) {
-          onEnter(null, true);
-        }
-      },
-      onRest: () => {
-        if (!open && onExited) {
-          onExited(null, true);
-        }
-      },
-    });
-
-    return (
-      <animated.div ref={ref} style={style} {...other}>
-        {React.cloneElement(children, { onClick })}
-      </animated.div>
-    );
+  const [state, setState] = useState({
+    open: false,
+    category: {},
   });
 
-  Fade.propTypes = {
-    children: PropTypes.element.isRequired,
-    in: PropTypes.bool,
-    onClick: PropTypes.any,
-    onEnter: PropTypes.func,
-    onExited: PropTypes.func,
-    ownerState: PropTypes.any,
+  const contextValues = useContext(CategoryTableConText)
+
+  console.log(contextValues);
+
+  const gridApi = useGridApiContext();
+  const { open, category } = state;
+
+  const handleSubmit = async () => {
+    try {
+      const result = await categoryService.updateCategoryTitle(category);
+
+      setState({
+        ...state,
+        open: false,
+        category: result,
+      });
+
+      toast.success(`Cập nhật thành công`);
+
+     contextValues.setState(prev=>{
+      return {...prev ,forceReload: !prev.forceReload}
+     })
+    } catch (error) {
+      toast.error(`Cập nhật thất bại`);
+      console.log(error);
+    }
+  };
+
+  const handleClose = () => {
+    setState({
+      ...state,
+      open: false,
+    });
+  };
+
+  const onChange = (e) => {
+    setState({
+      ...state,
+      category: { ...state.category, title: e.target.value },
+    });
+  };
+
+  const handleEdit = async () => {
+    const { id } = row;
+
+    const result = await categoryService.findById(id);
+
+    setState({
+      ...state,
+      open: true,
+      category: result,
+    });
+
+
   };
 
   const style = {
@@ -66,67 +82,62 @@ function ActionButton({ row }) {
   };
 
   return (
-    <Stack spacing={1} direction="row">
-      <Button
-        onClick={handleOpen}
-        size="small"
-        variant="contained"
-        color="warning"
-      >
-        <Edit /> Chỉnh sửa
-      </Button>
+    <>
+      <Stack spacing={1} direction="row">
+        <Button
+          onClick={handleEdit}
+          size="small"
+          variant="contained"
+          color="warning"
+        >
+          <Edit /> Chỉnh sửa
+        </Button>
 
-      <Modal
-        aria-labelledby="spring-modal-title"
-        aria-describedby="spring-modal-description"
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            TransitionComponent: Fade,
-          },
-        }}
-      >
-        <Fade in={open}>
-          <Box sx={style}>
-            <Typography id="spring-modal-title" variant="h6" component="h2">
-              Text in a modal
-            </Typography>
-            <Typography id="spring-modal-description" sx={{ mt: 2 }}>
-              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-            </Typography>
+        <Button
+          onClick={handleEdit}
+          size="small"
+          variant="contained"
+          color="error"
+        >
+          <Delete /> Xóa
+        </Button>
+      </Stack>
+      <Modal open={open} onClose={handleClose}>
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h3" gutterBottom>
+            Chỉnh sửa danh mục
+          </Typography>
+
+          <Stack sx={{ marginBottom: "20px" }}>
+            <Input
+              onChange={onChange}
+              value={state.category.title}
+              sx={{ mt: 2 }}
+            />
+          </Stack>
+
+          <Stack direction="row" spacing={2} justifyContent={"flex-end"}>
             <Button
-              onClick=""
+              onClick={handleSubmit}
               size="small"
               variant="contained"
-              color="info"
+              color="success"
             >
-              <Edit /> Chỉnh sửa
+              Xác nhận
             </Button>
 
             <Button
-              onClick=""
+              onClick={handleClose}
               size="small"
               variant="contained"
               color="error"
             >
-              <Cancel /> Cancel
+              Hủy
             </Button>
-          </Box>
-        </Fade>
+          </Stack>
+        </Box>
       </Modal>
-
-      <Button
-        onClick={handleOpen}
-        size="small"
-        variant="contained"
-        color="error"
-      >
-        <Delete /> Xóa
-      </Button>
-    </Stack>
+    </>
   );
 }
 
