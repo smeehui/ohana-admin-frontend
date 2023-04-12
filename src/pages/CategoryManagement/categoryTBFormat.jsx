@@ -4,8 +4,6 @@ import { useContext, useEffect, useState } from "react";
 import Category, { CategoryTableConText } from "./Category";
 import { categoryService } from "~/service";
 import { toast } from "react-toastify";
-import { useGridApiContext, useGridApiRef } from "@mui/x-data-grid";
-import { Form } from "react-router-dom";
 
 function ActionButton({ row }) {
   const [state, setState] = useState({
@@ -13,11 +11,8 @@ function ActionButton({ row }) {
     category: {},
   });
 
-  const contextValues = useContext(CategoryTableConText)
+  const contextValues = useContext(CategoryTableConText);
 
-  console.log(contextValues);
-
-  const gridApi = useGridApiContext();
   const { open, category } = state;
 
   const handleSubmit = async () => {
