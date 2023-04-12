@@ -49,9 +49,9 @@ function Login() {
         e.preventDefault()
     }
     return (
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}
+        <Box  minHeight={"100vh"} display={"flex"} justifyContent={"center"} alignItems={"center"}
              sx={{background: theme.palette.mode === "light" ? "linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))" : "linear-gradient(to right, rgb(61 11 114), rgb(18 55 118))"}}>
-            <Grid minHeight={"100vh"} spacing={2} container direction={"row"} maxWidth={"1200px"}>
+            <Grid spacing={2} container direction={"row"} maxWidth={"900px"}>
                 <Stack margin={"auto"} sx={{backgroundColor: colors.grey[900]}} padding={3} borderRadius={3}
                        direction={"row"} boxShadow={"0 0 50px " + colors.grey[300]}>
                     <Grid item xs={8} padding={2}>

@@ -9,6 +9,7 @@ import Category from "~/pages/CategoryManagement/Category";
 import GlobalLayout from "~/scenes/global/GlobalLatyout";
 import LoginRegLayout from "~/scenes/global/LoginRegLayout";
 import Login from "~/pages/Login/Login";
+import ManageUtility from "~/pages/UtilityManagement/ManageUtility";
 
 const { routes } = config;
 
@@ -22,6 +23,7 @@ const publicRoutes = [
     {path: routes.postDetails + ":id", element: PostDetails,layout: GlobalLayout},
     {path: routes.report, element: Report,layout: GlobalLayout},
     {path: routes.category, element: Category,layout: GlobalLayout},
+    {path: routes.utilityManagement, element: ManageUtility,layout: GlobalLayout},
 ];
 
 export { publicRoutes };

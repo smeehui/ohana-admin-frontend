@@ -32,7 +32,7 @@ const Item = ({
             rootStyles={{
                 background: `${colors.primary[400]} !important`,
                 a: {
-                    color: "black",
+                    color: "#868dfb !important",
                 },
             }}
             style={{

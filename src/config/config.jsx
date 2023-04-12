@@ -7,7 +7,7 @@ import {
     POST_DETAILS,
     REPORT,
     USER_DETAILS,
-    CATEGORY, LOGIN,
+    CATEGORY, LOGIN, MANAGE_UTILITY,
 } from "./routes";
 
 const config = {
@@ -21,6 +21,7 @@ const config = {
         postDetails: POST_DETAILS,
         report: REPORT,
         category: CATEGORY,
+        utilityManagement: MANAGE_UTILITY
     },
 };
 export default config;
