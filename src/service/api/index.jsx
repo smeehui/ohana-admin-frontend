@@ -25,6 +25,8 @@ export const CREATE_NEW_CATEGORY = MAIN_API + MIDDLE_PATH + "/api/categories/add
 
 export const GET_ALL_UTILITIES = MAIN_API + MIDDLE_PATH + "/api/utilities";
 export const GET_UTILITY_BY_ID= MAIN_API + MIDDLE_PATH + "/api/utilities";
+export const UPDATE_UTILITY_BY_ID= MAIN_API + MIDDLE_PATH + "/api/utilities";
+export const CREATE_NEW_UTILITY= MAIN_API + MIDDLE_PATH + "/api/utilities";
 
 
 export const GET_ALL_PROVINCES = BASE_PROVINCE_API +"/";

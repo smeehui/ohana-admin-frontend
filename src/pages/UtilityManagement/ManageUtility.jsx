@@ -1,15 +1,41 @@
-import React, {createContext, useEffect, useMemo, useState} from 'react'
-import {Box, Button, MenuItem, Modal, Stack, TextField, Typography, useTheme} from "@mui/material";
+import React, {createContext, useContext, useEffect, useMemo, useState} from 'react'
+import {Box, Button, FormHelperText, MenuItem, Modal, Stack, TextField, Typography, useTheme} from "@mui/material";
 import Header from "~/components/Header";
-import {DataGrid} from "@mui/x-data-grid";
+import {DataGrid, GridToolbarContainer} from "@mui/x-data-grid";
 import {utilitiesService} from "~/service";
 import {toast} from "react-toastify";
 import {tokens} from "~/theme";
 import {columns} from "~/pages/UtilityManagement/utilityTableFormat";
 import {allUtilityIcons} from "~/pages/UtilityManagement/data/allUtilities";
 import "~/assets/fonts/icon-ohana.ttf"
+import {useFormik} from "formik";
+import * as Yup from "yup";
+import {AddOutlined} from "@mui/icons-material";
 
 export const UtilTableContext = createContext();
+
+const ToolBar = ({formik}) => {
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    const {pageState, setPageState} = useContext((UtilTableContext));
+    const handleClick = ()=>{
+        formik.resetForm();
+        setPageState({...pageState, isModalOpen: true,mode: "create"})
+    }
+    return (
+        <GridToolbarContainer className="d-flex justify-content-end my-1">
+            <Button
+                variant="contained"
+                color="success"
+                title="Lọc"
+                onClick={()=>handleClick()}
+            >
+                <AddOutlined/>
+                Thêm mới
+            </Button>
+        </GridToolbarContainer>)
+}
+
 function ManageUtility() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -32,14 +58,75 @@ function ManageUtility() {
         rowCount: 0,
     })
     const [pageState, setPageState] = useState({
-        isEditModalOpen: false,
+        isModalOpen: false,
+        isDelModalOpen: false,
         forceReload: false,
+        mode: "update",
         utility: {
             icon: "",
             name: "",
-            priority: ""
-        }
+            priority: "",
+            id: -1
+        },
+        formikInitValues: {}
     })
+
+    const formik = useFormik({
+        initialValues: {
+            name: pageState.utility.name,
+            icon: pageState.utility.name,
+            priority: pageState.utility.name
+        }, validationSchema: Yup.object({
+            icon: Yup.string()
+                .required('Icon không được để trống!'),
+            name: Yup.string()
+                .max(50, 'Tên tối đa là 50 ký tự!')
+                .min(2, 'Tên tối thiểu 2 ký tự!')
+                .required('Tên tiện ích không được để trống!'),
+            priority: Yup.number()
+                .required("Độ ưu tiên không được để trống!")
+                .max(30, "Độ ưu tiên cao nhất là 30!")
+                .min(0, "Độ ưu tiên thấp nhất là 0! "),
+        }),
+        onSubmit: values => {
+            console.log(pageState.mode)
+            if (pageState.mode === "update") {
+                (async () => {
+                    try {
+                        let utilityRs = await utilitiesService.updateById(pageState.utility.id, values);
+                        setPageState({
+                            ...pageState, utility: utilityRs, forceReload: !pageState.forceReload,
+                            isModalOpen: false
+                        });
+                        toast.success("Cập nhật tiện ích thành công!")
+                        formik.resetForm();
+                    } catch (e) {
+                        console.log(e);
+                        toast.error("Cập nhật tiện ích thất bại!")
+                    }
+                })()
+            }else {
+                (async () => {
+                    try {
+                        let utilityRs = await utilitiesService.createNew(values);
+                        setPageState({
+                            ...pageState, utility: utilityRs, forceReload: !pageState.forceReload,
+                            isModalOpen: false
+                        });
+                        toast.success("Thêm mới tiện ích thành công!")
+                        formik.resetForm();
+                    } catch (e) {
+                        console.log(e);
+                        toast.error("Thêm mới tiện ích thất bại!")
+                    }
+                })()
+            }
+        },
+    });
+    const nameError = formik.touched.name && formik.errors.name
+    const iconError = formik.touched.icon && formik.errors.icon
+    const priorityError = formik.touched.priority && formik.errors.priority
+
 
     const addPaginationProperties = (result) => {
         const {totalElements, number, size, content} = result;
@@ -54,25 +141,21 @@ function ManageUtility() {
     };
 
     const handleClose = () => {
+        formik.resetForm();
         setPageState({
             ...pageState,
-            isEditModalOpen: false,
+            isModalOpen: false,
+            isDelModalOpen: false
         });
     };
 
-    const onChange = (e) => {
-       setPageState({
-           ...pageState,
-           utility: {
-               ...pageState.utility,
-               [e.target.name]: e.target.value
-           }
-       })
-    }
-    const handleSubmit = (e) => {
-        e.preventDefault();
-    }
-
+    useEffect(() => {
+        (async () => {
+            await formik.setFieldValue("name", pageState.utility.name)
+            await formik.setFieldValue("icon", pageState.utility.icon)
+            await formik.setFieldValue("priority", pageState.utility.priority)
+        })()
+    }, [pageState.utility])
 
     useEffect(() => {
         const {page, pageSize} = tableState;
@@ -84,7 +167,6 @@ function ManageUtility() {
                 toast.error("Lấy dữ liệu tiện ích thất bại!")
             }
         })()
-
     }, [tableState.pageSize, tableState.page, pageState.forceReload])
 
     return (
@@ -120,6 +202,7 @@ function ManageUtility() {
                     }}
                 >
                     <DataGrid columns={columns}
+                              slots={{toolbar: () => <ToolBar formik={formik}/>}}
                               pageSizeOptions={[5, 20, 50, 100]}
                               initialState={{
                                   ...tableState,
@@ -136,10 +219,10 @@ function ManageUtility() {
                               }
                     />
                 </Box>
-                <Modal open={pageState.isEditModalOpen} onClose={handleClose}>
-                    <Box sx={style} onSubmit={handleSubmit} component={"form"}>
+                <Modal open={pageState.isModalOpen} onClose={handleClose}>
+                    <Box sx={style} onSubmit={formik.handleSubmit} component={"form"}>
                         <Typography id="modal-modal-title" variant="h3" gutterBottom>
-                            Chỉnh sửa tiện ích
+                            {pageState.mode === "update"? "Chỉnh sửa tiện ích":"Thêm mới"}
                         </Typography>
 
                         <Stack sx={{
@@ -149,31 +232,41 @@ function ManageUtility() {
                             }
                         }} spacing={2} direction={"row"}>
                             <TextField fontSize={18}
-                                       value={pageState.utility.name}
+                                       autoFocus
                                        label="Tên tiện ích"
                                        variant="standard"
-                                       onChange={onChange}
+                                       onChange={formik.handleChange}
+                                       value={formik.values.name}
                                        name="name"
+                                       error={nameError}
+                                       helperText={nameError &&
+                                           <FormHelperText sx={{fontSize: 12}}>{formik.errors.name}</FormHelperText>}
                             />
                             <TextField
                                 fontSize={18}
                                 select
                                 label="Icon"
                                 variant="standard"
-                                defaultValue={pageState.utility.icon}
                                 sx={{
-                                    minWidth: 150
+                                    minWidth: 150,
+                                    maxHeight: 300
                                 }}
-                                onChange={onChange}
+                                onChange={formik.handleChange}
+                                value={formik.values.icon}
                                 name="icon"
+                                error={iconError}
+                                helperText={iconError &&
+                                    <FormHelperText sx={{fontSize: 14}}>{formik.errors.icon}</FormHelperText>}
 
                             >
                                 {
                                     allUtilityIcons.map(
                                         icon => {
                                             return (
-                                                <MenuItem sx={{fontSize: "1.2rem !important"}} value={icon.icon} key={icon.icon}>
-                                                    <i style={{margin: "0 3px",fontSize: "1.2rem"}} className={icon.icon + " icon"}></i>
+                                                <MenuItem sx={{fontSize: "1.2rem !important"}} value={icon.icon}
+                                                          key={icon.icon}>
+                                                    <i style={{margin: "0 3px", fontSize: "1.2rem"}}
+                                                       className={icon.icon + " icon"}></i>
                                                     {icon.name}
                                                 </MenuItem>
                                             )
@@ -181,18 +274,21 @@ function ManageUtility() {
                                 }
                             </TextField>
                             <TextField name="priority"
-                                       onChange={onChange}
+                                       onChange={formik.handleChange}
+                                       value={formik.values.priority}
                                        fontSize={18}
                                        type={"number"}
-                                       value={pageState.utility.priority}
                                        label="Độ ưu tiên"
                                        variant="standard"
+                                       error={priorityError}
+                                       helperText={priorityError && <FormHelperText
+                                           sx={{fontSize: 14}}>{formik.errors.priority}</FormHelperText>}
                             />
                         </Stack>
 
                         <Stack direction="row" spacing={2} justifyContent={"flex-end"}>
                             <Button
-                                onClick={handleSubmit}
+                                onClick={formik.handleSubmit}
                                 size="small"
                                 variant="contained"
                                 color="success"
@@ -211,6 +307,9 @@ function ManageUtility() {
                             </Button>
                         </Stack>
                     </Box>
+                </Modal>
+                <Modal open={pageState.isDelModalOpen} onClose={handleClose}>
+                    <Box sx={style}>Delete</Box>
                 </Modal>
             </Box>
         </UtilTableContext.Provider>

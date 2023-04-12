@@ -134,7 +134,10 @@ const ManagePost = () => {
                     apiRef={apiRef}
                     columns={columns}
                     {...tableState}
-
+                    initialState={{
+                        ...tableState,
+                        pagination: {paginationModel: {pageSize: 10}},
+                    }}
                     autoHeight
                     slots={toolBar}
                     pagination
@@ -142,7 +145,7 @@ const ManagePost = () => {
                     processRowUpdate={handleChangeStatus}
                     onProcessRowUpdateError={handleProcessRowUpdateError}
                     rowSelection
-                    pageSizeOptions={[5, 20, 50, 100]}
+                    pageSizeOptions={[10, 20, 50, 100]}
                     onPaginationModelChange={(paginationModel) =>
                         setTableState((prev) => ({
                             ...prev,

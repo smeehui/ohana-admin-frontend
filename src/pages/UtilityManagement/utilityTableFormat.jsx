@@ -20,19 +20,17 @@ function ActionButton({ row }) {
     const handleEdit = async () => {
         const { id } = row;
         const result = await utilitiesService.findById(id);
-        setPageState({...pageState,utility: result, isEditModalOpen: true})
-
-
+        setPageState({...pageState,utility: result, isModalOpen: true,mode: "update"})
     };
     const handleChangeStatus = async () => {
         const { id } = row;
 
         const result = await categoryService.findById(id);
 
-        setState({
+        setPageState({
             ...state,
-            open: true,
-            category: result,
+            isDelModalOpen: true,
+            utility: result,
         });
     };
 

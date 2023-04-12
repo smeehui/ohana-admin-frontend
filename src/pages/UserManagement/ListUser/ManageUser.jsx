@@ -13,7 +13,7 @@ const ManageUser = () => {
     const apiRef = useGridApiRef();
 
     const [tableState, setTableState] = useState({
-        pageSize: 100,
+        pageSize: 10,
         page: 0,
         rowCount: 0,
         rows: [],
@@ -140,12 +140,16 @@ const ManageUser = () => {
                         slots={toolBar}
                         columns={columns}
                         pagination
+                        initialState={{
+                            ...tableState,
+                            pagination: {paginationModel: {pageSize: 10}},
+                        }}
+                        pageSizeOptions={[10,20,50,100]}
                         loading={tableState.isLoading}
                         processRowUpdate={handleCellValueChanged}
                         onProcessRowUpdateError={handleProcessRowUpdateError}
                         isCellEditable={({ row }) => row.role !== "ADMIN"}
                         rowSelection
-                        pageSizeOptions={[10, 20, 50, 100]}
                         onPaginationModelChange={(paginationModel) =>
                             setTableState((prev) => ({
                                 ...prev,
@@ -159,8 +163,8 @@ const ManageUser = () => {
                             }))
                         }
                         filterMode="server"
-                        checkboxSelection
                         paginationMode="server"
+                        checkboxSelection
                         {...tableState}
                         onRowSelectionModelChange={(rows) =>
                             setTableState((prev) => ({
