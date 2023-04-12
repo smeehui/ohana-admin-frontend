@@ -1,5 +1,6 @@
 import { default as axios } from "axios";
 import {
+  CREATE_NEW_CATEGORY,
   GET_ALL_CATEGORY,
   GET_CATEGORY_BY_ID,
   UPDATE_CATEGORY_TITLE,
@@ -15,6 +16,18 @@ const findById = async (id) => {
   return category.data;
 };
 
+const addNewCategory = async (title) => {
+  let newCate = await axios.post(CREATE_NEW_CATEGORY,
+    JSON.stringify({title}),
+    {
+      headers: {
+          "Content-Type": "application/json",
+      },
+  }
+    );
+  return newCate.data;
+}
+
 
 const updateCategoryTitle = async (params) => {
   let result = await axios.patch(
@@ -29,4 +42,4 @@ const updateCategoryTitle = async (params) => {
   return result.data;
 }
 
-export default { getAllCategory, findById, updateCategoryTitle };
+export default { getAllCategory, findById, updateCategoryTitle, addNewCategory };
