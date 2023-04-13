@@ -7,6 +7,7 @@ import {
   Alert,
   Box,
   Button,
+  FormHelperText,
   Modal,
   Stack,
   TextField,
@@ -16,7 +17,8 @@ import {
 import { tokens } from "~/theme";
 import Header from "~/components/Header";
 import { Add } from "@mui/icons-material";
-import { Formik } from "formik";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export const CategoryTableConText = createContext();
 
@@ -33,6 +35,39 @@ const Category = () => {
 
   const { open } = state;
 
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+    },
+    validationSchema: Yup.object({
+      title: Yup.string()
+        .min(2, "Tối thiểu 2 ký tự")
+        .max(50, "Tối đa 50 ký tự")
+        .required("Danh mục không được để trống!"),
+    }),
+
+    onSubmit: async (value) => {
+      try {
+        const result = await categoryService.addNewCategory(value.title);
+  
+        setState({
+          ...state,
+          open: false,
+          cate: "",
+          forceReload: !state.forceReload,
+        });
+  
+        toast.success(`Thêm mới thành công`);
+
+        formik.resetForm();
+      } catch (error) {
+        toast.error(`Thêm mới thất bại`);
+      }
+    },
+  });
+
+  const titleError = formik.touched.title && formik.errors.title;
+
   const handleAdd = () => {
     setState({
       ...state,
@@ -43,7 +78,6 @@ const Category = () => {
   const handleSubmit = async () => {
     try {
       const result = await categoryService.addNewCategory(state.cate);
-      console.log(result);
 
       setState({
         ...state,
@@ -66,6 +100,7 @@ const Category = () => {
   };
 
   const handleClose = () => {
+    formik.resetForm();
     setState({
       ...state,
       open: false,
@@ -84,7 +119,7 @@ const Category = () => {
       }
     })();
   }, [state.forceReload]);
-
+console.log(state);
   const style = {
     position: "absolute",
     top: "50%",
@@ -151,37 +186,34 @@ const Category = () => {
                 Thêm danh mục mới
               </Typography>
 
-              <Stack sx={{ marginBottom: "20px", marginTop: "30px" }}>
-                <Formik
-                  initialValues={{ value: "" }}
-                  onSubmit={async (values) => {
-                    await new Promise((resolve) => setTimeout(resolve, 500));
-                    alert(JSON.stringify(values, null, 1));
-                  }}
-                >
-                  <Stack direction="column" spacing={1}>
-                    <Alert
-                      variant="outlined"
-                      severity="error"
-                    >
-                      Tên danh mục đã tồn tại!
-                    </Alert>
-                    <TextField
-                      onChange={onChange}
-                      value={state.cate}
-                      label="Title"
-                      variant="outlined"
-                      // error
-                      // id="outlined-error-helper-text"
-                      // helperText="Incorrect entry."
-                    />
-                  </Stack>
-                </Formik>
+              <Stack
+                component={"form"}
+                onSubmit={formik.handleSubmit}
+                sx={{ marginBottom: "20px", marginTop: "30px" }}
+              >
+                <Stack direction="column" spacing={1}>
+                  <TextField
+                    onChange={formik.handleChange}
+                    value={formik.values.title}
+                    label="Title"
+                    name="title"
+                    variant="outlined"
+                    error={titleError}
+                    helperText={
+                      titleError && (
+                        <FormHelperText sx={{ fontSize: 12 }}>
+                          {formik.errors.title}
+                        </FormHelperText>
+                      )
+                    }
+                  />
+                </Stack>
               </Stack>
 
               <Stack direction="row" spacing={2} justifyContent={"flex-end"}>
                 <Button
-                  onClick={handleSubmit}
+                  onClick={formik.handleSubmit}
+                  type="submit"
                   size="small"
                   variant="contained"
                   color="success"
