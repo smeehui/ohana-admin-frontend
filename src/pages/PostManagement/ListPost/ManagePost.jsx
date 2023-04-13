@@ -1,4 +1,4 @@
-import {Box, useTheme} from "@mui/material";
+import {Box, Stack, useTheme} from "@mui/material";
 import {tokens} from "~/theme";
 import Header from "~/components/Header";
 import {columns} from "./postTBFormat";
@@ -87,7 +87,7 @@ const ManagePost = () => {
         })();
     }, [tableState.pageSize, tableState.page, tableState.forceReload]);
 
-    const toolBar = useMemo(
+    const slots = useMemo(
         () => ({
             toolbar: () => (
                 <CustomToolbar
@@ -95,6 +95,11 @@ const ManagePost = () => {
                     handleFilter={handleFilter}
                     forceReload={forceReload}
                 />
+            ),
+            noRowsOverlay: () => (
+                <Stack fontSize={18} height="100%" alignItems="center" justifyContent="center">
+                   Không tìm thấy kết quả
+                </Stack>
             ),
         }),
         [tableState.selectedRows, tableState.forceReload],
@@ -139,7 +144,7 @@ const ManagePost = () => {
                         pagination: {paginationModel: {pageSize: 10}},
                     }}
                     autoHeight
-                    slots={toolBar}
+                    slots={slots}
                     pagination
                     loading={tableState.isLoading}
                     processRowUpdate={handleChangeStatus}
