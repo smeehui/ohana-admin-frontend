@@ -5,7 +5,8 @@ body,
 #root,
 .app,
 .content {
-    width: 100%;
+    flex: 1;
+    overflow-x: hidden;
     font-family: "Source Sans Pro", sans-serif;
 }
 

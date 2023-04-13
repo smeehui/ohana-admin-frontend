@@ -11,24 +11,49 @@ import "~/assets/fonts/icon-ohana.ttf"
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import {AddOutlined} from "@mui/icons-material";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Dialog from "@mui/material/Dialog";
+import Slide from "@mui/material/Slide";
+import {UtilityStatus} from "~/pages/UtilityManagement/data/utilityConstants";
 
 export const UtilTableContext = createContext();
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide easing={"enter"} ref={ref} {...props} />;
+});
+
 const ToolBar = ({formik}) => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
     const {pageState, setPageState} = useContext((UtilTableContext));
-    const handleClick = ()=>{
+    const handleClick = () => {
         formik.resetForm();
-        setPageState({...pageState, isModalOpen: true,mode: "create"})
+        setPageState({...pageState, isModalOpen: true, mode: "create"})
+    }
+    const handleFilter = (e) => {
+        setPageState({...pageState, filter: {status: e.target.value==="#"?"":e.target.value}})
     }
     return (
         <GridToolbarContainer className="d-flex justify-content-end my-1">
+            <TextField
+                select
+                variant="standard"
+                sx={{m: 0, minWidth: 120}}
+                title="Lọc theo trạng thái"
+                name="role"
+                value={pageState.filter.status||"#"}
+                onChange={handleFilter}
+            >
+                <MenuItem value="#">
+                    <em>Trạng thái</em>
+                </MenuItem>
+                <MenuItem value={UtilityStatus.SHOW}>Đang hiển thị</MenuItem>
+                <MenuItem value={UtilityStatus.HIDDEN}>Đã ẩn</MenuItem>
+            </TextField>
             <Button
                 variant="contained"
                 color="success"
                 title="Lọc"
-                onClick={()=>handleClick()}
+                onClick={() => handleClick()}
             >
                 <AddOutlined/>
                 Thêm mới
@@ -68,7 +93,10 @@ function ManageUtility() {
             priority: "",
             id: -1
         },
-        formikInitValues: {}
+        utilModifyingStatus: UtilityStatus.HIDDEN,
+        filter: {
+            status: ""
+        }
     })
 
     const formik = useFormik({
@@ -78,18 +106,17 @@ function ManageUtility() {
             priority: pageState.utility.name
         }, validationSchema: Yup.object({
             icon: Yup.string()
-                .required('Icon không được để trống!'),
+                .required('Icon không được trống!'),
             name: Yup.string()
                 .max(50, 'Tên tối đa là 50 ký tự!')
                 .min(2, 'Tên tối thiểu 2 ký tự!')
-                .required('Tên tiện ích không được để trống!'),
+                .required('Tên tiện ích không được trống!'),
             priority: Yup.number()
-                .required("Độ ưu tiên không được để trống!")
+                .required("Độ ưu tiên không được trống!")
                 .max(30, "Độ ưu tiên cao nhất là 30!")
                 .min(0, "Độ ưu tiên thấp nhất là 0! "),
         }),
         onSubmit: values => {
-            console.log(pageState.mode)
             if (pageState.mode === "update") {
                 (async () => {
                     try {
@@ -105,7 +132,7 @@ function ManageUtility() {
                         toast.error("Cập nhật tiện ích thất bại!")
                     }
                 })()
-            }else {
+            } else {
                 (async () => {
                     try {
                         let utilityRs = await utilitiesService.createNew(values);
@@ -149,6 +176,23 @@ function ManageUtility() {
         });
     };
 
+    const handleChangeStatus = async () => {
+        try {
+            let result = await utilitiesService.updateStatusById(pageState.utility.id, pageState.utilModifyingStatus)
+            setPageState({
+                ...pageState,
+                isModalOpen: false,
+                isDelModalOpen: false,
+                utility: result,
+                forceReload: !pageState.forceReload
+            });
+            toast.success("Đã " + (pageState.utilModifyingStatus === UtilityStatus.SHOW ? "hiển thị" : "ẩn") + " tiện ích thành công!")
+        } catch (e) {
+            console.log(e);
+            toast.error("Thay đổi trạng thái tiện ích thất bại!")
+        }
+    };
+
     useEffect(() => {
         (async () => {
             await formik.setFieldValue("name", pageState.utility.name)
@@ -159,23 +203,26 @@ function ManageUtility() {
 
     useEffect(() => {
         const {page, pageSize} = tableState;
+        const {filter} = pageState;
         (async () => {
             try {
-                let data = await utilitiesService.getAllUtilities({page, size: pageSize});
+                setTableState({...tableState,loading: true})
+                let data = await utilitiesService.getAllUtilities({page, size: pageSize, status: filter.status});
                 addPaginationProperties(data);
             } catch (err) {
+                console.log(err)
                 toast.error("Lấy dữ liệu tiện ích thất bại!")
             }
         })()
-    }, [tableState.pageSize, tableState.page, pageState.forceReload])
+    }, [tableState.pageSize, tableState.page, pageState.forceReload,pageState.filter])
 
     return (
         <UtilTableContext.Provider value={{pageState, setPageState}}>
             <Box m="20px" display={"flex"} flexDirection={"column"}>
                 <Header title="Danh mục phòng"/>
                 <Box
-                    flex={"1"}
                     sx={{
+                        flex: 1,
                         "& .MuiDataGrid-root": {
                             border: "none",
                         },
@@ -219,10 +266,10 @@ function ManageUtility() {
                               }
                     />
                 </Box>
-                <Modal open={pageState.isModalOpen} onClose={handleClose}>
+                <Modal open={pageState.isModalOpen === undefined ? false : pageState.isModalOpen} onClose={handleClose}>
                     <Box sx={style} onSubmit={formik.handleSubmit} component={"form"}>
                         <Typography id="modal-modal-title" variant="h3" gutterBottom>
-                            {pageState.mode === "update"? "Chỉnh sửa tiện ích":"Thêm mới"}
+                            {pageState.mode === "update" ? "Chỉnh sửa tiện ích" : "Thêm mới"}
                         </Typography>
 
                         <Stack sx={{
@@ -256,7 +303,7 @@ function ManageUtility() {
                                 name="icon"
                                 error={iconError}
                                 helperText={iconError &&
-                                    <FormHelperText sx={{fontSize: 14}}>{formik.errors.icon}</FormHelperText>}
+                                    <FormHelperText sx={{fontSize: 12}}>{formik.errors.icon}</FormHelperText>}
 
                             >
                                 {
@@ -282,7 +329,7 @@ function ManageUtility() {
                                        variant="standard"
                                        error={priorityError}
                                        helperText={priorityError && <FormHelperText
-                                           sx={{fontSize: 14}}>{formik.errors.priority}</FormHelperText>}
+                                           sx={{fontSize: 12}}>{formik.errors.priority}</FormHelperText>}
                             />
                         </Stack>
 
@@ -308,9 +355,41 @@ function ManageUtility() {
                         </Stack>
                     </Box>
                 </Modal>
-                <Modal open={pageState.isDelModalOpen} onClose={handleClose}>
-                    <Box sx={style}>Delete</Box>
-                </Modal>
+                <Dialog
+                    open={pageState.isDelModalOpen === undefined ? false : pageState.isDelModalOpen}
+                    onClose={handleClose}
+                    TransitionComponent={Transition}
+                    // onClose={onClose}
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogContent>
+                        <h4>
+                            {`Bạn có chắc chắn muốn ${pageState.utilModifyingStatus === UtilityStatus.SHOW ? "hiện" : "ẩn"} `}{
+                            <span className={"mx-1"}><i
+                                className={pageState.utility.icon + " mx-1"}></i>{pageState.utility.name}</span>}{"?"}
+                        </h4>
+
+                        <Stack direction="row" spacing={1}>
+
+                        </Stack>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            variant="contained"
+                            color="warning"
+                            onClick={() => handleClose()}
+                        >
+                            Huỷ
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => handleChangeStatus()}
+                        >
+                            Xác nhận
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Box>
         </UtilTableContext.Provider>
     )
