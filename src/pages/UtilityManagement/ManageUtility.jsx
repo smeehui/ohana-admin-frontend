@@ -255,6 +255,7 @@ function ManageUtility() {
                                   ...tableState,
                                   pagination: {paginationModel: {pageSize: 5}},
                               }}
+                              disableRowSelectionOnClick={true}
                               paginationMode="server"
                               autoHeight
                               {...tableState}
