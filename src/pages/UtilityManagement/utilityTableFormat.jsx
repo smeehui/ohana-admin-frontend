@@ -21,6 +21,7 @@ function ActionButton({ row }) {
         const result = await utilitiesService.findById(id);
         setPageState({...pageState,utility: result, isModalOpen: true,mode: "update"})
     };
+    
     const handleChangeStatus = async () => {
         const { id,status } = row;
         const result = await utilitiesService.findById(id);

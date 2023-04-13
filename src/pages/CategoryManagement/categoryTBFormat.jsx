@@ -1,11 +1,31 @@
-import { Delete, Edit } from "@mui/icons-material";
-import { Box, Button, FormHelperText, Input, Modal, Stack, Typography } from "@mui/material";
+import {
+  Delete,
+  Edit,
+  Visibility,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
+} from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  FormHelperText,
+  Input,
+  Modal,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import Category, { CategoryTableConText } from "./Category";
 import { categoryService } from "~/service";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { CategoryStatus } from "./categoryConstant";
+// import { UtilTableContext } from '~/pages/UtilityManagement/ManageUtility';
 
 function ActionButton({ row }) {
   const [state, setState] = useState({
@@ -17,6 +37,49 @@ function ActionButton({ row }) {
   const contextValues = useContext(CategoryTableConText);
 
   const { open, category } = state;
+
+  const handleChangeStatus = async () => {
+    const { id, status } = row;
+    const result = await categoryService.findById(id);
+    setState({
+      ...state,
+      isDelModalOpen: true,
+      category: result,
+      cateModifyingStatus:
+        status === CategoryStatus.SHOW
+          ? CategoryStatus.HIDDEN
+          : CategoryStatus.SHOW,
+    });
+  };
+
+  const handleSubmitChangeStatus = async () => {
+    try {
+        let result = await categoryService.updateStatusCategory(state.category.id, state.cateModifyingStatus)
+        setState({
+            ...state,
+            isModalOpen: false,
+            isDelModalOpen: false,
+            utility: result
+        });
+        contextValues.setState({
+          ...contextValues.state,
+          forceReload: !contextValues.state.forceReload,
+        });
+        toast.success("Đã " + (state.cateModifyingStatus === CategoryStatus.SHOW ? "hiển thị" : "ẩn") + " tiện ích thành công!")
+    } catch (e) {
+        console.log(e);
+        toast.error("Thay đổi trạng thái tiện ích thất bại!")
+    }
+};
+
+const handleChangeStatusClose = () => {
+  formik.resetForm();
+  setState({
+      ...state,
+      isModalOpen: false,
+      isDelModalOpen: false
+  });
+};
 
   const formik = useFormik({
     initialValues: {
@@ -31,20 +94,22 @@ function ActionButton({ row }) {
 
     onSubmit: async (value) => {
       try {
-
-        const {id} = row;
+        const { id } = row;
         value.id = id;
 
         const result = await categoryService.updateCategoryTitle(value);
-  
+
         setState({
           ...state,
           open: false,
           category: {},
           forceReload: !state.forceReload,
         });
-        contextValues.setState({...contextValues.state,forceReload: !contextValues.state.forceReload})
-  
+        contextValues.setState({
+          ...contextValues.state,
+          forceReload: !contextValues.state.forceReload,
+        });
+
         toast.success(`Cập nhật thành công`);
         formik.resetForm();
       } catch (error) {
@@ -55,10 +120,9 @@ function ActionButton({ row }) {
 
   const titleError = formik.touched.title && formik.errors.title;
 
-  
-  useEffect(()=>{
-    formik.setFieldValue("title", state.category.title)
-  },[state.category])
+  useEffect(() => {
+    formik.setFieldValue("title", state.category.title);
+  }, [state.category]);
 
   const handleClose = () => {
     setState({
@@ -84,9 +148,6 @@ function ActionButton({ row }) {
       open: true,
       category: result,
     });
-
-
-    
   };
 
   const style = {
@@ -110,32 +171,97 @@ function ActionButton({ row }) {
           variant="contained"
           color="warning"
         >
-          <Edit /> Chỉnh sửa
+          <Edit /> Sửa
         </Button>
 
-        <Button
-          onClick={handleEdit}
-          size="small"
-          variant="contained"
-          color="error"
-        >
-          <Delete /> Xóa
-        </Button>
+        {row.status === CategoryStatus.SHOW ? (
+          <Button
+            onClick={handleChangeStatus}
+            size="small"
+            variant="contained"
+            color="error"
+            value={CategoryStatus.HIDDEN}
+            sx={{ minWidth: 70 }}
+          >
+            <VisibilityOffOutlined /> Ẩn
+          </Button>
+        ) : (
+          <Button
+            onClick={handleChangeStatus}
+            size="small"
+            variant="contained"
+            color="success"
+            value={CategoryStatus.SHOW}
+            sx={{ minWidth: 70 }}
+          >
+            <VisibilityOutlined /> Hiện
+          </Button>
+        )}
       </Stack>
+
+      <Dialog
+        open={
+          state.isDelModalOpen === undefined
+            ? false
+            : state.isDelModalOpen
+        }
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogContent>
+          <h4>
+            {`Bạn có chắc chắn muốn ${
+              state.cateModifyingStatus === CategoryStatus.SHOW
+                ? "hiện"
+                : "ẩn"
+            } `}
+            {" danh mục "}
+            {
+              <span className={"mx-1"}>
+                <i className={state.category.icon + " mx-1"}></i>
+                {state.category.title}
+              </span>
+            }
+            {"?"}
+          </h4>
+
+          <Stack direction="row" spacing={1}></Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => handleChangeStatusClose()}
+          >
+            Huỷ
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => handleSubmitChangeStatus()}
+          >
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h3" gutterBottom>
             Chỉnh sửa danh mục
           </Typography>
 
-          <Stack component={"form"} onSubmit={formik.handleSubmit} sx={{ marginBottom: "20px" }}>
-            <Input
+          <Stack
+            component={"form"}
+            onSubmit={formik.handleSubmit}
+            sx={{ marginBottom: "20px" }}
+          >
+            <TextField
               sx={{ mt: 2 }}
               onChange={formik.handleChange}
               value={formik.values.title}
-              label="Title"
+              label="Tên danh mục"
               name="title"
-              variant="outlined"
+              variant="standard"
               error={titleError}
               helperText={
                 titleError && (
@@ -181,6 +307,11 @@ const columns = [
   {
     field: "title",
     headerName: "Danh mục",
+    flex: 1,
+  },
+  {
+    field: "status",
+    headerName: "Trạng thái",
     flex: 1,
   },
   {

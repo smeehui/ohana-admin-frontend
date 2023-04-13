@@ -4,6 +4,7 @@ import {
   GET_ALL_CATEGORY,
   GET_CATEGORY_BY_ID,
   UPDATE_CATEGORY_TITLE,
+  UPDATE_STATUS_CATEGORY_BY_ID
 } from "./api";
 
 const getAllCategory = async (pageParam) => {
@@ -42,4 +43,9 @@ const updateCategoryTitle = async (params) => {
   return result.data;
 }
 
-export default { getAllCategory, findById, updateCategoryTitle, addNewCategory };
+const updateStatusCategory = async (id,status)=>{
+  let result = await axios.patch(UPDATE_STATUS_CATEGORY_BY_ID + `/${id}/status=${status}`, null)
+  return result.data;
+}
+
+export default { getAllCategory, findById, updateCategoryTitle, addNewCategory, updateStatusCategory };

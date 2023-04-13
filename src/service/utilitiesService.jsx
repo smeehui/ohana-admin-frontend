@@ -24,10 +24,12 @@ const updateById = async (id,data)=>{
     })
     return result.data;
 }
+
 const updateStatusById = async (id,status)=>{
     let result = await axios.patch(UPDATE_STATUS_UTILITY_BY_ID + `/${id}/status=${status}`,null)
     return result.data;
 }
+
 const createNew = async (data)=>{
     let result = await axios.post(CREATE_NEW_UTILITY,JSON.stringify(data),{
         headers: {

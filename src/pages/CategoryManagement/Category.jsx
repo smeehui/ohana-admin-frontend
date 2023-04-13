@@ -119,7 +119,7 @@ const Category = () => {
       }
     })();
   }, [state.forceReload]);
-console.log(state);
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -175,6 +175,7 @@ console.log(state);
               "& .MuiCheckbox-root": {
                 color: `${colors.greenAccent[200]} !important`,
               },
+
             }}
           >
             <DataGrid columns={columns} autoHeight rows={state.category} />
@@ -195,9 +196,9 @@ console.log(state);
                   <TextField
                     onChange={formik.handleChange}
                     value={formik.values.title}
-                    label="Title"
+                    label="Tên danh mục"
                     name="title"
-                    variant="outlined"
+                    variant="standard"
                     error={titleError}
                     helperText={
                       titleError && (

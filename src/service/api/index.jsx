@@ -22,6 +22,7 @@ export const GET_ALL_CATEGORY = MAIN_API + MIDDLE_PATH + "/api/categories";
 export const GET_CATEGORY_BY_ID = MAIN_API + MIDDLE_PATH + "/api/categories";
 export const UPDATE_CATEGORY_TITLE = MAIN_API + MIDDLE_PATH + "/api/categories";
 export const CREATE_NEW_CATEGORY = MAIN_API + MIDDLE_PATH + "/api/categories/add-category";
+export const UPDATE_STATUS_CATEGORY_BY_ID = MAIN_API + MIDDLE_PATH + "/api/categories";
 
 export const GET_ALL_UTILITIES = MAIN_API + MIDDLE_PATH + "/api/utilities";
 export const GET_UTILITY_BY_ID= MAIN_API + MIDDLE_PATH + "/api/utilities";
