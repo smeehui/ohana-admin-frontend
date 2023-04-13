@@ -2,35 +2,33 @@ import React, {useContext, useState} from "react";
 import {toast} from "react-toastify";
 import {categoryService, utilitiesService} from "~/service";
 import {Button, Stack, Typography} from "@mui/material";
-import {BlockOutlined, Delete, Edit, EditOutlined} from "@mui/icons-material";
+import {
+    BlockOutlined,
+    Delete,
+    Edit,
+    EditOutlined,
+    NewReleasesOutlined,
+    Visibility, VisibilityOffOutlined,
+    VisibilityOutlined
+} from "@mui/icons-material";
 import {UtilTableContext} from "~/pages/UtilityManagement/ManageUtility";
+import {UtilityStatus} from "~/pages/UtilityManagement/data/utilityConstants";
 
 function ActionButton({ row }) {
-    const [state, setState] = useState({
-    });
     const {pageState,setPageState} =useContext(UtilTableContext);
-
-    const handleSubmit = async () => {
-        try {
-        } catch (error) {
-            toast.error(`Cập nhật thất bại`);
-            console.log(error);
-        }
-    };
     const handleEdit = async () => {
         const { id } = row;
         const result = await utilitiesService.findById(id);
         setPageState({...pageState,utility: result, isModalOpen: true,mode: "update"})
     };
     const handleChangeStatus = async () => {
-        const { id } = row;
-
-        const result = await categoryService.findById(id);
-
+        const { id,status } = row;
+        const result = await utilitiesService.findById(id);
         setPageState({
-            ...state,
+            ...pageState,
             isDelModalOpen: true,
             utility: result,
+            utilModifyingStatus: status===UtilityStatus.SHOW ? UtilityStatus.HIDDEN: UtilityStatus.SHOW
         });
     };
 
@@ -45,7 +43,6 @@ function ActionButton({ row }) {
         boxShadow: 24,
         p: 4,
     };
-
     return (
         <>
             <Stack spacing={1} direction="row">
@@ -57,14 +54,34 @@ function ActionButton({ row }) {
                 >
                     <EditOutlined /> Sửa
                 </Button>
-                <Button
-                    onClick={handleChangeStatus}
-                    size="small"
-                    variant="contained"
-                    color="error"
-                >
-                    <BlockOutlined /> Tắt
-                </Button>
+                {
+                    row.status === UtilityStatus.SHOW
+                        ? (
+                            <Button
+                                onClick={handleChangeStatus}
+                                size="small"
+                                variant="contained"
+                                color="error"
+                                value={UtilityStatus.HIDDEN}
+                                sx={{minWidth: 70}}
+                            >
+                                <VisibilityOffOutlined  /> Ẩn
+                            </Button>
+                        )
+                        : (
+                            <Button
+                                onClick={handleChangeStatus}
+                                size="small"
+                                variant="contained"
+                                color="success"
+                                value={UtilityStatus.SHOW}
+                                sx={{minWidth: 70}}
+
+                            >
+                                <VisibilityOutlined  /> Hiện
+                            </Button>
+                        )
+                }
             </Stack>
         </>
     );

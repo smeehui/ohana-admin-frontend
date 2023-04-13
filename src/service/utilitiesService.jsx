@@ -1,5 +1,11 @@
 import axios from "axios";
-import {GET_ALL_UTILITIES, GET_UTILITY_BY_ID, UPDATE_UTILITY_BY_ID} from "~/service/api";
+import {
+    CREATE_NEW_UTILITY,
+    GET_ALL_UTILITIES,
+    GET_UTILITY_BY_ID,
+    UPDATE_STATUS_UTILITY_BY_ID,
+    UPDATE_UTILITY_BY_ID
+} from "~/service/api";
 
 const getAllUtilities = async(pageParams)=>{
     let result = await axios.get(GET_ALL_UTILITIES,{params: pageParams})
@@ -18,12 +24,16 @@ const updateById = async (id,data)=>{
     })
     return result.data;
 }
+const updateStatusById = async (id,status)=>{
+    let result = await axios.patch(UPDATE_STATUS_UTILITY_BY_ID + `/${id}/status=${status}`,null)
+    return result.data;
+}
 const createNew = async (data)=>{
-    let result = await axios.post(UPDATE_UTILITY_BY_ID,JSON.stringify(data),{
+    let result = await axios.post(CREATE_NEW_UTILITY,JSON.stringify(data),{
         headers: {
             "Content-Type": "application/json"
         }
     })
     return result.data;
 }
-export default {getAllUtilities,findById,updateById,createNew};
+export default {getAllUtilities,findById,updateById,createNew,updateStatusById};
