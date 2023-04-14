@@ -222,7 +222,7 @@ function ManageUtility() {
     return (
         <UtilTableContext.Provider value={{pageState, setPageState}}>
             <Box m="20px" display={"flex"} flexDirection={"column"}>
-                <Header title="Danh mục phòng"/>
+                <Header title="Danh mục tiện ích"/>
                 <Box
                     sx={{
                         flex: 1,

@@ -1,5 +1,5 @@
-import {Link} from "react-router-dom";
-import {config} from "~/config";
+import { Link } from "react-router-dom";
+import { config } from "~/config";
 import * as React from "react";
 import GridCellExpand from "~/pages/PostManagement/ListPost/components/GridCellExpand";
 import {PostStatus} from "./constants/PostStatus"
