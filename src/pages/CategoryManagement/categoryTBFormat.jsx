@@ -303,22 +303,31 @@ const columns = [
   {
     field: "id",
     headerName: "ID",
+    headerAlign: 'center',
+    align: 'center',
+    width: 60,
   },
   {
     field: "title",
     headerName: "Danh mục",
     flex: 1,
+    headerAlign: 'center',
+    align: 'center',
   },
   {
     field: "status",
     headerName: "Trạng thái",
     flex: 1,
+    headerAlign: 'center',
+    align: 'center',
   },
   {
     field: "action",
     headerName: "Action",
     width: 200,
     renderCell: ({ row }) => <ActionButton row={row} key={row.title} />,
+    headerAlign: 'center',
+    align: 'center',
   },
 ];
 

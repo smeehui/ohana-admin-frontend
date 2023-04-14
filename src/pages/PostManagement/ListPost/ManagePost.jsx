@@ -106,7 +106,7 @@ const ManagePost = () => {
     );
     return (
         <Box m="20px" display={"flex"} flexDirection={"column"}>
-            <Header title="Danh sách"/>
+            <Header title="Danh sách bài viết"/>
             <Box
                 flex={"1"}
                 sx={{

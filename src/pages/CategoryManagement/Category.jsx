@@ -138,9 +138,12 @@ const Category = () => {
         <Box m="20px" display={"flex"} flexDirection={"column"}>
           <Stack sx={{ height: "35px" }} mb={2} direction="row" spacing={105}>
             <Header title="Danh mục phòng" />
-            <Button
+            
+          </Stack>
+          <Stack sx={{ height: "35px" }} mb={0.5} direction="row" spacing={10} justifyContent="end">
+            
+          <Button
               onClick={handleAdd}
-              size="small"
               variant="contained"
               color="success"
             >
@@ -148,7 +151,6 @@ const Category = () => {
               Thêm mới
             </Button>
           </Stack>
-
           <Box
             flex={"1"}
             sx={{
