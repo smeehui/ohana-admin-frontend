@@ -155,6 +155,14 @@ const Category = () => {
               "& .name-column--cell": {
                 color: colors.greenAccent[300],
               },
+              "& .MuiDataGrid-cell:hover": {
+                cursor: "pointer"
+              },
+              "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within":
+                  {
+                    outline: "none !important"
+                  }
+              ,
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: colors.blueAccent[700],
                 borderBottom: "none",

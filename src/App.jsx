@@ -6,21 +6,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-    const [theme, colorMode] = useMode();
-    const [isSidebar, setIsSidebar] = useState(true);
-    const toastOption = useMemo(() => {
-        return {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: theme.palette.mode,
-        };
-    }, []);
-
     return (
         <>
             <Routes>

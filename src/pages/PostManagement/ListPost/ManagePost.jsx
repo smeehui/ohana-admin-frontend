@@ -118,6 +118,14 @@ const ManagePost = () => {
                     "& .MuiDataGrid-cell": {
                         borderBottom: "none",
                     },
+                    "& .MuiDataGrid-cell:hover": {
+                        cursor: "pointer"
+                    },
+                    "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within":
+                        {
+                            outline: "none !important"
+                        }
+                    ,
                     "& .name-column--cell": {
                         color: colors.greenAccent[300],
                     },

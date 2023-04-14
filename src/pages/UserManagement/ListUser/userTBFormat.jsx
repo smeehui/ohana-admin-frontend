@@ -5,7 +5,6 @@ const columns = [
   {
     field: "id",
     headerName: "ID",
-    width: 50,
     type: "numericColumn",
     sortable: true,
     headerAlign: "center",
