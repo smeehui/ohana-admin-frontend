@@ -10,6 +10,7 @@ import CldImage from "~/components/CldImage";
 import {DataGrid} from "@mui/x-data-grid";
 import {tokens} from "~/theme";
 import {columns} from "./userDetailTBFormat";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 
 const UserDetails = () => {
     const theme = useTheme();
@@ -23,6 +24,8 @@ const UserDetails = () => {
         content: [],
         isLoading: true,
     });
+    useDocumentTitle("Ohana - " +state.user.fullName)
+
 
     useEffect(() => {
         (async () => {
@@ -62,7 +65,7 @@ const UserDetails = () => {
                 </Box>
             ) : (
                 <Container>
-                    <Grid borderRadius={5} container direction={"column"} p={2} bgcolor={colors.grey[800]} mb={5}>
+                    <Grid borderRadius={5} container direction={"column"} p={2} border={"1px solid " + colors.grey[800]} mb={5}>
                         <div>
                             <Header
                                 title="Thông tin khách hàng"
@@ -180,7 +183,7 @@ const UserDetails = () => {
 
                     </Grid>
 
-                    <Grid borderRadius={5} container direction={"column"} p={2} bgcolor={colors.grey[800]}>
+                    <Grid borderRadius={5} container direction={"column"} p={2} border={"1px solid " + colors.grey[800]}>
                         <Box display={"flex"} flexDirection={"column"}>
                             <Header title="Các bài đăng"/>
                             <Box

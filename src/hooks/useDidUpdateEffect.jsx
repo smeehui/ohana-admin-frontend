@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import {useEffect, useRef} from "react";
 
 function useDidUpdateEffect(fn, inputs) {
     const didMountRef = useRef(false);

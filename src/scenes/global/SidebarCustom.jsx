@@ -1,18 +1,12 @@
-import {
-    Menu,
-    MenuItem,
-    Sidebar,
-    SubMenu,
-    useProSidebar,
-} from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
-import { tokens } from "~/theme";
+import {Menu, MenuItem, Sidebar, SubMenu, useProSidebar,} from "react-pro-sidebar";
+import {Box, IconButton, useTheme} from "@mui/material";
+import {Link} from "react-router-dom";
+import {tokens} from "~/theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { sideBarData } from "~/scenes/global/sideBarData";
-import { useState } from "react";
-import { HomeIcon } from "~/assets/icons/icons";
+import {sideBarData} from "~/scenes/global/sideBarData";
+import {useState} from "react";
+import {HomeIcon} from "~/assets/icons/icons";
 
 const Item = ({
     title,
@@ -91,8 +85,7 @@ const SidebarCustom = () => {
                 <Menu className={"pro-sidebar-inner"} iconShape="square">
                     {/* LOGO AND MENU ICON */}
                     <MenuItem
-                        onClick={() => collapseSidebar(!collapsed)}
-                        icon={collapsed ? <MenuOutlinedIcon /> : undefined}
+                        icon={collapsed ? <MenuOutlinedIcon onClick={() => collapseSidebar(!collapsed)} /> : null}
                         style={{
                             color: "red !important",
                             backgroundColor: "transparent",
@@ -108,7 +101,7 @@ const SidebarCustom = () => {
                                 alignItems="center"
                                 ml="15px"
                             >
-                                <HomeIcon textColor={colors.greenAccent[500]} />
+                               <HomeIcon textColor={colors.greenAccent[500]} />
                                 <IconButton
                                     onClick={() => collapseSidebar(!collapsed)}
                                 >

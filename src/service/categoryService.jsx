@@ -1,10 +1,10 @@
-import { default as axios } from "axios";
+import {default as axios} from "axios";
 import {
-  CREATE_NEW_CATEGORY,
-  GET_ALL_CATEGORY,
-  GET_CATEGORY_BY_ID,
-  UPDATE_CATEGORY_TITLE,
-  UPDATE_STATUS_CATEGORY_BY_ID
+    CREATE_NEW_CATEGORY,
+    GET_ALL_CATEGORY,
+    GET_CATEGORY_BY_ID,
+    UPDATE_CATEGORY_TITLE,
+    UPDATE_STATUS_CATEGORY_BY_ID
 } from "./api";
 
 const getAllCategory = async (pageParam) => {

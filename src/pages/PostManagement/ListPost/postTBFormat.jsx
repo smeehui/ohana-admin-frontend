@@ -2,6 +2,8 @@ import {Link} from "react-router-dom";
 import {config} from "~/config";
 import * as React from "react";
 import GridCellExpand from "~/pages/PostManagement/ListPost/components/GridCellExpand";
+import {PostStatus} from "./constants/PostStatus"
+
 
 function renderCellExpand(params) {
     return (
@@ -89,6 +91,23 @@ const columns = [
         sortable: true,
         editable: true,
         type: "singleSelect",
+        renderCell: ({row})=> {
+            switch (row.status) {
+                case (PostStatus.PUBLISHED) :
+                    return "Đã đăng";
+                case (PostStatus.REFUSED) :
+                    return "Đã thu hồi";
+                case (PostStatus.PENDING_REVIEW) :
+                    return "Đang chờ duyệt";
+                case (PostStatus.DRAFT) :
+                    return "Nháp";
+                case (PostStatus.OVER_ROOM) :
+                    return "Đã hết phòng";
+                default:
+                    return "";
+                    break;
+            }
+        },
         valueOptions: ["PUBLISHED", "REFUSED"],
     },
 ];

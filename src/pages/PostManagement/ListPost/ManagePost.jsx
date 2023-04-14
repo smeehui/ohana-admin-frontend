@@ -7,11 +7,13 @@ import {toast} from "react-toastify";
 import {DataGrid, useGridApiRef} from "@mui/x-data-grid";
 import CustomToolbar from "~/pages/PostManagement/ListPost/components/CustomToolbar";
 import {postService} from "~/service";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 
 const ManagePost = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const apiRef = useGridApiRef();
+    useDocumentTitle("Ohana - Quản lý bài viết")
 
     const [tableState, setTableState] = useState({
         pageSize: 100,

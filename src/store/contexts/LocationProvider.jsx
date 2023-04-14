@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import {useReducer} from "react";
 import locationReducer, {initState} from "~/store/contexts/locationReducer";
 import {LocationContext} from "~/store/contexts/index";
 

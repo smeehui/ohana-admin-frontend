@@ -47,12 +47,6 @@ const columns = [
         editable: false,
     },
     {
-        field: "role",
-        headerName: "Role",
-        filter: true,
-        sortable: true,
-    },
-    {
         field: "status",
         headerName: "Trạng thái",
         filter: true,

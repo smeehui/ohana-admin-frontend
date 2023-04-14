@@ -1,13 +1,14 @@
-
 import {
+    CATEGORY,
     DASHBOARD,
     HOME,
+    LOGIN,
     MANAGE_POST,
     MANAGE_USER,
+    MANAGE_UTILITY,
     POST_DETAILS,
     REPORT,
     USER_DETAILS,
-    CATEGORY, LOGIN, MANAGE_UTILITY,
 } from "./routes";
 
 const config = {

@@ -1,10 +1,4 @@
-import {
-  Delete,
-  Edit,
-  Visibility,
-  VisibilityOffOutlined,
-  VisibilityOutlined,
-} from "@mui/icons-material";
+import {Edit, VisibilityOffOutlined, VisibilityOutlined,} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -12,19 +6,19 @@ import {
   DialogActions,
   DialogContent,
   FormHelperText,
-  Input,
   Modal,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import Category, { CategoryTableConText } from "./Category";
-import { categoryService } from "~/service";
-import { toast } from "react-toastify";
-import { useFormik } from "formik";
+import {useContext, useEffect, useState} from "react";
+import {CategoryTableConText} from "./Category";
+import {categoryService} from "~/service";
+import {toast} from "react-toastify";
+import {useFormik} from "formik";
 import * as Yup from "yup";
-import { CategoryStatus } from "./categoryConstant";
+import {CategoryStatus} from "./categoryConstant";
+
 // import { UtilTableContext } from '~/pages/UtilityManagement/ManageUtility';
 
 function ActionButton({ row }) {

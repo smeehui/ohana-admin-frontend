@@ -1,6 +1,9 @@
-import { forwardRef } from "react";
+import {forwardRef} from "react";
+import {useNavigate} from "react-router-dom";
+
 const HomeIcon = forwardRef(
     ({ width = "137px", height = "40px", textColor = "#000000" }, ref) => {
+        const navigate = useNavigate()
         return (
             <svg
                 ref={ref}
@@ -9,6 +12,7 @@ const HomeIcon = forwardRef(
                 height={height}
                 viewBox="0 0 137 40"
                 version="1.1"
+                onClick={()=>navigate("/dashboard")}
             >
                 <title>0711A914-DCAC-4CEB-81DB-C279CD1DCAE0</title>
                 <desc>Created with sketchtool.</desc>

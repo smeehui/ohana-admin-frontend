@@ -1,16 +1,20 @@
-import { Box, useTheme } from "@mui/material";
-import { tokens } from "~/theme";
+import {Box, useTheme} from "@mui/material";
+import {tokens} from "~/theme";
 import Header from "~/components/Header";
-import { columns } from "./userTBFormat";
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
+import {columns} from "./userTBFormat";
+import {Suspense, useCallback, useEffect, useMemo, useState} from "react";
+import {toast} from "react-toastify";
+import {DataGrid, useGridApiRef} from "@mui/x-data-grid";
 import CustomToolbar from "./CustomToolbar";
 import {userService} from "~/service";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
+
 const ManageUser = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const apiRef = useGridApiRef();
+    useDocumentTitle("Ohana - Quản lý người dùng")
+
 
     const [tableState, setTableState] = useState({
         pageSize: 10,

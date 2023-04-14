@@ -3,26 +3,19 @@ import {useTheme} from "@emotion/react";
 import {Done, FilterAlt, RemoveDoneOutlined, Restore,} from "@mui/icons-material";
 import {Button, MenuItem, TextField} from "@mui/material";
 import {Stack} from "@mui/system";
-import {
-    GridToolbarColumnsButton,
-    GridToolbarContainer,
-    GridToolbarDensitySelector,
-    GridToolbarExport,
-} from "@mui/x-data-grid";
+import {GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector,} from "@mui/x-data-grid";
 import useDebounce from "~/hooks/useDebounce";
 import {useIsMount} from "~/hooks/useIsMount";
 import {tokens} from "~/theme";
-import {DRAFT, OVER_ROOM, PENDING_REVIEW, PUBLISHED, REFUSED} from "~/pages/PostManagement/ListPost/constants";
-import {LocationContext} from "~/store/contexts";
-import {CHANGE_DISTRICT} from "~/store/actionConstants";
 import {toast} from "react-toastify";
 import ConfirmationDialog from "~/pages/PostManagement/ListPost/components/ConfirmationDialog";
+import {PostStatus} from "~/pages/PostManagement/ListPost/constants/PostStatus";
 
 const LockButton = ({onClick}) => (
     <Button
         color="error"
         variant="contained"
-        onClick={() => onClick(REFUSED)}
+        onClick={() => onClick(PostStatus.REFUSED)}
         title="Huỷ kích hoạt"
     >
         <RemoveDoneOutlined/>
@@ -34,7 +27,7 @@ const UnlockButton = ({onClick}) => (
         className="align-self-end"
         color="success"
         variant="contained"
-        onClick={() => onClick(PUBLISHED)}
+        onClick={() => onClick(PostStatus.PUBLISHED)}
         title="Kích hoạt"
     >
         <Done/>
@@ -93,13 +86,12 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
     }, []);
     const handleConfirmAction = useCallback(() => {
         const { data, type } = action;
-        console.log(action);
         try {
             data.forEach((element) => {
                 toast.success(
                     `${
-                        type === REFUSED ? "Thu hồi" : "Đăng"
-                    } bài viết ${element.fullName} thành công`,
+                        type === PostStatus.REFUSED ? "Thu hồi" : "Đăng"
+                    } bài viết ${element.title} thành công`,
                 );
             });
         } catch (error) {
@@ -109,18 +101,6 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
             forceReload();
         }
     }, [action.type]);
-
-    const handleChangeProvince = (e) => {
-        // setLocation(prevState => ({...prevState, province_id: e.target.value}))
-        setFilterParams(prevState => ({...prevState, location: {...prevState.location, provinceId: e.target.value}}))
-    }
-
-    const handleChangeDistrict = (e) => {
-        locationDispatch({
-            type: CHANGE_DISTRICT,
-            payload: e.target.value
-        }, locationState)
-    }
 
     return (
         <GridToolbarContainer className="d-flex justify-content-between my-1">
@@ -158,17 +138,17 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
                         <MenuItem value="#">
                             <em>Trạng thái</em>
                         </MenuItem>
-                        <MenuItem value={PUBLISHED}>Đã đăng</MenuItem>
-                        <MenuItem value={REFUSED}>
-                            Đã chặn
+                        <MenuItem value={PostStatus.PUBLISHED}>Đã đăng</MenuItem>
+                        <MenuItem value={PostStatus.REFUSED}>
+                            Đã thu hồi
                         </MenuItem>
-                        <MenuItem value={PENDING_REVIEW}>
+                        <MenuItem value={PostStatus.PENDING_REVIEW}>
                             Đang chờ xác nhận
                         </MenuItem>
-                        <MenuItem value={DRAFT}>
+                        <MenuItem value={PostStatus.DRAFT}>
                             Đang lưu nháp
                         </MenuItem>
-                        <MenuItem value={OVER_ROOM}>
+                        <MenuItem value={PostStatus.OVER_ROOM}>
                             Hết phòng
                         </MenuItem>
                     </TextField>
@@ -193,11 +173,11 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
                 </Stack>
             </form>
             {selectedRows.length > 0 &&
-                (selectedRows.every((row) => row.status === PUBLISHED)
+                (selectedRows.every((row) => row.status === PostStatus.PUBLISHED)
                     ? (<LockButton onClick={handleAction}/>)
-                    : selectedRows.every((row) => row.status === REFUSED)
+                    : selectedRows.every((row) => row.status === PostStatus.REFUSED)
                         ? (<UnlockButton onClick={handleAction}/>)
-                        : selectedRows.every((row) => row.status === PENDING_REVIEW)
+                        : selectedRows.every((row) => row.status === PostStatus.PENDING_REVIEW)
                             ? (<>
                                     <LockButton onClick={handleAction}/>
                                     <UnlockButton onClick={handleAction}/>

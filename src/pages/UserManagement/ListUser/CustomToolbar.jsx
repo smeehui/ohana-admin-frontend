@@ -1,25 +1,14 @@
-import { useTheme } from "@emotion/react";
-import {
-    Add,
-    FilterAlt,
-    Lock,
-    LockOpen,
-    Remove,
-    Restore,
-} from "@mui/icons-material";
-import { Button, IconButton, MenuItem, TextField } from "@mui/material";
-import { Stack } from "@mui/system";
-import {
-    GridToolbarColumnsButton,
-    GridToolbarContainer,
-    GridToolbarDensitySelector,
-} from "@mui/x-data-grid";
-import { memo, useCallback, useEffect, useState } from "react";
+import {useTheme} from "@emotion/react";
+import {FilterAlt, Lock, LockOpen, Restore,} from "@mui/icons-material";
+import {Button, MenuItem, TextField} from "@mui/material";
+import {Stack} from "@mui/system";
+import {GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector,} from "@mui/x-data-grid";
+import {memo, useCallback, useEffect, useState} from "react";
 import useDebounce from "~/hooks/useDebounce";
-import { useIsMount } from "~/hooks/useIsMount";
-import { tokens } from "~/theme";
+import {useIsMount} from "~/hooks/useIsMount";
+import {tokens} from "~/theme";
 import ConfirmationDialog from "./ConfirmationDialog";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 import {userService} from "~/service";
 
 const LockButton = ({ onClick }) => (
@@ -136,22 +125,22 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                         placeholder="Tìm kiếm..."
                     />
 
-                    <TextField
-                        select
-                        onChange={handleChange}
-                        variant="standard"
-                        defaultValue={"#"}
-                        sx={{ m: 0, minWidth: 120 }}
-                        title="Lọc theo quyền"
-                        name="role"
-                        value={filterParams.role || "#"}
-                    >
-                        <MenuItem value="#">
-                            <em>Quyền</em>
-                        </MenuItem>
-                        <MenuItem value={"ADMIN"}>Quản trị viên</MenuItem>
-                        <MenuItem value={"USER"}>Người dùng</MenuItem>
-                    </TextField>
+                    {/*<TextField*/}
+                    {/*    select*/}
+                    {/*    onChange={handleChange}*/}
+                    {/*    variant="standard"*/}
+                    {/*    defaultValue={"#"}*/}
+                    {/*    sx={{ m: 0, minWidth: 120 }}*/}
+                    {/*    title="Lọc theo quyền"*/}
+                    {/*    name="role"*/}
+                    {/*    value={filterParams.role || "#"}*/}
+                    {/*>*/}
+                    {/*    <MenuItem value="#">*/}
+                    {/*        <em>Quyền</em>*/}
+                    {/*    </MenuItem>*/}
+                    {/*    <MenuItem value={"ADMIN"}>Quản trị viên</MenuItem>*/}
+                    {/*    <MenuItem value={"USER"}>Người dùng</MenuItem>*/}
+                    {/*</TextField>*/}
                     <TextField
                         select
                         variant="standard"

@@ -1,11 +1,11 @@
-import { default as axios } from "axios";
+import {default as axios} from "axios";
 import {
-    GET_ALL_USERS,
-    USER_DETAILS,
-    FILTER_USER,
-    UPDATE_USER_STATUS,
-    DEACTIVATE_USER_ALL,
     ACTIVATE_USER_ALL,
+    DEACTIVATE_USER_ALL,
+    FILTER_USER,
+    GET_ALL_USERS,
+    UPDATE_USER_STATUS,
+    USER_DETAILS,
 } from "~/service/api";
 
 const getAllUsers = async (params) => {

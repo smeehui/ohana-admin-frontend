@@ -1,6 +1,3 @@
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-
-
 import {config} from "~/config";
 import {AdminPanelSettingsOutlined, AutoAwesomeOutlined, CategoryOutlined, PostAddOutlined} from "@mui/icons-material";
 

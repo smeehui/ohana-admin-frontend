@@ -34,11 +34,12 @@ import {currencyFormatter} from "~/utils";
 import CldImage from "~/components/CldImage";
 import dateTimeFormatter from "~/utils/dateTimeFormatter";
 import "~/assets/css/ohanaIcons.css";
-import {PENDING_REVIEW, PUBLISHED, REFUSED} from "~/pages/PostManagement/ListPost/constants";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Slide from "@mui/material/Slide";
+import {PostStatus} from "~/pages/PostManagement/ListPost/constants/PostStatus";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide easing={"enter"} ref={ref} {...props} />;
@@ -63,6 +64,8 @@ function PostDetails() {
         modifyingStatus: "",
         isLoading: true,
     });
+    useDocumentTitle("Ohana - " +state.post.title)
+
 
     const boxStyles = useMemo(
         () => ({
@@ -590,17 +593,17 @@ function PostDetails() {
                                             }}
                                         >
                                             {
-                                                state.post.status && state.post.status === REFUSED
+                                                state.post.status && state.post.status === PostStatus.REFUSED
                                                 && <Typography fontSize={18} sx={{alignSelf: "center"}}>Bài viết đã thu
                                                     hồi</Typography>
                                             }
                                             {
-                                                state.post.status && state.post.status === PUBLISHED
+                                                state.post.status && state.post.status === PostStatus.PUBLISHED
                                                 && <Typography fontSize={18} sx={{alignSelf: "center"}}>Bài viết đã
                                                     đăng</Typography>
                                             }
                                             {
-                                                state.post.status && state.post.status === PENDING_REVIEW
+                                                state.post.status && state.post.status === PostStatus.PENDING_REVIEW
                                                 &&
                                                 <Typography fontSize={18} sx={{alignSelf: "center"}}>Bài viết đang chờ
                                                     xác
@@ -611,33 +614,33 @@ function PostDetails() {
                                             <Box display={"flex"} justifyContent={"center"}>
                                                 {
                                                     state.post.status
-                                                    && state.post.status === PUBLISHED
+                                                    && state.post.status === PostStatus.PUBLISHED
                                                     && <Button onClick={handleChangePostStatus} variant={"contained"}
                                                                size={"large"}
-                                                               color={"error"} value={REFUSED}>Khoá bài
+                                                               color={"error"} value={PostStatus.REFUSED}>Khoá bài
                                                         viết <RemoveCircle/></Button>
                                                 }
                                                 {
                                                     state.post.status
-                                                    && state.post.status === PENDING_REVIEW
+                                                    && state.post.status === PostStatus.PENDING_REVIEW
                                                     && (<Stack spacing={2} direction={"column"}>
                                                         <Button onClick={handleChangePostStatus} variant={"contained"}
                                                                 size={"large"}
-                                                                color={"success"} value={PUBLISHED}>Đăng
+                                                                color={"success"} value={PostStatus.PUBLISHED}>Đăng
                                                             bài <CheckCircleOutlined
                                                                 sx={{marginLeft: 1}}/></Button>
                                                         <Button onClick={handleChangePostStatus} variant={"contained"}
                                                                 size={"large"}
-                                                                color={"error"} value={REFUSED}>Khoá bài viết <Block
+                                                                color={"error"} value={PostStatus.REFUSED}>Thu hồi bài viết <Block
                                                             sx={{marginLeft: 1}}/></Button>
                                                     </Stack>)
                                                 }
                                                 {
                                                     state.post.status
-                                                    && state.post.status === REFUSED
+                                                    && state.post.status === PostStatus.REFUSED
                                                     && <Button onClick={handleChangePostStatus} variant={"contained"}
                                                                size={"large"}
-                                                               color={"success"} value={PUBLISHED}>Đăng
+                                                               color={"success"} value={PostStatus.PUBLISHED}>Đăng
                                                         bài <CheckCircleOutlined
                                                             sx={{marginLeft: 1}}/></Button>
                                                 }
@@ -658,7 +661,7 @@ function PostDetails() {
                 >
                     <DialogContent>
                         <h4>
-                            {`Bạn có chắc chắn muốn ${state.modifyingStatus === PUBLISHED ? 'đăng' : 'thu hồi'} bài đăng này:`}
+                            {`Bạn có chắc chắn muốn ${state.modifyingStatus === PostStatus.PUBLISHED ? 'đăng' : 'thu hồi'} bài đăng này:`}
                         </h4>
 
                         <Stack direction="row" spacing={1}>

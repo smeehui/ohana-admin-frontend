@@ -1,16 +1,7 @@
-import React, {useContext, useState} from "react";
-import {toast} from "react-toastify";
-import {categoryService, utilitiesService} from "~/service";
+import React, {useContext} from "react";
+import {utilitiesService} from "~/service";
 import {Button, Stack, Typography} from "@mui/material";
-import {
-    BlockOutlined,
-    Delete,
-    Edit,
-    EditOutlined,
-    NewReleasesOutlined,
-    Visibility, VisibilityOffOutlined,
-    VisibilityOutlined
-} from "@mui/icons-material";
+import {EditOutlined, VisibilityOffOutlined, VisibilityOutlined} from "@mui/icons-material";
 import {UtilTableContext} from "~/pages/UtilityManagement/ManageUtility";
 import {UtilityStatus} from "~/pages/UtilityManagement/data/utilityConstants";
 
@@ -111,6 +102,7 @@ const columns = [
         field: "status",
         headerName: "Trạng thái" ,
         flex: 1,
+        renderCell: ({row}) => row.status===UtilityStatus.SHOW? "Đang hiển thị" : "Đã ẩn"
     },
     {
         field: "action",

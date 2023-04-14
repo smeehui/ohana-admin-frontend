@@ -4,7 +4,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Slide from "@mui/material/Slide";
-import {Stack} from "@mui/system";
 import {Chip, Grid} from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {

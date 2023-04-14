@@ -1,4 +1,5 @@
-import { URLConfig, CloudConfig, Cloudinary } from "@cloudinary/url-gen";
+import {Cloudinary} from "@cloudinary/url-gen";
+
 const CLOUD_NAME= "ohana123"
 const CLOUD_FOLDER = "post_images"
 const API_KEY = "534578634358973"

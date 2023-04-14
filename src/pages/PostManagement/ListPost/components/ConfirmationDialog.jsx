@@ -3,9 +3,8 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import Slide from "@mui/material/Slide";
 import {Chip, Fade, Grid} from "@mui/material";
-import {REFUSED} from "~/pages/PostManagement/ListPost/constants";
+import {PostStatus} from "~/pages/PostManagement/ListPost/constants/PostStatus";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Fade easing={"enter"} ref={ref} {...props} />;
@@ -25,7 +24,7 @@ export default function ConfirmationDialog({ action, onClose, onAgree }) {
                 <DialogContent>
                     <h4>
                         {`Bạn có chắc chắn muốn ${
-                            type === REFUSED
+                            type === PostStatus.REFUSED
                                 ? "thu hồi"
                                 : "đăng"
                         } bài viết:`}
@@ -33,13 +32,14 @@ export default function ConfirmationDialog({ action, onClose, onAgree }) {
 
                     <Grid container direction={"row"} wrap={"wrap"} spacing={1}>
                         {data.map((item) => (
-                            <Grid item>
+                            <Grid key={item.id} item>
                                 <Chip
+                                    sx={{fontSize: 14}}
                                     key={item.id}
                                     variant="outlined"
                                     label={item.title}
                                     color={
-                                        type === REFUSED ? "error" : "success"
+                                        type === PostStatus.REFUSED ? "error" : "success"
                                     }
                                 ></Chip>
                             </Grid>

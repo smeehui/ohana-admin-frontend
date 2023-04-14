@@ -16,6 +16,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import Slide from "@mui/material/Slide";
 import {UtilityStatus} from "~/pages/UtilityManagement/data/utilityConstants";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 
 export const UtilTableContext = createContext();
 
@@ -32,6 +33,8 @@ const ToolBar = ({formik}) => {
     const handleFilter = (e) => {
         setPageState({...pageState, filter: {status: e.target.value==="#"?"":e.target.value}})
     }
+    useDocumentTitle("Ohana - Quản lý tiện ích")
+
     return (
         <GridToolbarContainer className="d-flex justify-content-end my-1">
             <TextField

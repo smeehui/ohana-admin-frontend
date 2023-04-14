@@ -9,17 +9,19 @@ import {
     Stack,
     Tab,
     Tabs,
-    TextField, Typography,
+    TextField,
+    Typography,
     useTheme
 } from "@mui/material";
 import poster from "~/assets/img/sign-in-poster.jpg"
 import {Image} from "react-bootstrap";
 import {tokens} from "~/theme";
 import {HomeIcon} from "~/assets/icons/icons";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
-
+    useDocumentTitle("Ohana - Đăng nhập admin")
     return (
         <div
             role="tabpanel"

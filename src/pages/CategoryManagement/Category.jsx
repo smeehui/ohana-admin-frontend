@@ -1,30 +1,22 @@
-import React, { useState, useEffect, createContext, useContext } from "react";
-import { toast } from "react-toastify";
-import { categoryService } from "~/service";
-import { columns } from "./categoryTBFormat";
-import { DataGrid } from "@mui/x-data-grid";
-import {
-  Alert,
-  Box,
-  Button,
-  FormHelperText,
-  Modal,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { tokens } from "~/theme";
+import React, {createContext, useEffect, useState} from "react";
+import {toast} from "react-toastify";
+import {categoryService} from "~/service";
+import {columns} from "./categoryTBFormat";
+import {DataGrid} from "@mui/x-data-grid";
+import {Box, Button, FormHelperText, Modal, Stack, TextField, Typography, useTheme,} from "@mui/material";
+import {tokens} from "~/theme";
 import Header from "~/components/Header";
-import { Add } from "@mui/icons-material";
-import { useFormik } from "formik";
+import {Add} from "@mui/icons-material";
+import {useFormik} from "formik";
 import * as Yup from "yup";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 
 export const CategoryTableConText = createContext();
 
 const Category = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  useDocumentTitle("Ohana - Quản lý danh mục")
 
   const [state, setState] = useState({
     open: false,
