@@ -19,8 +19,9 @@ body,
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
-    display: none;
+    width: 3px;
+    padding: 0;
+    /*display: none;*/
 }
 
 /* Track */

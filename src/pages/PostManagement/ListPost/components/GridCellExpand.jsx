@@ -96,6 +96,12 @@ const GridCellExpand = React.memo(function GridCellExpand(props) {
                     open={showFullCell && anchorEl !== null}
                     anchorEl={anchorEl}
                     placement="right-end"
+                    modifiers={[{
+                        name: "offset",
+                        options: {
+                            offset: [-10, -10],
+                        }
+                    }]}
                 >
                     <Paper
                         elevation={1}

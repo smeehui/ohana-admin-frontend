@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {useParams} from "react-router-dom";
 import {Col, Container, Row} from "react-bootstrap";
 import {
@@ -14,7 +14,7 @@ import {
     useTheme,
 } from "@mui/material";
 import {toast} from "react-toastify";
-
+import defaultUserImg from "~/assets/img/default-user.png"
 import {cloudinayService, postService} from "~/service";
 import styles from "./PostDetails.module.scss";
 import clsx from "clsx";
@@ -40,6 +40,8 @@ import DialogActions from "@mui/material/DialogActions";
 import Slide from "@mui/material/Slide";
 import {PostStatus} from "~/pages/PostManagement/ListPost/constants/PostStatus";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
+import {AppContext} from "~/store";
+import {GlobalActions} from "~/store/actionConstants";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide easing={"enter"} ref={ref} {...props} />;
@@ -50,21 +52,19 @@ function PostDetails() {
     const theme = useTheme();
     const {formatter} = dateTimeFormatter();
     const colors = tokens(theme.palette.mode);
+    const [globalState, globalDispatch] = useContext(AppContext);
+
+    const {post} = globalState;
+
     const [state, setState] = useState({
-        post: {},
-        postImages: [],
-        rentHouse: {},
         isLoadMore: false,
         imageClicked: false,
-        user: {
-            phone: "",
-        },
         isShowPhone: false,
         isShowConfirm: false,
         modifyingStatus: "",
         isLoading: true,
     });
-    useDocumentTitle("Ohana - " +state.post.title)
+    useDocumentTitle("Ohana - " + post.title)
 
 
     const boxStyles = useMemo(
@@ -79,22 +79,39 @@ function PostDetails() {
     );
 
     const handleChangePostStatus = (e) => {
-        console.log(e.target.value)
         setState({...state, isShowConfirm: true, modifyingStatus: e.target.value})
     }
 
     const onClose = () => {
         setState({...state, isShowConfirm: false})
     }
+
+    function setPostProperties(post) {
+        post.images = post.postMedia.map((img, index) => {
+            let cols = index === 0 ? 4 : 2;
+            let rows = index === 0 ? 4 : 2;
+            let isHidden = index > 4;
+            let size = 100;
+            return srcset(img, size, rows, cols, isHidden, index);
+        });
+
+        globalDispatch({type: GlobalActions.SET_POST_INFO, payload: {post,pageType: "POST"}})
+    }
+
     const onAgree = async () => {
-        const params = {id: state.post.id, status: state.modifyingStatus}
+        const params = {id: post.id, status: state.modifyingStatus}
         try {
-            let result = await postService.updatePostStatusById(params);
-            setState((prevState) => ({
-                ...prevState,
-                post: {...prevState.post, status: result.status},
-                isShowConfirm: false
-            }))
+            globalDispatch({type: GlobalActions.CLEAR_SEARCH})
+            let post = await postService.updatePostStatusById(params);
+            setPostProperties(post);
+            setState((prevState) => {
+                return {
+                    ...prevState,
+                    isLoadMore: post.images.length > 4,
+                    isLoading: false,
+                    isShowConfirm: false,
+                };
+            });
             toast.success("Cập nhật thành công!")
         } catch (err) {
             toast.error("Cập nhật bài viết thất bại")
@@ -107,21 +124,13 @@ function PostDetails() {
         (async () => {
             try {
                 let post = await postService.getPostById(id);
+
+                setPostProperties(post)
+
                 setState((prevState) => {
-                    const images = post.postMedia.map((img, index) => {
-                        let cols = index === 0 ? 4 : 2;
-                        let rows = index === 0 ? 4 : 2;
-                        let isHidden = index > 4;
-                        let size = 100;
-                        return srcset(img, size, rows, cols, isHidden, index);
-                    });
                     return {
                         ...prevState,
-                        post: post,
-                        rentHouse: post.rentHouse,
-                        postImages: images,
-                        isLoadMore: images.length > 4,
-                        user: post.user,
+                        isLoadMore: post.images.length > 4,
                         isLoading: false,
                     };
                 });
@@ -129,7 +138,20 @@ function PostDetails() {
                 toast.error("Lấy dữ liệu post thất bại");
             }
         })();
-    }, []);
+    }, [id]);
+
+    const formatPriceProp = (money) =>{
+        switch (money) {
+            case 0:
+                return "Miễn phí";
+            case undefined:
+            case null:
+                return "Không có thông tin";
+            default:
+                return currencyFormatter.formatVnd(money) + " Đồng"
+        }
+
+    };
 
     function srcset(image, size, rows = 1, cols = 1, isHidden, index) {
         return {
@@ -169,7 +191,7 @@ function PostDetails() {
                 )}
                 <Box borderRadius={2}>
                     <ImageList style={{overflowY: "hidden"}} variant="quilted" cols={8} rowHeight={121}>
-                        {state.postImages.map((img) => (
+                        {post.images.length > 0 && post.images.map((img) => (
                             <ImageListItem
                                 onClick={(e) => handleClick(img)}
                                 className={clsx(
@@ -177,7 +199,7 @@ function PostDetails() {
                                     {
                                         [styles["load-more"]]:
                                         img.index === 4 &&
-                                        state.postImages.length > 5,
+                                        post.images.length > 5,
                                     },
                                 )}
                                 hidden={img.isHidden}
@@ -191,7 +213,7 @@ function PostDetails() {
                                     ,
                                     [`&.${styles["load-more"]}::after`]: {
                                         content: `"+${
-                                            state.postImages.length - 5
+                                            post.images.length - 5
                                         }"`,
                                     },
                                 }}
@@ -204,7 +226,7 @@ function PostDetails() {
                         ))}
                     </ImageList>
                 </Box>
-                <h2>{state.post.title}</h2>
+                <h2>{post.title}</h2>
                 <Box display="flex" className={"flex-md-column flex-lg-row"}>
                     <Col lg={7} md={12} className="pe-2">
                         <Stack direction={"column"} spacing={2}>
@@ -245,9 +267,7 @@ function PostDetails() {
                                                 GIÁ PHÒNG
                                             </Typography>
                                             <Typography>
-                                                {currencyFormatter.formatVnd(
-                                                    state.rentHouse.price,
-                                                )} Đồng
+                                                {formatPriceProp(post.rentHouse.price)}
                                             </Typography>
                                         </Col>
                                         <Col lg={3}>
@@ -255,7 +275,7 @@ function PostDetails() {
                                                 DIỆN TÍCH
                                             </Typography>
                                             <Typography>
-                                                {state.rentHouse.area} mét vuông
+                                                {post.rentHouse.area} mét vuông
                                             </Typography>
                                         </Col>
                                         <Col lg={3}>
@@ -263,7 +283,7 @@ function PostDetails() {
                                                 ĐẶT CỌC
                                             </Typography>
                                             <Typography>
-                                                1,0000,000 Đồng
+                                                {formatPriceProp(post.rentHouse.deposit)}
                                             </Typography>
                                         </Col>
                                         <Col lg={3}>
@@ -271,7 +291,7 @@ function PostDetails() {
                                                 SỨC CHỨA
                                             </Typography>
                                             <Typography>
-                                                {state.rentHouse.capacity}
+                                                {post.rentHouse.capacity}
                                             </Typography>
                                         </Col>
                                     </Row>
@@ -281,7 +301,7 @@ function PostDetails() {
                                                 ĐIỆN
                                             </Typography>
                                             <Typography>
-                                                1,0000,000 Đồng
+                                                {formatPriceProp(post.rentHouse.electricityPrice)}
                                             </Typography>
                                         </Col>
                                         <Col lg={3}>
@@ -289,7 +309,7 @@ function PostDetails() {
                                                 NƯỚC
                                             </Typography>
                                             <Typography>
-                                                1,0000,000 Đồng
+                                                {formatPriceProp(post.rentHouse.waterPrice)}
                                             </Typography>
                                         </Col>
                                         <Col lg={3}>
@@ -297,7 +317,7 @@ function PostDetails() {
                                                 WIFI
                                             </Typography>
                                             <Typography>
-                                                1,0000,000 Đồng
+                                                {formatPriceProp(post.rentHouse.wifiPrice)}
                                             </Typography>
                                         </Col>
                                         <Col lg={3}>
@@ -307,12 +327,12 @@ function PostDetails() {
                                             <Typography
                                                 textTransform={"uppercase"}
                                                 color={
-                                                    state.rentHouse.status
+                                                    post.rentHouse.status
                                                         ? "success"
                                                         : "error"
                                                 }
                                             >
-                                                {state.rentHouse.status
+                                                {post.rentHouse.status
                                                     ? "Còn trống"
                                                     : "Đã cho thuê"}
                                             </Typography>
@@ -324,8 +344,8 @@ function PostDetails() {
                                                 ĐỊA CHỈ
                                             </Typography>
                                             <Typography>
-                                                {state.post.location &&
-                                                    `${state.post.location.line1}, ${state.post.location.wardName}, ${state.post.location.districtName}, ${state.post.location.provinceName}`}
+                                                {post.location &&
+                                                    `${post.location.line1}, ${post.location.wardName}, ${post.location.districtName}, ${post.location.provinceName}`}
                                             </Typography>
                                         </Col>
                                     </Row>
@@ -363,8 +383,8 @@ function PostDetails() {
                                     }}
                                 >
                                     <Grid container direction={"row"} spacing={1}>
-                                        {state.post.utilities &&
-                                            state.post.utilities.map((util) => (
+                                        {post.utilities &&
+                                            post.utilities.map((util) => (
                                                 <Grid
                                                     key={util.id}
                                                     style={{fontSize: "2rem"}}
@@ -422,7 +442,7 @@ function PostDetails() {
                                 >
                                     <Grid container direction={"row"} spacing={1}>
                                         <Typography fontSize={16}>
-                                            {state.post.descriptionContent}
+                                            {post.descriptionContent}
                                         </Typography>
                                     </Grid>
                                 </Box>
@@ -484,13 +504,16 @@ function PostDetails() {
                                                     float: "right",
                                                 }}
                                             >
-                                                <CldImage
-                                                    id={state.user.thumbnailId}
+                                                {post.user.thumbnailId ?
+                                                    <CldImage
+                                                    id={post.user.thumbnailId}
                                                     w={60}
                                                     h={60}
                                                     r={50}
                                                     alt={"user image"}
                                                 />
+                                                : <img src={defaultUserImg} width={60} height={60} style={{borderRadius: "50%"}}/>
+                                                }
                                             </div>
                                             <div className="d-flex flex-column justify-content-between ps-3">
                                                 <Typography
@@ -498,7 +521,7 @@ function PostDetails() {
                                                     fontSize={16}
                                                     className={"w-100"}
                                                 >
-                                                    {state.user.fullName}
+                                                    {post.user.fullName}
                                                 </Typography>
                                                 <Typography
                                                     sx={{cursor: "pointer"}}
@@ -515,9 +538,9 @@ function PostDetails() {
                                                 >
                                                     SĐT:{" "}
                                                     {state.isShowPhone &&
-                                                    state.user.phone
-                                                        ? state.user.phone
-                                                        : state.user.phone.substring(
+                                                    post.user.phone
+                                                        ? post.user.phone
+                                                        : post.user.phone.substring(
                                                         0,
                                                         7,
                                                     ) + "xxx"}
@@ -539,8 +562,8 @@ function PostDetails() {
                                                     className={"w-100"}
                                                 >
                                                     {formatter(
-                                                        state.post.createdAt
-                                                            ? state.post.createdAt
+                                                        post.createdAt
+                                                            ? post.createdAt
                                                             : null,
                                                     )}
                                                 </Typography>
@@ -593,17 +616,17 @@ function PostDetails() {
                                             }}
                                         >
                                             {
-                                                state.post.status && state.post.status === PostStatus.REFUSED
+                                                post.status && post.status === PostStatus.REFUSED
                                                 && <Typography fontSize={18} sx={{alignSelf: "center"}}>Bài viết đã thu
                                                     hồi</Typography>
                                             }
                                             {
-                                                state.post.status && state.post.status === PostStatus.PUBLISHED
+                                                post.status && post.status === PostStatus.PUBLISHED
                                                 && <Typography fontSize={18} sx={{alignSelf: "center"}}>Bài viết đã
                                                     đăng</Typography>
                                             }
                                             {
-                                                state.post.status && state.post.status === PostStatus.PENDING_REVIEW
+                                                post.status && post.status === PostStatus.PENDING_REVIEW
                                                 &&
                                                 <Typography fontSize={18} sx={{alignSelf: "center"}}>Bài viết đang chờ
                                                     xác
@@ -613,16 +636,16 @@ function PostDetails() {
                                         <Grid item xs={6}>
                                             <Box display={"flex"} justifyContent={"center"}>
                                                 {
-                                                    state.post.status
-                                                    && state.post.status === PostStatus.PUBLISHED
+                                                    post.status
+                                                    && post.status === PostStatus.PUBLISHED
                                                     && <Button onClick={handleChangePostStatus} variant={"contained"}
                                                                size={"large"}
                                                                color={"error"} value={PostStatus.REFUSED}>Khoá bài
                                                         viết <RemoveCircle/></Button>
                                                 }
                                                 {
-                                                    state.post.status
-                                                    && state.post.status === PostStatus.PENDING_REVIEW
+                                                    post.status
+                                                    && post.status === PostStatus.PENDING_REVIEW
                                                     && (<Stack spacing={2} direction={"column"}>
                                                         <Button onClick={handleChangePostStatus} variant={"contained"}
                                                                 size={"large"}
@@ -631,13 +654,14 @@ function PostDetails() {
                                                                 sx={{marginLeft: 1}}/></Button>
                                                         <Button onClick={handleChangePostStatus} variant={"contained"}
                                                                 size={"large"}
-                                                                color={"error"} value={PostStatus.REFUSED}>Thu hồi bài viết <Block
-                                                            sx={{marginLeft: 1}}/></Button>
+                                                                color={"error"} value={PostStatus.REFUSED}>Thu hồi bài
+                                                            viết <Block
+                                                                sx={{marginLeft: 1}}/></Button>
                                                     </Stack>)
                                                 }
                                                 {
-                                                    state.post.status
-                                                    && state.post.status === PostStatus.REFUSED
+                                                    post.status
+                                                    && post.status === PostStatus.REFUSED
                                                     && <Button onClick={handleChangePostStatus} variant={"contained"}
                                                                size={"large"}
                                                                color={"success"} value={PostStatus.PUBLISHED}>Đăng

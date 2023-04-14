@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Box, CircularProgress, Container, Grid, Stack, TextField, useTheme,} from "@mui/material";
 import Header from "~/components/Header";
 import Form from "react-bootstrap/Form";
@@ -11,6 +11,8 @@ import {DataGrid} from "@mui/x-data-grid";
 import {tokens} from "~/theme";
 import {columns} from "./userDetailTBFormat";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
+import {AppContext, AppProvider} from "~/store";
+import {GlobalActions} from "~/store/actionConstants";
 
 const UserDetails = () => {
     const theme = useTheme();
@@ -19,26 +21,25 @@ const UserDetails = () => {
 
     const {id} = useParams();
 
+    const [globalState, globalDispatch] = useContext(AppContext);
+
     const [state, setState] = useState({
-        user: {},
-        content: [],
         isLoading: true,
     });
-    useDocumentTitle("Ohana - " +state.user.fullName)
 
+    useDocumentTitle("Ohana - " +globalState.user.fullName)
 
     useEffect(() => {
         (async () => {
             setState({...state, isLoading: true});
             try {
+                globalDispatch({type: GlobalActions.CLEAR_SEARCH})
                 let result = await userService.findById(id);
 
                 let listPosts = await postService.findAllByUserId(id, result);
 
+                globalDispatch({type: GlobalActions.SET_USER_INFO, payload: {user: result,posts: listPosts.content,pageType: "USER"}},globalState)
                 setState({
-                    ...state,
-                    user: result,
-                    content: listPosts.content,
                     isLoading: false,
                 });
             } catch (error) {
@@ -46,8 +47,7 @@ const UserDetails = () => {
                 console.log(error);
             }
         })();
-    }, []);
-
+    }, [id]);
     return (
         <>
             {state.isLoading ? (
@@ -92,7 +92,7 @@ const UserDetails = () => {
                                               type="readonly"
                                               label="Họ tên"
                                               readOnly={true}
-                                              value={state.user.fullName}
+                                              value={globalState.user.fullName}
 
                                           />
                                           <TextField
@@ -100,7 +100,7 @@ const UserDetails = () => {
                                               type="email"
                                               label="Email"
                                               readOnly={true}
-                                              value={state.user.email}
+                                              value={globalState.user.email}
 
                                           />
                                           <TextField
@@ -108,7 +108,7 @@ const UserDetails = () => {
                                               type="phone"
                                               label="Số ĐT"
                                               readOnly={true}
-                                              value={state.user.phone}
+                                              value={globalState.user.phone}
 
                                           />
                                       </Stack>
@@ -117,9 +117,8 @@ const UserDetails = () => {
                                           <TextField
                                               fullWidth
                                               label={"Mô tả"}
-                                              rows={3}
                                               readOnly={true}
-                                              value={state.user.description}
+                                              value={globalState.user.description}
                                               multiline
                                               maxRows={4}
                                           />
@@ -128,9 +127,8 @@ const UserDetails = () => {
                                               multiline
                                               label={"Địa chỉ"}
                                               maxRows={4}
-                                              rows={3}
                                               readOnly={true}
-                                              value={state.user.address}
+                                              value={globalState.user.address}
                                           />
 
                                       </Stack>
@@ -142,7 +140,7 @@ const UserDetails = () => {
                                               type="text"
                                               label="Role"
                                               readOnly={true}
-                                              value={state.user.role}
+                                              value={globalState.user.role}
 
                                           />
                                           <TextField
@@ -150,22 +148,22 @@ const UserDetails = () => {
                                               type="text"
                                               label="Trạng thái"
                                               readOnly={true}
-                                              value={state.user.status}
+                                              value={globalState.user.status}
 
                                           />
                                       </Stack>
                                   </Stack>
                                 </Grid>
 
-                                <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} xs={4}>
-                                    {state.user.thumbnailId
+                                <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} item xs={4}>
+                                    {globalState.user.thumbnailId
                                         ? (
                                             <CldImage
-                                            id={state.user.thumbnailId}
+                                            id={globalState.user.thumbnailId}
                                             w={275}
                                             h={275}
                                             r={50}
-                                            alt={state.user.fullName}
+                                            alt={globalState.user.fullName}
                                         /> )
                                         : (
                                         <img
@@ -222,7 +220,7 @@ const UserDetails = () => {
                                            Người dùng chưa có bài đăng nào
                                         </Stack>
                                     )
-                                }} initialState={{pagination: {paginationModel: {pageSize: 10}}}} pageSizeOptions={[10,20,30]} columns={columns} autoHeight rows={state.content}/>
+                                }} initialState={{pagination: {paginationModel: {pageSize: 10}}}} pageSizeOptions={[10,20,30]} columns={columns} autoHeight rows={globalState.posts}/>
                             </Box>
                         </Box>
                     </Grid>
