@@ -5,6 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Slide from "@mui/material/Slide";
 import {Chip, Grid} from "@mui/material";
+import {UserStatus} from "~/pages/UserManagement/constants/UserStatus";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -24,7 +25,7 @@ export default function ConfirmationDialog({ action, onClose, onAgree }) {
                 <DialogContent>
                     <h4>
                         {`Bạn có chắc chắn muốn ${
-                            type === "deactivate"
+                            type === UserStatus.DEACTIVATED
                                 ? "huỷ kích hoạt"
                                 : "kích hoạt"
                         }:`}
@@ -38,7 +39,7 @@ export default function ConfirmationDialog({ action, onClose, onAgree }) {
                                     variant="outlined"
                                     label={item.fullName}
                                     color={
-                                        type === "deactivate" ? "error" : "success"
+                                        type === UserStatus.DEACTIVATED ? "error" : "success"
                                     }
                                 ></Chip>
                             </Grid>

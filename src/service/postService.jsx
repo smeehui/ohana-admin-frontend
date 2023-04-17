@@ -1,5 +1,11 @@
 import {default as axios} from "axios";
-import {FILTER_POST, GET_ALL_POSTS, GET_ALL_POSTS_BY_USERID, UPDATE_POST_STATUS_BY_ID,} from "~/service/api/index.jsx";
+import {
+    FILTER_POST,
+    GET_ALL_POSTS,
+    GET_ALL_POSTS_BY_USERID,
+    UPDATE_ALL_POST_STATUS_BY_IDS,
+    UPDATE_POST_STATUS_BY_ID,
+} from "~/service/api/index.jsx";
 
 const getAllPosts = async (pageParam) => {
     let result = await axios
@@ -53,4 +59,16 @@ const updatePostStatusById = async (params) => {
     )
     return result.data;
 }
-export default {getAllPosts, findAllByUserId, filterPosts, getPostById, updatePostStatusById};
+const updateAllPostStatusByIds = async (ids,status) => {
+    let result = await axios.patch(
+        UPDATE_ALL_POST_STATUS_BY_IDS + `/${status}/status`,
+        JSON.stringify(ids),
+        {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+    )
+    return result.data;
+}
+export default {getAllPosts, findAllByUserId, filterPosts, getPostById, updatePostStatusById,updateAllPostStatusByIds};

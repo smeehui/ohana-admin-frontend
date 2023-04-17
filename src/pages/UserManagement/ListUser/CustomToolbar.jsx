@@ -10,12 +10,13 @@ import {tokens} from "~/theme";
 import ConfirmationDialog from "./ConfirmationDialog";
 import {toast} from "react-toastify";
 import {userService} from "~/service";
+import {UserStatus} from "~/pages/UserManagement/constants/UserStatus";
 
 const LockButton = ({ onClick }) => (
     <Button
         color="error"
         variant="contained"
-        onClick={() => onClick("deactivate")}
+        onClick={() => onClick(UserStatus.DEACTIVATED)}
         title="Huỷ kích hoạt"
     >
         <Lock />
@@ -27,7 +28,7 @@ const UnlockButton = ({ onClick }) => (
         className="align-self-end"
         color="success"
         variant="contained"
-        onClick={() => onClick("activate")}
+        onClick={() => onClick(UserStatus.ACTIVATED)}
         title="Kích hoạt"
     >
         <LockOpen />
@@ -92,9 +93,8 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
             );
             const successfulUsers = data.filter(u => result.succeed.some(rs => rs === u.id));
             const failedUsers = data.filter(u => result.failed.some(rs => rs === u.id));
-            console.log(successfulUsers, failedUsers);
-            successfulUsers.forEach(u=>toast.success( `${type==="deactivate" ? "Huỷ kích hoạt ": "Kích hoạt "} tài khoản ${u.fullName} thành công!`))
-            failedUsers.forEach(u=>toast.error( `${type==="deactivate" ? "Huỷ kích hoạt ": "Kích hoạt "} tài khoản ${u.fullName} thất bại!`))
+            successfulUsers.forEach(u=>toast.success( `${type===UserStatus.DEACTIVATED ? "Huỷ kích hoạt ": "Kích hoạt "} tài khoản ${u.fullName} thành công!`))
+            failedUsers.forEach(u=>toast.error( `${type===UserStatus.DEACTIVATED ? "Huỷ kích hoạt ": "Kích hoạt "} tài khoản ${u.fullName} thất bại!`))
         } catch (error) {
             console.log(error);
         } finally {

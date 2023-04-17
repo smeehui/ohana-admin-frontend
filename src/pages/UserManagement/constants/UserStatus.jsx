@@ -1,0 +1,9 @@
+const ACTIVATED = "ACTIVATED";
+const DEACTIVATED = "DEACTIVATED";
+const CONFIRM_EMAIL = "CONFIRM_EMAIL";
+
+export const UserStatus =  {
+    ACTIVATED,
+    DEACTIVATED,
+    CONFIRM_EMAIL
+}

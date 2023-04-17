@@ -10,6 +10,7 @@ import {tokens} from "~/theme";
 import {toast} from "react-toastify";
 import ConfirmationDialog from "~/pages/PostManagement/ListPost/components/ConfirmationDialog";
 import {PostStatus} from "~/pages/PostManagement/ListPost/constants/PostStatus";
+import {postService} from "~/service";
 
 const LockButton = ({onClick}) => (
     <Button
@@ -85,21 +86,22 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
         setAction((prev) => ({...prev, type: type, isShow: false}));
     }, []);
     const handleConfirmAction = useCallback(() => {
-        const { data, type } = action;
-        try {
-            data.forEach((element) => {
-                toast.success(
-                    `${
-                        type === PostStatus.REFUSED ? "Thu hồi" : "Đăng"
-                    } bài viết ${element.title} thành công`,
-                );
-            });
-        } catch (error) {
-            console.log(error);
-        } finally {
-            handleCloseDialog();
-            forceReload();
-        }
+        (async ()=>{
+            const { data, type } = action;
+            try {
+                let ids = data.map(item => item.id);
+                let result = await postService.updateAllPostStatusByIds(ids,type)
+                const successfulPosts = data.filter(u => result.succeed.some(rs => rs === u.id));
+                const failedPosts = data.filter(u => result.failed.some(rs => rs === u.id));
+                successfulPosts.forEach(p=>toast.success( `${type===PostStatus.PUBLISHED ? "Đăng ": "Thu hồi "} bài viết ${p.title} thành công!`))
+                failedPosts.forEach(p=>toast.error( `${type===PostStatus.PUBLISHED ? "Đăng ": "Thu hồi "} bài viết ${p.title} thất bại!`))
+            } catch (error) {
+                console.log(error);
+            } finally {
+                handleCloseDialog();
+                forceReload();
+            }
+        })()
     }, [action.type]);
 
     return (
@@ -150,6 +152,9 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
                         </MenuItem>
                         <MenuItem value={PostStatus.OVER_ROOM}>
                             Hết phòng
+                        </MenuItem>
+                        <MenuItem value={PostStatus.OVER_ROOM}>
+                            Đã xoá
                         </MenuItem>
                     </TextField>
                     <Button

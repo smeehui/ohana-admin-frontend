@@ -1,5 +1,6 @@
 import {Link} from "react-router-dom";
 import {config} from "~/config";
+import {UserStatus} from "~/pages/UserManagement/constants/UserStatus";
 
 const columns = [
   {
@@ -70,7 +71,7 @@ const columns = [
     sortable: true,
     width: 150,
     type: "singleSelect",
-    valueOptions: ["ACTIVATED", "DEACTIVATED"],
+    valueOptions: [UserStatus.ACTIVATED,UserStatus.DEACTIVATED],
     headerAlign: "center",
     align: "center",
   },

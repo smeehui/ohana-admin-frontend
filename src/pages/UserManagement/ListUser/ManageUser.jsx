@@ -160,7 +160,6 @@ const ManageUser = () => {
                         loading={tableState.isLoading}
                         processRowUpdate={handleCellValueChanged}
                         onProcessRowUpdateError={handleProcessRowUpdateError}
-                        isCellEditable={({ row }) => row.role !== "ADMIN"}
                         rowSelection
                         onPaginationModelChange={(paginationModel) =>
                             setTableState((prev) => ({

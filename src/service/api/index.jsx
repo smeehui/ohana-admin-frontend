@@ -15,6 +15,7 @@ export const GET_ALL_POSTS = MAIN_API + MIDDLE_PATH + "/api/posts";
 export const GET_ALL_POSTS_BY_USERID = MAIN_API + MIDDLE_PATH + "/api/posts";
 export const GET_POST_BY_ID = MAIN_API + MIDDLE_PATH + "/api/posts";
 export const UPDATE_POST_STATUS_BY_ID = MAIN_API + MIDDLE_PATH + "/api/posts";
+export const UPDATE_ALL_POST_STATUS_BY_IDS = MAIN_API + MIDDLE_PATH + "/api/posts";
 export const FILTER_POST = MAIN_API + MIDDLE_PATH + "/api/posts/filter";
 
 

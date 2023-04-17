@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Box, CircularProgress, Container, Grid, Stack, TextField, useTheme,} from "@mui/material";
+import {Box, Button, CircularProgress, Container, Grid, InputBase, Stack, TextField, useTheme,} from "@mui/material";
 import Header from "~/components/Header";
 import Form from "react-bootstrap/Form";
 import {toast} from "react-toastify";
@@ -133,7 +133,7 @@ const UserDetails = () => {
 
                                       </Stack>
 
-                                      <Stack spacing={2} direction={"row"} justifyContent={"space-between"}>
+                                      <Stack spacing={2} direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
 
                                           <TextField
                                               fullWidth
@@ -149,8 +149,12 @@ const UserDetails = () => {
                                               label="Trạng thái"
                                               readOnly={true}
                                               value={globalState.user.status}
-
                                           />
+                                      </Stack>
+                                      <Stack spacing={2} direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+                                          {
+
+                                          }
                                       </Stack>
                                   </Stack>
                                 </Grid>
