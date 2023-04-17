@@ -123,6 +123,8 @@ const columns = [
           return "Nháp";
         case PostStatus.OVER_ROOM:
           return "Đã hết phòng";
+        case PostStatus.DELETED:
+          return "Đã xoá";
         default:
           return "";
           break;

@@ -13,6 +13,7 @@ const initState = {
     pageType: "",
     isSearching: false,
     isShowResults: false,
+    isForceReloadPage:false
 }
 
 const actions = {
@@ -51,7 +52,7 @@ const actions = {
     },
     [GlobalActions.CLEAR_SEARCH]: (action,state) => {
         return {...state,isSearching: false, isShowResults: false}
-    },
+    }
 }
 
 

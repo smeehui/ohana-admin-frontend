@@ -156,7 +156,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
                         <MenuItem value={PostStatus.OVER_ROOM}>
                             Hết phòng
                         </MenuItem>
-                        <MenuItem value={PostStatus.OVER_ROOM}>
+                        <MenuItem value={PostStatus.DELETED}>
                             Đã xoá
                         </MenuItem>
                     </TextField>

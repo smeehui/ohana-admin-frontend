@@ -12,5 +12,6 @@ const GlobalActions = {
     END_SEARCH: "END_SEARCH",
     HIDE_SEARCH: "HIDE_SEARCH",
     CLEAR_SEARCH: "CLEAR_SEARCH",
+    RELOAD_PAGE: "RELOAD_PAGE",
 }
 export {GlobalActions}

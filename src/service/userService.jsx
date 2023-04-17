@@ -36,7 +36,6 @@ const filterUsers = async (filter, paginationParams) => {
 
 const updateUserStatusById = async (id, stt) => {
     let user = await axios.patch(UPDATE_USER_STATUS + `/${id}/status`,null,{params: {status: stt}})
-    
     return user;
 };
 

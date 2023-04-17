@@ -613,8 +613,7 @@ function PostDetails() {
                                                 borderRight:
                                                     "1px solid" + colors.grey[500],
                                                 justifyContent: "center"
-                                            }}
-                                        >
+                                            }}>
                                             {
                                                 post.status && post.status === PostStatus.REFUSED
                                                 && <Typography fontSize={18} sx={{alignSelf: "center"}}>Bài viết đã thu
@@ -669,8 +668,16 @@ function PostDetails() {
                                                             sx={{marginLeft: 1}}/></Button>
                                                 }
                                             </Box>
-                                        </Grid>
+                                        </Grid >
+                                        {
+                                            post.status && post.status === PostStatus.DELETED
+                                            &&
+                                            <Grid xs={12}>
+                                                <Typography flex={1} variant={"secondary"} sx={{opacity: ".5"}} fontSize={18}>Bài viết đã bị xoá bởi người dùng!</Typography>
+                                            </Grid>
+                                        }
                                     </Grid>
+
                                 </Stack>
                             </Box>
                         </Stack>

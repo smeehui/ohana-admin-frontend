@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import {Box, Button, CircularProgress, Container, Grid, InputBase, Stack, TextField, useTheme,} from "@mui/material";
 import Header from "~/components/Header";
 import Form from "react-bootstrap/Form";
@@ -13,7 +13,17 @@ import {columns} from "./userDetailTBFormat";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import {AppContext, AppProvider} from "~/store";
 import {GlobalActions} from "~/store/actionConstants";
+import {UserStatus} from "~/pages/UserManagement/constants/UserStatus";
+import {PostStatus} from "~/pages/PostManagement/ListPost/constants/PostStatus";
+import {Block, CheckCircleOutlined} from "@mui/icons-material";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Slide from "@mui/material/Slide";
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide easing={"enter"} ref={ref} {...props} />;
+});
 const UserDetails = () => {
     const theme = useTheme();
 
@@ -25,6 +35,9 @@ const UserDetails = () => {
 
     const [state, setState] = useState({
         isLoading: true,
+        modifyingStatus: UserStatus.ACTIVATED,
+        isShowConfirm: false,
+        isReloadPage: false,
     });
 
     useDocumentTitle("Ohana - " +globalState.user.fullName)
@@ -39,15 +52,34 @@ const UserDetails = () => {
                 let listPosts = await postService.findAllByUserId(id, result);
 
                 globalDispatch({type: GlobalActions.SET_USER_INFO, payload: {user: result,posts: listPosts.content,pageType: "USER"}},globalState)
-                setState({
+                setState({...state,
                     isLoading: false,
                 });
+                console.log("reload")
             } catch (error) {
                 toast.error("Lấy dữ liệu thất bại!");
                 console.log(error);
             }
         })();
-    }, [id]);
+    }, [id,state.isReloadPage]);
+    console.log(state.isReloadPage)
+
+    const  handleConfirmChangeStatus = async ()=>{
+        try {
+            await userService.updateUserStatusById(id,state.modifyingStatus);
+            setState(prevState => ({...prevState,isReloadPage:!prevState.isReloadPage,isShowConfirm: false}))
+        } catch (error) {
+            toast.error("Cập nhật thất bại!");
+            console.log(error);
+            setState(prevState => ({...prevState,isLoading: false}))
+        }
+    }
+    const handleClick = (e)=> {
+        setState({...state,isShowConfirm: true,modifyingStatus: e.currentTarget.value})
+    }
+    const onClose = ()=>{
+        setState({...state,isShowConfirm: false})
+    }
     return (
         <>
             {state.isLoading ? (
@@ -153,7 +185,43 @@ const UserDetails = () => {
                                       </Stack>
                                       <Stack spacing={2} direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
                                           {
-
+                                              globalState.user
+                                              && globalState.user.status
+                                              && globalState.user.status === UserStatus.CONFIRM_EMAIL
+                                              && (<Stack spacing={2} direction={"row"}>
+                                                  <Button onClick={handleClick()} variant={"contained"}
+                                                          size={"large"}
+                                                          color={"success"} value={UserStatus.ACTIVATED}>Kích hoạt
+                                                      <CheckCircleOutlined sx={{marginLeft: 1}}/>
+                                                  </Button>
+                                                  <Button onClick={handleClick} variant={"contained"}
+                                                          size={"large"}
+                                                          color={"error"} value={UserStatus.DEACTIVATED}>Huỷ kích hoạt
+                                                      <Block sx={{marginLeft: 1}}/>
+                                                  </Button>
+                                              </Stack>)
+                                          }
+                                          {
+                                              globalState.user
+                                              && globalState.user.status
+                                              && globalState.user.status === UserStatus.ACTIVATED
+                                              && (<Stack spacing={2} direction={"row"}>
+                                                  <Button onClick={handleClick} variant={"contained"}
+                                                          size={"large"}
+                                                          color={"error"} value={UserStatus.DEACTIVATED}>Huỷ kích hoạt <Block sx={{marginLeft: 1}}/>
+                                                  </Button>
+                                              </Stack>)
+                                          }
+                                          {
+                                              globalState.user
+                                              && globalState.user.status
+                                              && globalState.user.status === UserStatus.DEACTIVATED
+                                              && (<Stack spacing={2} direction={"row"}>
+                                                  <Button onClick={handleClick} variant={"contained"}
+                                                          size={"large"}
+                                                          color={"success"} value={UserStatus.ACTIVATED}>Kích hoạt <CheckCircleOutlined sx={{marginLeft: 1}}/>
+                                                  </Button>
+                                              </Stack>)
                                           }
                                       </Stack>
                                   </Stack>
@@ -228,6 +296,39 @@ const UserDetails = () => {
                             </Box>
                         </Box>
                     </Grid>
+                    <Dialog
+                        open={!!state.isShowConfirm}
+                        TransitionComponent={Transition}
+                        keepMounted
+                        // onClose={onClose}
+                        aria-describedby="alert-dialog-slide-description"
+                    >
+                        <DialogContent>
+                            <h4>
+                                {`Bạn có chắc chắn muốn ${state.modifyingStatus === UserStatus.ACTIVATED ? 'kích hoạt' : 'khoá'} người dùng này?`}
+                            </h4>
+
+                            <Stack direction="row" spacing={1}>
+
+                            </Stack>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                variant="contained"
+                                color="warning"
+                                onClick={() => onClose()}
+                            >
+                                Huỷ
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => handleConfirmChangeStatus()}
+                            >
+                                Xác nhận
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Container>
             )}
         </>
