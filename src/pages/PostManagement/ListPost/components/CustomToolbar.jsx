@@ -61,6 +61,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
         e.preventDefault();
         setAction({...action, isFilter: !action.isFilter});
     };
+
     const handleChange = (e) => {
         if (e.target.value === "#")
             return (prev) => ({
@@ -71,6 +72,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
             return {...prev, [e.target.name]: e.target.value};
         });
     };
+
     useEffect(() => {
         if (!isMounted) handleFilter(filterParams);
     }, [debouncedFilter, action.isFilter]);
@@ -84,6 +86,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
     const handleCloseDialog = useCallback((type) => {
         setAction((prev) => ({...prev, type: type, isShow: false}));
     }, []);
+    
     const handleConfirmAction = useCallback(() => {
         const { data, type } = action;
         try {

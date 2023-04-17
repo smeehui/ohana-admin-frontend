@@ -30,6 +30,7 @@ const Category = () => {
   const formik = useFormik({
     initialValues: {
       title: "",
+      status: "SHOW"
     },
     validationSchema: Yup.object({
       title: Yup.string()
