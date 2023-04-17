@@ -84,6 +84,7 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
     const handleCloseDialog = useCallback((type) => {
         setAction((prev) => ({ ...prev, type: type, isShow: false }));
     }, []);
+    
     const handleConfirmAction = useCallback(async () => {
         const { data, type } = action;
         try {
