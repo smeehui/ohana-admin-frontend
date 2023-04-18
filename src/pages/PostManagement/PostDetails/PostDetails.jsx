@@ -42,6 +42,7 @@ import {PostStatus} from "~/pages/PostManagement/ListPost/constants/PostStatus";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import {AppContext} from "~/store";
 import {GlobalActions} from "~/store/actionConstants";
+import noImage from '~/assets/img/no-image.jpg'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide easing={"enter"} ref={ref} {...props} />;
@@ -221,7 +222,10 @@ function PostDetails() {
                                 cols={img.cols || 1}
                                 rows={img.rows || 1}
                             >
-                                <img alt={"Post image"} src={img.url}/>
+                                <img alt={"Post image"} src={img.url}  onError={({ currentTarget }) => {
+                                    currentTarget.onerror = null; // prevents looping
+                                    currentTarget.src= noImage;
+                                }}/>
                             </ImageListItem>
                         ))}
                     </ImageList>

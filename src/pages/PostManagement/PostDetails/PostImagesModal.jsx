@@ -9,6 +9,8 @@ import ImageGallery from 'react-image-gallery';
 import "react-image-gallery/styles/css/image-gallery.css"
 import {Grow} from "@mui/material";
 import {Downloading} from "@mui/icons-material";
+import noImage from '~/assets/img/no-image.jpg'
+
 
 const style = {
     transform: 'translate(-50%, -50%)',
@@ -37,7 +39,11 @@ function PostImagesModal({isOpen, onClose}) {
                         thumbnail: cloudinayService.generateImageById(img.id, {width: 90, height: 90}),
                         renderItem: item => {
                             return <div style={{width: "100%", height: "600px", alignSelf: "center"}}>
-                                <img alt={"Post image"} src={item.original}/>
+                                <img  onError={({ currentTarget }) => {
+                                    currentTarget.onerror = null; // prevents looping
+                                    currentTarget.src= noImage;
+                                }}
+                                      alt={"Post image"} src={item.original}/>
                             </div>
                         },
                     }))
@@ -49,21 +55,25 @@ function PostImagesModal({isOpen, onClose}) {
         })();
     }, []);
 
+    const handleImgError = (e)=>{
+        e.target.src = noImage;
+    }
+
     return (
         <div>
             <Modal
                 open={open}
                 onClose={onClose}
-
+                sx={{bgcolor: "#000000ad"}}
             >
                 <Grow in={open}
                       {...(open ? { timeout: 1000 } : {})}
-                        style={{position: "relative",width: "100%"}}
+                        style={{position: "relative",width: "100%",height: "100%"}}
                 >
                     {state.isLoading
                         ? <Box><Downloading/></Box>
                         : <Box sx={style}>
-                            <ImageGallery lazyLoad={true} thumbnailPosition={"right"} items={images}/>
+                            <ImageGallery onThumbnailError={handleImgError} showFullscreenButton={false} showPlayButton={false} lazyLoad={true} thumbnailPosition={"right"} items={images}/>
                         </Box>
                     }
                 </Grow>
