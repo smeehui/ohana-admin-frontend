@@ -1,26 +1,34 @@
-import {useMemo, useState} from "react";
+import {useContext, useMemo, useState} from "react";
 import {Route, Routes} from "react-router-dom";
 import {useMode} from "./theme.jsx";
 import {publicRoutes} from "~/routes/index.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
+import {AppContext} from "~/store";
+import LoginRegLayout from "~/scenes/global/LoginRegLayout";
+import Login from "~/pages/Login/Login";
 
 function App() {
+    const [state, dispatch] = useContext(AppContext);
     return (
         <>
             <Routes>
-                {publicRoutes.map((route) => {
-                    const {path} = route;
-                    const Page = route.element;
-                    const Layout = route.layout ? route.layout : null
-                    return (
-                        <Route
-                            key={path}
-                            path={path}
-                            element={<Layout><Page/></Layout>}
-                        />
-                    );
-                })}
+                {
+                    Object.keys(state.admin).length!==0
+                    ? publicRoutes.map((route) => {
+                                const {path} = route;
+                                const Page = route.element;
+                                const Layout = route.layout ? route.layout : null
+                                return (
+                                    <Route
+                                        key={path}
+                                        path={path}
+                                        element={<Layout><Page/></Layout>}
+                                    />
+                                );
+                            })
+                        : <Route path={"*"} element={<LoginRegLayout><Login/></LoginRegLayout>}/>
+                }
                 {/*<Route path="/" element={<Dashboard />} />*/}
                 {/*<Route path="/team" element={<Team />} />*/}
                 {/* <Route path="/contacts" element={<Contacts />} /> */}

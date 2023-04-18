@@ -13,7 +13,8 @@ const initState = {
     pageType: "",
     isSearching: false,
     isShowResults: false,
-    isForceReloadPage:false
+    isForceReloadPage:false,
+    admin: {}
 }
 
 const actions = {
