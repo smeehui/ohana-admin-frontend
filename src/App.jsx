@@ -14,20 +14,18 @@ function App() {
         <>
             <Routes>
                 {
-                    Object.keys(state.admin).length!==0
-                    ? publicRoutes.map((route) => {
-                                const {path} = route;
-                                const Page = route.element;
-                                const Layout = route.layout ? route.layout : null
-                                return (
-                                    <Route
-                                        key={path}
-                                        path={path}
-                                        element={<Layout><Page/></Layout>}
-                                    />
-                                );
-                            })
-                        : <Route path={"*"} element={<LoginRegLayout><Login/></LoginRegLayout>}/>
+                     publicRoutes.map((route) => {
+                        const {path} = route;
+                        const Page = route.element;
+                        const Layout = route.layout ? route.layout : null
+                        return (
+                            <Route
+                                key={path}
+                                path={path}
+                                element={<Layout><Page/></Layout>}
+                            />
+                        );
+                    })
                 }
                 {/*<Route path="/" element={<Dashboard />} />*/}
                 {/*<Route path="/team" element={<Team />} />*/}

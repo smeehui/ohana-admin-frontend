@@ -5,6 +5,7 @@ import {
     GET_ALL_POSTS_BY_USERID,
     UPDATE_ALL_POST_STATUS_BY_IDS,
     UPDATE_POST_STATUS_BY_ID,
+    GET_POST_BY_ID,
 } from "~/service/api/index.jsx";
 
 const getAllPosts = async (pageParam) => {
@@ -47,6 +48,20 @@ const getPostById = async (postId) => {
     return result.data;
 };
 
+const findEmailById = async (params) => {
+    let result = await axios
+        .patch(UPDATE_POST_STATUS_BY_ID + `/${params.id}/email`,
+        JSON.stringify(params),
+        {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+        )
+        .catch((jqXHR) => console.log(jqXHR));
+    return result.data;
+};
+
 const updatePostStatusById = async (params) => {
     let result = await axios.patch(
         UPDATE_POST_STATUS_BY_ID + "/" + params.id,
@@ -71,4 +86,4 @@ const updateAllPostStatusByIds = async (ids,status) => {
     )
     return result.data;
 }
-export default {getAllPosts, findAllByUserId, filterPosts, getPostById, updatePostStatusById,updateAllPostStatusByIds};
+export default {getAllPosts, findAllByUserId, filterPosts, getPostById, updatePostStatusById,updateAllPostStatusByIds, findEmailById};
