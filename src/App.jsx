@@ -14,7 +14,8 @@ function App() {
         <>
             <Routes>
                 {
-                    Object.keys(state.admin).length!==0
+                    state.admin.token &&
+                    state.admin.token.length!==0
                     ? publicRoutes.map((route) => {
                                 const {path} = route;
                                 const Page = route.element;

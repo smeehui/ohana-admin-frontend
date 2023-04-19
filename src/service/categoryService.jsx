@@ -1,4 +1,6 @@
 import {default as axios} from "axios";
+
+
 import {
     CREATE_NEW_CATEGORY,
     GET_ALL_CATEGORY,
@@ -7,6 +9,7 @@ import {
     UPDATE_STATUS_CATEGORY_BY_ID
 } from "./api";
 
+axios.defaults.withCredentials = true;
 const getAllCategory = async (pageParam) => {
   let category = await axios.get(GET_ALL_CATEGORY, { params: pageParam });
   return category.data;

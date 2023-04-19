@@ -16,7 +16,7 @@ const ManagePost = () => {
     useDocumentTitle("Ohana - Quản lý bài viết")
 
     const [tableState, setTableState] = useState({
-        pageSize: 100,
+        pageSize: 10,
         page: 0,
         rowCount: 0,
         rows: [],

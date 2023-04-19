@@ -1,8 +1,12 @@
-const PORT = 8080;
-
-const MAIN_API = "http://localhost:" + PORT;
+export const PORT = 8080;
+export const FE_PORT = 5173
+const DOMAIN = "http://localhost:"
+const MAIN_API = DOMAIN + PORT;
 const MIDDLE_PATH = "";
 const BASE_PROVINCE_API = "https://vapi.vnappmob.com/api/province"
+
+export const ADMIN_LOGIN = MAIN_API + MIDDLE_PATH + "/api/auth/sign-in"
+export const ADMIN_LOGOUT = MAIN_API + MIDDLE_PATH + "/api/auth/sign-out"
 
 export const GET_ALL_USERS = MAIN_API + MIDDLE_PATH + "/api/users";
 export const USER_DETAILS = MAIN_API + MIDDLE_PATH + "/api/users";

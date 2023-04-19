@@ -1,14 +1,19 @@
-const RESTAURANT_KEY = "restaurant_key";
+const OHANA = "ohana";
 const useLocalStorage = () => {
-    let json = localStorage.getItem(RESTAURANT_KEY) || JSON.stringify({});
+    let json = localStorage.getItem(OHANA) || JSON.stringify({});
     let setItems = JSON.parse(json);
     const save = (key, value) => {
         setItems[key] = value;
-        localStorage.setItem(RESTAURANT_KEY, JSON.stringify(setItems));
+        localStorage.setItem(OHANA, JSON.stringify(setItems));
     };
     const get = (key) => {
-        return setItems[key];
+       return setItems[key]
     };
-    return { save, get };
+
+    const remove = (key)=> {
+        delete setItems[key]
+        localStorage.setItem(OHANA, JSON.stringify(setItems))
+    }
+    return { save, get,remove };
 };
 export default useLocalStorage;

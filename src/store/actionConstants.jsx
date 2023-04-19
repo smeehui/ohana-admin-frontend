@@ -13,5 +13,7 @@ const GlobalActions = {
     HIDE_SEARCH: "HIDE_SEARCH",
     CLEAR_SEARCH: "CLEAR_SEARCH",
     RELOAD_PAGE: "RELOAD_PAGE",
+    LOGGED_IN: "LOGGED_IN",
+    LOGGED_OUT: "LOGGED_OUT",
 }
 export {GlobalActions}

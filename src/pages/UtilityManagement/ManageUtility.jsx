@@ -25,7 +25,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const ToolBar = ({formik}) => {
-    const {pageState, setPageState} = useContext((UtilTableContext));
+    const {pageState, setPageState} = useContext(UtilTableContext);
     const handleClick = () => {
         formik.resetForm();
         setPageState({...pageState, isModalOpen: true, mode: "create"})

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import {cloudinayService, postService} from "~/service";
+import {cloudinaryService, postService} from "~/service";
 import {toast} from "react-toastify";
 import {useParams} from "react-router-dom";
 import ImageGallery from 'react-image-gallery';
@@ -35,8 +35,8 @@ function PostImagesModal({isOpen, onClose}) {
                 let post = await postService.getPostById(id);
                 setState(prevState => {
                     const images = post.postMedia.map(img => ({
-                        original: cloudinayService.generateImageById(img.id, {width: 600, height: 600}),
-                        thumbnail: cloudinayService.generateImageById(img.id, {width: 90, height: 90}),
+                        original: cloudinaryService.generateImageById(img.id, {width: 600, height: 600}),
+                        thumbnail: cloudinaryService.generateImageById(img.id, {width: 90, height: 90}),
                         renderItem: item => {
                             return <div style={{width: "100%", height: "600px", alignSelf: "center"}}>
                                 <img  onError={({ currentTarget }) => {

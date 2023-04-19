@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import {toast} from "react-toastify";
 import defaultUserImg from "~/assets/img/default-user.png"
-import {cloudinayService, postService} from "~/service";
+import {cloudinaryService, postService} from "~/service";
 import styles from "./PostDetails.module.scss";
 import clsx from "clsx";
 import PostImagesModal from "~/pages/PostManagement/PostDetails/PostImagesModal";
@@ -156,7 +156,7 @@ function PostDetails() {
 
     function srcset(image, size, rows = 1, cols = 1, isHidden, index) {
         return {
-            url: cloudinayService.generateImageById(image.id, {
+            url: cloudinaryService.generateImageById(image.id, {
                 width: size * cols,
                 height: size * rows,
                 r: 10,

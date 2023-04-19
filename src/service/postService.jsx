@@ -6,10 +6,12 @@ import {
     UPDATE_ALL_POST_STATUS_BY_IDS,
     UPDATE_POST_STATUS_BY_ID,
 } from "~/service/api/index.jsx";
+import JsCookie from "js-cookie";
 
+axios.defaults.withCredentials = true;
 const getAllPosts = async (pageParam) => {
     let result = await axios
-        .get(GET_ALL_POSTS, {params: pageParam})
+        .get(GET_ALL_POSTS, {headers: {Authorization: JsCookie.get("jwtToken")},params: pageParam})
         .catch((jqXHR) => console.log(jqXHR));
     return result.data;
 };

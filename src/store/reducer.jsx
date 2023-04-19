@@ -1,6 +1,8 @@
 import {GlobalActions} from "~/store/actionConstants";
+import Cookies from 'js-cookie';
+import useLocalStorage from "~/hooks/useLocalStorage";
 
-;
+const localStorage = useLocalStorage();
 const initState = {
     post: {},
     user:{},
@@ -14,8 +16,12 @@ const initState = {
     isSearching: false,
     isShowResults: false,
     isForceReloadPage:false,
-    admin: {}
+    admin: {
+        token: Cookies.get("jwtToken") || "",
+        username: localStorage.get("username")||""
+    }
 }
+
 
 const actions = {
     [GlobalActions.CHANGE_USER]: (action,state) => {
@@ -48,12 +54,19 @@ const actions = {
         return {...state,isSearching: true}
     },
     [GlobalActions.END_SEARCH]: (action,state) => {
-        console.log(action)
         return {...state,isSearching: false, isShowResults: action.payload.isShowResults}
     },
     [GlobalActions.CLEAR_SEARCH]: (action,state) => {
         return {...state,isSearching: false, isShowResults: false}
-    }
+    },
+    [GlobalActions.LOGGED_IN]: (action,state) => {
+        localStorage.save("username",action.payload.username)
+        return {...state,admin: action.payload}
+    },
+    [GlobalActions.LOGGED_OUT]: (action,state) => {
+        localStorage.remove("username");
+        return {...state,admin: {}}
+    },
 }
 
 
