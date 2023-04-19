@@ -13,7 +13,8 @@ function App() {
     return (
         <>
             <Routes>
-                {
+                {   state.admin.token &&
+                    state.admin.token.length!==0?
                      publicRoutes.map((route) => {
                         const {path} = route;
                         const Page = route.element;
@@ -26,6 +27,7 @@ function App() {
                             />
                         );
                     })
+                    : <Route path={"*"} element={<LoginRegLayout><Login/></LoginRegLayout>}/>
                 }
                 {/*<Route path="/" element={<Dashboard />} />*/}
                 {/*<Route path="/team" element={<Team />} />*/}
