@@ -13,19 +13,43 @@ import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
+import { Category, CategoryOutlined, PeopleAltOutlined } from "@mui/icons-material";
+import { categoryService } from "~/service";
+import { useEffect, useState } from "react";
+
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   useDocumentTitle("Ohana - Tổng quan")
 
+  const [state, setState] = useState({
+    countCate: 0
+  });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let result = await categoryService.countAll();
+
+        setState({
+          ...state,
+          count: result.data
+        })
+
+      } catch (error) {
+        toast.error("Lấy dữ liệu thất bại!");
+      }
+    })();
+  }, []);
+
   return (
     <Box m="20px">
       {/* HEADER */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+      <Box mb="60px" display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="TRANG CHỦ" subtitle="Welcome to your dashboard" />
 
-        <Box>
+        {/* <Box>
           <Button
             sx={{
               backgroundColor: colors.blueAccent[700],
@@ -38,7 +62,7 @@ const Dashboard = () => {
             <DownloadOutlinedIcon sx={{ mr: "10px" }} />
             Download Reports
           </Button>
-        </Box>
+        </Box> */}
       </Box>
 
       {/* GRID & CHARTS */}
@@ -57,12 +81,12 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="12,361"
-            subtitle="Emails Sent"
-            progress="0.75"
-            increase="+14%"
+            title={state.count}
+            subtitle="Số loại phòng"
+            // progress="0.75"
+            // increase="+14%"
             icon={
-              <EmailIcon
+              <CategoryOutlined
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }
@@ -76,18 +100,18 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="431,225"
-            subtitle="Sales Obtained"
+            title="40"
+            subtitle="Số lượng người dùng"
             progress="0.50"
-            increase="+21%"
+            // increase="+21%"
             icon={
-              <PointOfSaleIcon
+              <PeopleAltOutlined
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }
           />
         </Box>
-        <Box
+        {/* <Box
           gridColumn="span 3"
           backgroundColor={colors.primary[400]}
           display="flex"
@@ -124,10 +148,10 @@ const Dashboard = () => {
               />
             }
           />
-        </Box>
+        </Box> */}
 
         {/* ROW 2 */}
-        <Box
+        {/* <Box
           gridColumn="span 8"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
@@ -216,10 +240,10 @@ const Dashboard = () => {
               </Box>
             </Box>
           ))}
-        </Box>
+        </Box> */}
 
         {/* ROW 3 */}
-        <Box
+        {/* <Box
           gridColumn="span 4"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
@@ -277,7 +301,7 @@ const Dashboard = () => {
           <Box height="200px">
             <GeographyChart isDashboard={true} />
           </Box>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );

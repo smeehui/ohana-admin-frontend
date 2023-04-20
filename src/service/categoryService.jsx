@@ -5,15 +5,22 @@ import {
     CREATE_NEW_CATEGORY,
     GET_ALL_CATEGORY,
     GET_CATEGORY_BY_ID,
+    REPORT,
     UPDATE_CATEGORY_TITLE,
     UPDATE_STATUS_CATEGORY_BY_ID
 } from "./api";
 
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 const getAllCategory = async (pageParam) => {
   let category = await axios.get(GET_ALL_CATEGORY, { params: pageParam });
   return category.data;
 };
+
+const countAll = async () => {
+  let count = await axios.get(REPORT + "/countCategory");
+  return count;
+}
+
 
 const findById = async (id) => {
   let category = await axios.get(GET_CATEGORY_BY_ID + `/${id}`);
@@ -51,4 +58,4 @@ const updateStatusCategory = async (id,status)=>{
   return result.data;
 }
 
-export default { getAllCategory, findById, updateCategoryTitle, addNewCategory, updateStatusCategory };
+export default { getAllCategory, findById, updateCategoryTitle, addNewCategory, updateStatusCategory, countAll };

@@ -6,7 +6,7 @@ import {
     UPDATE_STATUS_UTILITY_BY_ID,
     UPDATE_UTILITY_BY_ID
 } from "~/service/api";
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 const getAllUtilities = async(pageParams)=>{
     let result = await axios.get(GET_ALL_UTILITIES,{params: pageParams})
     return result.data;

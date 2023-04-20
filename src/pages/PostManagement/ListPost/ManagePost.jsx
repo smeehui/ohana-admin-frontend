@@ -8,6 +8,7 @@ import {DataGrid, useGridApiRef} from "@mui/x-data-grid";
 import CustomToolbar from "~/pages/PostManagement/ListPost/components/CustomToolbar";
 import {postService} from "~/service";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
+import {PostStatus} from "~/pages/PostManagement/ListPost/constants/PostStatus";
 
 const ManagePost = () => {
     const theme = useTheme();
@@ -45,13 +46,13 @@ const ManagePost = () => {
     };
 
     const handleChangeStatus = async (row) => {
-        const {id, status} = row;
+        const {id, status,user} = row;
         try {
-            let post = await postService.updatePostStatusById({id, status})
+            let post = await postService.updatePostStatusById({id, status,idUser: user.id})
             toast.success("Cập nhật bài viết thành công!")
             return post;
         } catch (e) {
-            console.log(e);
+            console.log(e)
         }
     };
 
@@ -153,6 +154,7 @@ const ManagePost = () => {
                         ...tableState,
                         pagination: {paginationModel: {pageSize: 10}},
                     }}
+                    isCellEditable={({value}) => (value !== PostStatus.DELETED && value !== PostStatus.OVER_ROOM)}
                     autoHeight
                     slots={slots}
                     pagination

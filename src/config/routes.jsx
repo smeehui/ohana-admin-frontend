@@ -5,6 +5,6 @@ export const MANAGE_USER = "/dashboard/users";
 export const USER_DETAILS = "/dashboard/users/";
 export const MANAGE_POST = "/dashboard/posts";
 export const POST_DETAILS = "/dashboard/posts/";
-export const REPORT = "/dashboard/report";
+export const REPORT = "/dashboard/reports";
 export const CATEGORY = "/dashboard/categories";
 export const MANAGE_UTILITY = "/dashboard/utilities";
