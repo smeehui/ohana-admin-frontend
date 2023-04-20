@@ -35,6 +35,8 @@ export const UPDATE_UTILITY_BY_ID= MAIN_API + MIDDLE_PATH + "/api/utilities";
 export const UPDATE_STATUS_UTILITY_BY_ID= MAIN_API + MIDDLE_PATH + "/api/utilities";
 export const CREATE_NEW_UTILITY= MAIN_API + MIDDLE_PATH + "/api/utilities";
 
+export const SEND_POST_CENSORING_EMAIL = MAIN_API + MIDDLE_PATH + "/api/mail";
+
 
 export const GET_ALL_PROVINCES = BASE_PROVINCE_API +"/";
 export const GET_ALL_DISTRICTS_BY_PROVINCE_ID = BASE_PROVINCE_API +"/district";

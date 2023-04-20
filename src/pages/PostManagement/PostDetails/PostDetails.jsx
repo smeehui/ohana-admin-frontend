@@ -128,12 +128,7 @@ function PostDetails() {
           isShowConfirm: false,
         };
       });
-
       toast.success("Cập nhật thành công!");
-
-      await postService.findEmailById(params);
-
-      toast.success("Gửi mail thành công!");
     } catch (err) {
 
       toast.error("Cập nhật bài viết thất bại");
@@ -157,6 +152,7 @@ function PostDetails() {
           };
         });
       } catch (e) {
+        console.log(e)
         toast.error("Lấy dữ liệu post thất bại");
       }
     })();
@@ -176,7 +172,7 @@ function PostDetails() {
 
   function srcset(image, size, rows = 1, cols = 1, isHidden, index) {
     return {
-      url: cloudinayService.generateImageById(image.id, {
+      url: cloudinaryService.generateImageById(image.id, {
         width: size * cols,
         height: size * rows,
         r: 10,
