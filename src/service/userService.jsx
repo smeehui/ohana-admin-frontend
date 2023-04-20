@@ -9,7 +9,7 @@ import {
 } from "~/service/api";
 import JsCookie from "js-cookie";
 
-axios.defaults.headers.common['Authorization'] = JsCookie.get("jwtToken");
+// axios.defaults.headers.common['Authorization'] = JsCookie.get("jwtToken");
 
 const getAllUsers = async (params) => {
     let result = await axios

@@ -176,7 +176,7 @@ function PostDetails() {
 
   function srcset(image, size, rows = 1, cols = 1, isHidden, index) {
     return {
-      url: cloudinayService.generateImageById(image.id, {
+      url: cloudinaryService.generateImageById(image.id, {
         width: size * cols,
         height: size * rows,
         r: 10,
