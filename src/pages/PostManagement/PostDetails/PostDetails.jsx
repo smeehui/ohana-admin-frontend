@@ -128,12 +128,7 @@ function PostDetails() {
           isShowConfirm: false,
         };
       });
-
       toast.success("Cập nhật thành công!");
-
-      await postService.findEmailById(params);
-
-      toast.success("Gửi mail thành công!");
     } catch (err) {
 
       toast.error("Cập nhật bài viết thất bại");
@@ -157,6 +152,7 @@ function PostDetails() {
           };
         });
       } catch (e) {
+        console.log(e)
         toast.error("Lấy dữ liệu post thất bại");
       }
     })();
