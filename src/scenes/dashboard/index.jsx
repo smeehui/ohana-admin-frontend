@@ -1,43 +1,34 @@
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
-import { tokens } from "~/theme";
-import { mockTransactions } from "~/data/mockData";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-import EmailIcon from "@mui/icons-material/Email";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import TrafficIcon from "@mui/icons-material/Traffic";
-import Header from "../../components/Header";
-import LineChart from "../../components/LineChart";
-import GeographyChart from "../../components/GeographyChart";
-import BarChart from "../../components/BarChart";
-import StatBox from "../../components/StatBox";
-import ProgressCircle from "../../components/ProgressCircle";
-import useDocumentTitle from "~/hooks/useDocumentTitle";
+import { CChart } from "@coreui/react-chartjs";
 import {
-  AutoAwesomeOutlined,
-  Category,
-  CategoryOutlined,
-  PeopleAltOutlined,
-  PostAddOutlined,
-  PostAddRounded,
+  AutoAwesomeOutlined, CategoryOutlined,
+  PeopleAltOutlined, PostAddRounded
 } from "@mui/icons-material";
+import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
+import { useEffect, useState } from "react";
+import { mockTransactions } from "~/data/mockData";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 import {
   categoryService,
   postService,
   userService,
-  utilitiesService,
+  utilitiesService
 } from "~/service";
-import { useEffect, useState } from "react";
-import { CChart } from "@coreui/react-chartjs";
-import { UserStatus } from "./../../pages/UserManagement/constants/UserStatus";
-import { ACTIVATE_USER_ALL } from "./../../service/api/index";
+import { tokens } from "~/theme";
+import Header from "../../components/Header";
+import StatBox from "../../components/StatBox";
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   useDocumentTitle("Ohana - Tổng quan");
 
+  const toggleLoading = (isLoading)=>{       
+    setState({...state,isLoading:isLoading})
+}
+
   const [state, setState] = useState({
+    isLoading: true,
+
     countCate: 0,
     countUser: 0,
     countUtility: 0,
@@ -58,6 +49,9 @@ const Dashboard = () => {
   useEffect(() => {
     (async () => {
       try {
+
+        toggleLoading(true)
+
         let cate = await categoryService.countAll();
 
         let user = await userService.countAll();
@@ -85,7 +79,9 @@ const Dashboard = () => {
         let postByStatusREFUSED = await postService.countAllPostByStatus(
           "REFUSED"
         );
-        let postByStatusDRAFT = await postService.countAllPostByStatus("DRAFT");
+        let postByStatusDRAFT = await postService.countAllPostByStatus(
+          "DRAFT"
+          );
         let postByStatusDELETED = await postService.countAllPostByStatus(
           "DELETED"
         );
@@ -110,6 +106,8 @@ const Dashboard = () => {
           countPostByStatusDRAFT: postByStatusDRAFT.data,
           countPostByStatusDELETED: postByStatusDELETED.data,
           countPostByStatusOVER_ROOM: postByStatusOVER_ROOM.data,
+
+          isLoading: false,
         });
       } catch (error) {
         toast.error("Lấy dữ liệu thất bại!");
@@ -117,380 +115,387 @@ const Dashboard = () => {
     })();
   }, []);
 
-  return (
-    <Box m="20px">
-      {/* HEADER */}
+  return <>
+  {state.isLoading
+  ?(<Box
+    position={"absolute"}
+    top={0}
+    left={0}
+    right={0}
+    bottom={0}
+    display={"flex"}
+    justifyContent={"center"}
+    alignItems={"center"}
+>
+    <CircularProgress color="success" size={80}/>
+</Box>)
+  : (<Box m="20px">
+  {/* HEADER */}
+  <Box
+    mb="60px"
+    display="flex"
+    justifyContent="space-between"
+    alignItems="center"
+  >
+    <Header title="TRANG CHỦ" />
+
+    {/* <Box>
+      <Button
+        sx={{
+          backgroundColor: colors.blueAccent[700],
+          color: colors.grey[100],
+          fontSize: "14px",
+          fontWeight: "bold",
+          padding: "10px 20px",
+        }}
+      >
+        <DownloadOutlinedIcon sx={{ mr: "10px" }} />
+        Download Reports
+      </Button>
+    </Box> */}
+  </Box>
+
+  {/* GRID & CHARTS */}
+  <Box
+    display="grid"
+    gridTemplateColumns="repeat(12, 1fr)"
+    gridAutoRows="140px"
+    gap="20px"
+  >
+    {/* ROW 1 */}
+    <Box
+      gridColumn="span 3"
+      backgroundColor={colors.primary[400]}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <StatBox
+        title={state.countCate}
+        subtitle="Danh mục phòng cho thuê"
+        // progress="0.75"
+        // increase="+14%"
+        icon={
+          <CategoryOutlined
+            sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+          />
+        }
+      />
+    </Box>
+    <Box
+      gridColumn="span 3"
+      backgroundColor={colors.primary[400]}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <StatBox
+        title={state.countUser}
+        subtitle="Số lượng người dùng"
+        progress="0.50"
+        // increase="+21%"
+        icon={
+          <PeopleAltOutlined
+            sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+          />
+        }
+      />
+    </Box>
+    <Box
+      gridColumn="span 3"
+      backgroundColor={colors.primary[400]}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <StatBox
+        title={state.countUtility}
+        subtitle="Số tiện ích"
+        progress="0.30"
+        // increase="+5%"
+        icon={
+          <AutoAwesomeOutlined
+            sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+          />
+        }
+      />
+    </Box>
+
+    <Box
+      gridColumn="span 3"
+      backgroundColor={colors.primary[400]}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <StatBox
+        title={state.countPost}
+        subtitle="Tổng số bài viết"
+        progress="0.80"
+        // increase="+43%"
+        icon={
+          <PostAddRounded
+            sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+          />
+        }
+      />
+    </Box>
+
+    {/* ROW 2 */}
+    {/* <Box
+      gridColumn="span 8"
+      gridRow="span 2"
+      backgroundColor={colors.primary[400]}
+    >
       <Box
-        mb="60px"
-        display="flex"
+        mt="25px"
+        p="0 30px"
+        display="flex "
         justifyContent="space-between"
         alignItems="center"
       >
-        <Header title="TRANG CHỦ" subtitle="Welcome to your dashboard" />
-
-        {/* <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
+        <Box>
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            color={colors.grey[100]}
           >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Download Reports
-          </Button>
-        </Box> */}
+            Revenue Generated
+          </Typography>
+          <Typography
+            variant="h3"
+            fontWeight="bold"
+            color={colors.greenAccent[500]}
+          >
+            $59,342.32
+          </Typography>
+        </Box>
+        <Box>
+          <IconButton>
+            <DownloadOutlinedIcon
+              sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
+            />
+          </IconButton>
+        </Box>
       </Box>
+      <Box height="250px" m="-20px 0 0 0">
+        <LineChart isDashboard={true} />
+      </Box>
+    </Box> */}
 
-      {/* GRID & CHARTS */}
+    {/* ROW 3 */}
+    {/* <Box
+      gridColumn="span 4"
+      gridRow="span 2"
+      backgroundColor={colors.primary[400]}
+      p="30px"
+    >
+      <Typography variant="h5" fontWeight="600">
+        Campaign
+      </Typography>
       <Box
-        display="grid"
-        gridTemplateColumns="repeat(12, 1fr)"
-        gridAutoRows="140px"
-        gap="20px"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        mt="25px"
       >
-        {/* ROW 1 */}
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+        <ProgressCircle size="125" />
+        <Typography
+          variant="h5"
+          color={colors.greenAccent[500]}
+          sx={{ mt: "15px" }}
         >
-          <StatBox
-            title={state.countCate}
-            subtitle="Danh mục phòng cho thuê"
-            // progress="0.75"
-            // increase="+14%"
-            icon={
-              <CategoryOutlined
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title={state.countUser}
-            subtitle="Số lượng người dùng"
-            progress="0.50"
-            // increase="+21%"
-            icon={
-              <PeopleAltOutlined
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title={state.countUtility}
-            subtitle="Số tiện ích"
-            progress="0.30"
-            // increase="+5%"
-            icon={
-              <AutoAwesomeOutlined
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title={state.countPost}
-            subtitle="Tổng số bài viết"
-            progress="0.80"
-            // increase="+43%"
-            icon={
-              <PostAddRounded
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-
-        {/* ROW 2 */}
-        {/* <Box
-          gridColumn="span 8"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-          <Box
-            mt="25px"
-            p="0 30px"
-            display="flex "
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Box>
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                color={colors.grey[100]}
-              >
-                Revenue Generated
-              </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                $59,342.32
-              </Typography>
-            </Box>
-            <Box>
-              <IconButton>
-                <DownloadOutlinedIcon
-                  sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                />
-              </IconButton>
-            </Box>
-          </Box>
-          <Box height="250px" m="-20px 0 0 0">
-            <LineChart isDashboard={true} />
-          </Box>
-        </Box> */}
-
-        {/* ROW 3 */}
-        {/* <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          p="30px"
-        >
-          <Typography variant="h5" fontWeight="600">
-            Campaign
-          </Typography>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            mt="25px"
-          >
-            <ProgressCircle size="125" />
-            <Typography
-              variant="h5"
-              color={colors.greenAccent[500]}
-              sx={{ mt: "15px" }}
-            >
-              $48,352 revenue generated
-            </Typography>
-            <Typography>Includes extra misc expenditures and costs</Typography>
-          </Box>
-        </Box> */}
-        <Box
-          gridColumn="span 4"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          p="30px"
-        >
-          <Typography variant="h5" fontWeight="600">
-            Bài viết
-          </Typography>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="left"
-            mt="25px"
-          >
-            <CChart
-              type="doughnut"
-              data={{
-                labels: [
-                  "Đang chờ duyệt",
-                  "Đã đăng",
-                  "Đã thu hồi",
-                  "Nháp",
-                  "Đã xóa",
-                  "Đã hết phòng",
+          $48,352 revenue generated
+        </Typography>
+        <Typography>Includes extra misc expenditures and costs</Typography>
+      </Box>
+    </Box> */}
+    <Box
+      gridColumn="span 4"
+      gridRow="span 3"
+      backgroundColor={colors.primary[400]}
+      p="30px"
+    >
+      <Typography variant="h5" fontWeight="600">
+        Bài viết
+      </Typography>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="left"
+        mt="25px"
+      >
+        <CChart
+          type="doughnut"
+          data={{
+            labels: [
+              "Đang chờ duyệt",
+              "Đã đăng",
+              "Đã thu hồi",
+              "Nháp",
+              "Đã xóa",
+              "Đã hết phòng",
+            ],
+            datasets: [
+              {
+                backgroundColor: [
+                  "#41B883",
+                  "#EC2FEF",
+                  "#DD1B16",
+                  "#00D8FF",
+                  "#6E6767",
+                  "#ECEF2F",
                 ],
-                datasets: [
-                  {
-                    backgroundColor: [
-                      "#41B883",
-                      "#EC2FEF",
-                      "#DD1B16",
-                      "#00D8FF",
-                      "#6E6767",
-                      "#ECEF2F",
-                    ],
-                    data: [
-                      state.countPostByStatusPENDING_REVIEW,
-                      state.countPostByStatusPUBLISHED,
-                      state.countPostByStatusREFUSED,
-                      state.countPostByStatusDRAFT,
-                      state.countPostByStatusDELETED,
-                      state.countPostByStatusOVER_ROOM,
-                    ],
-                    hoverOffset: 6
-                  },
+                data: [
+                  state.countPostByStatusPENDING_REVIEW,
+                  state.countPostByStatusPUBLISHED,
+                  state.countPostByStatusREFUSED,
+                  state.countPostByStatusDRAFT,
+                  state.countPostByStatusDELETED,
+                  state.countPostByStatusOVER_ROOM,
                 ],
-              }}
-            />
-          </Box>
-        </Box>
-
-        <Box
-          gridColumn="span 4"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          p="30px"
-        >
-          <Typography variant="h5" fontWeight="600">
-            Người dùng
-          </Typography>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="left"
-            mt="25px"
-          >
-            
-            <CChart
-              type="polarArea"
-              data={{
-                labels: [
-                  "Đang hoạt động",
-                  "Ngừng hoạt động",
-                  "Đang chờ xác thực",
-                ],
-                datasets: [
-                  {
-                    data: [
-                      state.countUserByStatusACTIVATED,
-                      state.countUserByStatusDEACTIVATED,
-                      state.countUserByStatusCONFIRM_EMAIL,
-                    ],
-                    backgroundColor: [
-                      "#4BC0C0",
-                      "#FF6384",
-                      "#FFCE56",
-                    ],
-                    hoverOffset: 6
-                  },
-                ],
-              }}
-            />
-          </Box>
-        </Box>
-
-        <Box
-          gridColumn="span 4"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          overflow="auto"
-        >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            borderBottom={`4px solid ${colors.primary[500]}`}
-            colors={colors.grey[100]}
-            p="15px"
-          >
-            <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Bài viết gần nhất chờ xét duyệt
-            </Typography>
-          </Box>
-          {mockTransactions.map((transaction, i) => (
-            <Box
-              key={`${transaction.txId}-${i}`}
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              borderBottom={`4px solid ${colors.primary[500]}`}
-              p="15px"
-            >
-              <Box>
-                <Typography
-                  color={colors.greenAccent[500]}
-                  variant="h5"
-                  fontWeight="600"
-                >
-                  Tên bài viết
-                </Typography>
-                <Typography color={colors.grey[100]}>
-                  Tên người dùng
-                </Typography>
-              </Box>
-              <Box color={colors.grey[100]}>
-              <Typography
-                  color={colors.greenAccent[500]}
-                  variant="h6"
-                  fontWeight="600"
-                >
-                  Ngày đăng
-                </Typography>
-                {transaction.date}
-                </Box>
-              <Box
-                backgroundColor={colors.greenAccent[500]}
-                p="5px 10px"
-                borderRadius="4px"
-              >
-                ${transaction.cost}
-              </Box>
-            </Box>
-          ))}
-        </Box>
-
-        {/* <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ padding: "30px 30px 0 30px" }}
-          >
-            Sales Quantity
-          </Typography>
-          <Box height="250px" mt="-20px">
-            <BarChart isDashboard={true} />
-          </Box>
-        </Box> */}
-        {/* <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Geography Based Traffic
-          </Typography>
-          <Box height="200px">
-            <GeographyChart isDashboard={true} />
-          </Box>
-        </Box> */}
+                hoverOffset: 6,
+              },
+            ],
+          }}
+        />
       </Box>
     </Box>
-  );
+
+    <Box
+      gridColumn="span 4"
+      gridRow="span 3"
+      backgroundColor={colors.primary[400]}
+      p="30px"
+    >
+      <Typography variant="h5" fontWeight="600">
+        Người dùng
+      </Typography>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="left"
+        mt="25px"
+      >
+        <CChart
+          type="polarArea"
+          data={{
+            labels: [
+              "Đang hoạt động",
+              "Ngừng hoạt động",
+              "Đang chờ xác thực",
+            ],
+            datasets: [
+              {
+                data: [
+                  state.countUserByStatusACTIVATED,
+                  state.countUserByStatusDEACTIVATED,
+                  state.countUserByStatusCONFIRM_EMAIL,
+                ],
+                backgroundColor: ["#4BC0C0", "#FF6384", "#FFCE56"],
+                hoverOffset: 6,
+              },
+            ],
+          }}
+        />
+      </Box>
+    </Box>
+
+    <Box
+      gridColumn="span 4"
+      gridRow="span 3"
+      backgroundColor={colors.primary[400]}
+      overflow="auto"
+    >
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        borderBottom={`4px solid ${colors.primary[500]}`}
+        colors={colors.grey[100]}
+        p="15px"
+      >
+        <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+          Bài viết gần nhất chờ xét duyệt
+        </Typography>
+      </Box>
+      {mockTransactions.map((transaction, i) => (
+        <Box
+          key={`${transaction.txId}-${i}`}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          borderBottom={`4px solid ${colors.primary[500]}`}
+          p="15px"
+        >
+          <Box>
+            <Typography
+              color={colors.greenAccent[500]}
+              variant="h5"
+              fontWeight="600"
+            >
+              Tên bài viết
+            </Typography>
+            <Typography color={colors.grey[100]}>Tên người dùng</Typography>
+          </Box>
+          <Box color={colors.grey[100]}>
+            <Typography
+              color={colors.greenAccent[500]}
+              variant="h6"
+              fontWeight="600"
+            >
+              Ngày đăng
+            </Typography>
+            {transaction.date}
+          </Box>
+          <Box
+            backgroundColor={colors.greenAccent[500]}
+            p="5px 10px"
+            borderRadius="4px"
+          >
+            ${transaction.cost}
+          </Box>
+        </Box>
+      ))}
+    </Box>
+
+    {/* <Box
+      gridColumn="span 4"
+      gridRow="span 2"
+      backgroundColor={colors.primary[400]}
+    >
+      <Typography
+        variant="h5"
+        fontWeight="600"
+        sx={{ padding: "30px 30px 0 30px" }}
+      >
+        Sales Quantity
+      </Typography>
+      <Box height="250px" mt="-20px">
+        <BarChart isDashboard={true} />
+      </Box>
+    </Box> */}
+    {/* <Box
+      gridColumn="span 4"
+      gridRow="span 2"
+      backgroundColor={colors.primary[400]}
+      padding="30px"
+    >
+      <Typography
+        variant="h5"
+        fontWeight="600"
+        sx={{ marginBottom: "15px" }}
+      >
+        Geography Based Traffic
+      </Typography>
+      <Box height="200px">
+        <GeographyChart isDashboard={true} />
+      </Box>
+    </Box> */}
+  </Box>
+</Box>)
+  }
+  </>;
 };
 
 export default Dashboard;

@@ -10,6 +10,7 @@ import {
     USER_DETAILS,
 } from "~/service/api";
 import JsCookie from "js-cookie";
+import { UserStatus } from "~/pages/UserManagement/constants/UserStatus";
 
 // axios.defaults.headers.common['Authorization'] = JsCookie.get("jwtToken");
 axios.defaults.withCredentials = true;
@@ -55,7 +56,8 @@ const updateUserStatusById = async (id, stt) => {
 };
 
 const updateStatusAll = async (idList, type) => {
-    const url = type === "deactivate" ? DEACTIVATE_USER_ALL : ACTIVATE_USER_ALL;
+    console.log(type);
+    const url = type === UserStatus.DEACTIVATED ? DEACTIVATE_USER_ALL : ACTIVATE_USER_ALL;
     let status = await axios.patch(url, JSON.stringify(idList), {
         headers: {
             "Content-Type": "application/json"
