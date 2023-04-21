@@ -121,7 +121,7 @@ const GridCellExpand = React.memo(function GridCellExpand(props) {
                                             {
                                                 postMedia.map(img =>
                                                     <Col key={img.id} className="rounded-1" lg={3}>
-                                                        <CldImage r={1} w={90} h={90} id={img.id}/>
+                                                        <CldImage r={1} w={90} h={90} id={img.publicId}/>
                                                     </Col>)
                                             }
                                         </Container>

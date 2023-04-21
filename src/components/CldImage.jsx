@@ -7,7 +7,7 @@ import {byRadius} from "@cloudinary/url-gen/actions/roundCorners";
 import noImage from  "~/assets/img/no-image.jpg"
 
 function CldImage({ id,w = 80,h=80,r=5,alt = "image" }) {
-    const img =cldConfig.cld.image(cldConfig.CLOUD_FOLDER + `/${id}`)
+    const img =cldConfig.cld.image(`/${id}`)
         img.resize(thumbnail().width(w).height(h))
             .roundCorners(byRadius(r))
     return (

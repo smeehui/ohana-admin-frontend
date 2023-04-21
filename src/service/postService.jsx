@@ -9,7 +9,7 @@ import {
 } from "~/service/api/index.jsx";
 import JsCookie from "js-cookie";
 
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
 const getAllPosts = async (pageParam) => {
     let result = await axios
         .get(GET_ALL_POSTS, {params: pageParam})
