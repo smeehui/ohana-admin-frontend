@@ -35,8 +35,8 @@ function PostImagesModal({isOpen, onClose}) {
                 let post = await postService.getPostById(id);
                 setState(prevState => {
                     const images = post.postMedia.map(img => ({
-                        original: cloudinaryService.generateImageById(img.id, {width: 600, height: 600}),
-                        thumbnail: cloudinaryService.generateImageById(img.id, {width: 90, height: 90}),
+                        original: cloudinaryService.generateImageById(img.publicId, {width: 600, height: 600}),
+                        thumbnail: cloudinaryService.generateImageById(img.publicId, {width: 90, height: 90}),
                         renderItem: item => {
                             return <div style={{width: "100%", height: "600px", alignSelf: "center"}}>
                                 <img  onError={({ currentTarget }) => {

@@ -9,10 +9,7 @@ import {
     REPORT_COUNT_ALL_POST_BY_STATUS,
     GET_POST_BY_ID,
 } from "~/service/api/index.jsx";
-import JsCookie from "js-cookie";
-
 axios.defaults.withCredentials = true;
-
 const getAllPosts = async (pageParam) => {
     let result = await axios
         .get(GET_ALL_POSTS, {params: pageParam})
@@ -102,13 +99,13 @@ const updateAllPostStatusByIds = async (ids,status) => {
     return result.data;
 }
 export default {
-    getAllPosts, 
-    findAllByUserId, 
-    filterPosts, 
-    getPostById, 
+    getAllPosts,
+    findAllByUserId,
+    filterPosts,
+    getPostById,
     updatePostStatusById,
-    updateAllPostStatusByIds, 
-    findEmailById, 
+    updateAllPostStatusByIds,
+    findEmailById,
     countAll,
     countAllPostByStatus
 };
