@@ -67,7 +67,7 @@ const columns = [
     field: "status",
     headerName: "Trạng thái",
     filter: true,
-    editable: true,
+    // editable: true,
     sortable: true,
     width: 150,
     type: "singleSelect",

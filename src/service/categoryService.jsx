@@ -10,7 +10,7 @@ import {
     UPDATE_STATUS_CATEGORY_BY_ID
 } from "./api";
 
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
 const getAllCategory = async (pageParam) => {
   let category = await axios.get(GET_ALL_CATEGORY, { params: pageParam });
   return category.data;

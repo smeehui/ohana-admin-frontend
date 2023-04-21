@@ -5,17 +5,30 @@ import {
     GET_ALL_POSTS_BY_USERID,
     UPDATE_ALL_POST_STATUS_BY_IDS,
     UPDATE_POST_STATUS_BY_ID,
+    REPORT,
+    REPORT_COUNT_ALL_POST_BY_STATUS,
     GET_POST_BY_ID,
 } from "~/service/api/index.jsx";
 import JsCookie from "js-cookie";
 
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
+
 const getAllPosts = async (pageParam) => {
     let result = await axios
         .get(GET_ALL_POSTS, {params: pageParam})
         .catch((jqXHR) => console.log(jqXHR));
     return result.data;
 };
+
+const countAll = async () => {
+    let count = await axios.get(REPORT + "/countPost");
+    return count;
+  }
+
+  const countAllPostByStatus = async (status) => {
+    let count = await axios.get(REPORT_COUNT_ALL_POST_BY_STATUS + `/${status}` + "/postStatus");
+    return count;
+  }
 
 const findAllByUserId = async (userId, user) => {
     let posts = await axios.post(
@@ -88,4 +101,14 @@ const updateAllPostStatusByIds = async (ids,status) => {
     )
     return result.data;
 }
-export default {getAllPosts, findAllByUserId, filterPosts, getPostById, updatePostStatusById,updateAllPostStatusByIds, findEmailById};
+export default {
+    getAllPosts, 
+    findAllByUserId, 
+    filterPosts, 
+    getPostById, 
+    updatePostStatusById,
+    updateAllPostStatusByIds, 
+    findEmailById, 
+    countAll,
+    countAllPostByStatus
+};

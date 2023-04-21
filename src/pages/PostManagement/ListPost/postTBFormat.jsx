@@ -109,7 +109,7 @@ const columns = [
     field: "status",
     headerName: "Trạng thái",
     sortable: true,
-    editable: true,
+    // editable: true,
     type: "singleSelect",
     renderCell: ({ row }) => {
       switch (row.status) {
