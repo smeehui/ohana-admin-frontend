@@ -228,7 +228,8 @@ const UserDetails = () => {
                                 </Grid>
 
                                 <Grid display={"flex"} justifyContent={"center"} alignItems={"center"} item xs={4}>
-                                    {globalState.user.thumbnailId
+                                    {!globalState.user.thumbnailId
+                                        .match(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/)
                                         ? (
                                             <CldImage
                                             id={globalState.user.thumbnailId}
@@ -240,7 +241,7 @@ const UserDetails = () => {
                                         : (
                                         <img
                                             className="rounded rounded-circle"
-                                            src={user}
+                                            src={globalState.user.thumbnailId}
                                             width={275}
                                             height={275}
                                             alt={"User avt"}

@@ -3,13 +3,14 @@ import {toast} from "react-toastify";
 import {categoryService} from "~/service";
 import {columns} from "./categoryTBFormat";
 import {DataGrid} from "@mui/x-data-grid";
-import {Box, Button, FormHelperText, Modal, Stack, TextField, Typography, useTheme,} from "@mui/material";
+import {Box, Button, FormHelperText, MenuItem, Modal, Stack, TextField, Typography, useTheme,} from "@mui/material";
 import {tokens} from "~/theme";
 import Header from "~/components/Header";
 import {Add} from "@mui/icons-material";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
+import {CategoryStatus} from "~/pages/CategoryManagement/categoryConstant";
 
 export const CategoryTableConText = createContext();
 
@@ -26,10 +27,13 @@ const Category = () => {
     });
 
     const [tableState, setTableState] = useState({
-        loading: true,
-        pageSize: 10,
-        page: 0,
-        rowCount: 0,
+      loading: true,
+      pageSize: 10,
+      page: 0,
+      rowCount: 0,
+      filter: {
+        status: "",
+      }
     })
     const {open} = state;
 
@@ -108,50 +112,71 @@ const Category = () => {
     };
 
     useEffect(() => {
-        (async () => {
-            try {
-                let result = await categoryService.getAllCategory();
-                setState({...state, category: result.content});
-                setTableState({...tableState,loading: false})
-            } catch (error) {
-                toast.error("Lấy dữ liệu thất bại!");
-                setTableState({...tableState,loading: false})
-            }
-        })();
-    }, [state.forceReload]);
+      (async () => {
+        try {
+          let result = await categoryService.getAllCategory({
+            page: tableState.page,
+            size: tableState.pageSize,
+            status: tableState.filter.status === "" ? undefined : tableState.filter.status
+          });
+          setState({...state, category: result.content});
+          setTableState({...tableState, loading: false, page: result.number, rowCount: result.totalElements})
+        } catch (error) {
+          toast.error("Lấy dữ liệu thất bại!");
+          setTableState({...tableState, loading: false})
+        }
+      })();
+    }, [state.forceReload, tableState.page, tableState.pageSize,tableState.filter]);
 
     const style = {
         position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: 400,
-        bgcolor: "background.paper",
-        border: "2px solid #000",
-        boxShadow: 24,
-        p: 4,
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      width: 400,
+      bgcolor: "background.paper",
+      border: "2px solid #000",
+      boxShadow: 24,
+      p: 4,
     };
 
-    return (
-        <>
-            <CategoryTableConText.Provider value={{state, setState}}>
-                <Box m="20px" display={"flex"} flexDirection={"column"}>
-                    <Stack sx={{height: "35px"}} mb={2} direction="row" spacing={105}>
-                        <Header title="Danh mục phòng"/>
+  function handleFilter(e) {
+    setTableState({...tableState, filter: {status: e.target.value}})
+  }
 
-                    </Stack>
-                    <Stack sx={{height: "35px"}} mb={0.5} direction="row" spacing={10} justifyContent="end">
-
-                        <Button
-                            onClick={handleAdd}
-                            variant="contained"
-                            color="success"
-                        >
-                            <Add/>
-                            Thêm mới
-                        </Button>
-                    </Stack>
-                    <Box
+  return (
+      <>
+        <CategoryTableConText.Provider value={{state, setState}}>
+          <Box m="20px" display={"flex"} flexDirection={"column"}>
+            <Stack sx={{height: "35px"}} mb={2} direction="row" spacing={105}>
+              <Header title="Danh mục phòng"/>
+            </Stack>
+            <Stack sx={{height: "35px"}} mb={0.5} direction="row" spacing={1} justifyContent="end">
+              <TextField
+                  select
+                  variant="standard"
+                  sx={{m: 0, minWidth: 120}}
+                  title="Lọc theo trạng thái"
+                  name="role"
+                  value={tableState.filter.status || "#"}
+                  onChange={handleFilter}
+              >
+                <MenuItem value="#">
+                  <em>Trạng thái</em>
+                </MenuItem>
+                <MenuItem value={CategoryStatus.SHOW}>Đang hiển thị</MenuItem>
+                <MenuItem value={CategoryStatus.HIDDEN}>Đã ẩn</MenuItem>
+              </TextField>
+              <Button
+                  onClick={handleAdd}
+                  variant="contained"
+                  color="success"
+              >
+                <Add/>
+                Thêm mới
+              </Button>
+            </Stack>
+            <Box
                         flex={"1"}
                         sx={{
                             "& .MuiDataGrid-root": {
@@ -189,11 +214,11 @@ const Category = () => {
                         }}
                     >
                         <DataGrid
-                            pageSizeOptions={[10,20,50,100]}
+                            pageSizeOptions={[5, 10, 20, 50, 100]}
                             initialState={{
-                            ...state,
-                            pagination: {paginationModel: {pageSize: 10}},
-                        }} columns={columns}
+                              ...state,
+                              pagination: {paginationModel: {pageSize: 10}},
+                            }} columns={columns}
                             autoHeight
                             rows={state.category}
                             disableRowSelectionOnClick={true}
