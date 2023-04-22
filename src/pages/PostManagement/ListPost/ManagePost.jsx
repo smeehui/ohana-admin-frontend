@@ -159,7 +159,7 @@ const ManagePost = () => {
                     slots={slots}
                     pagination
                     loading={tableState.isLoading}
-                    processRowUpdate={handleChangeStatus}
+                    // processRowUpdate={handleChangeStatus}
                     onProcessRowUpdateError={handleProcessRowUpdateError}
                     rowSelection
                     pageSizeOptions={[10, 20, 50, 100]}
@@ -179,7 +179,7 @@ const ManagePost = () => {
                     checkboxSelection
                     paginationMode="server"
                     resizable
-                    // onFilterModelChange={handleFilter}
+                    onFilterModelChange={handleFilter}
                     onRowSelectionModelChange={(rows) =>
                         setTableState((prev) => ({
                             ...prev,

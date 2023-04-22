@@ -30,6 +30,8 @@ export const CREATE_NEW_CATEGORY = MAIN_API + MIDDLE_PATH + "/api/categories/add
 export const UPDATE_STATUS_CATEGORY_BY_ID = MAIN_API + MIDDLE_PATH + "/api/categories";
 
 export const REPORT = MAIN_API + MIDDLE_PATH + "/api/reports";
+export const REPORT_COUNT_ALL_USER_BY_STATUS = MAIN_API + MIDDLE_PATH + "/api/reports";
+export const REPORT_COUNT_ALL_POST_BY_STATUS = MAIN_API + MIDDLE_PATH + "/api/reports";
 
 export const GET_ALL_UTILITIES = MAIN_API + MIDDLE_PATH + "/api/utilities";
 export const GET_UTILITY_BY_ID= MAIN_API + MIDDLE_PATH + "/api/utilities";

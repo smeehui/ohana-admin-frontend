@@ -1,7 +1,7 @@
 import axios from "axios";
 import {ADMIN_LOGIN, ADMIN_LOGOUT} from "~/service/api";
 
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
 
 const login = async (params)=>{
     let response = await axios.post(ADMIN_LOGIN,JSON.stringify(params),{
