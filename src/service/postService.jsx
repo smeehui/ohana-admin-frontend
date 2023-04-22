@@ -55,7 +55,7 @@ const filterPosts = async (filter, paginationParams) => {
 
 const getPostById = async (postId) => {
     let result = await axios
-        .get(GET_ALL_POSTS + `/${postId}`)
+        .get(GET_POST_BY_ID + `/${postId}`)
         .catch((jqXHR) => console.log(jqXHR));
     return result.data;
 };

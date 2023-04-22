@@ -3,6 +3,7 @@ import { config } from "~/config";
 import * as React from "react";
 import GridCellExpand from "~/pages/PostManagement/ListPost/components/GridCellExpand";
 import { PostStatus } from "./constants/PostStatus";
+import {Typography} from "@mui/material";
 
 function renderCellExpand(params) {
   return (
@@ -28,9 +29,9 @@ const columns = [
     headerName: "BÀI VIẾT",
     sortable: true,
     renderCell: ({ row }) => (
-      <Link to={config.routes.postDetails + row.id}>{row.title}</Link>
+      <Link to={config.routes.postDetails + row.id}><Typography>{row.title}</Typography></Link>
     ),
-    flex: 1,
+    width: 350,
     align: "center",
     headerAlign: "center",
   },
