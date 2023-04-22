@@ -125,6 +125,7 @@ const columns = [
     flex: 1,
     headerAlign: "center",
     align: "center",
+    renderCell: ({row})=> row.status === UtilityStatus.HIDDEN? "Đã ẩn": "Đang hiển thị"
   },
   {
     field: "action",
