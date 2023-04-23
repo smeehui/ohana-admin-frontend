@@ -5,9 +5,9 @@ import {
     FILTER_USER,
     GET_ALL_USERS,
     UPDATE_USER_STATUS,
-    REPORT,
     REPORT_COUNT_ALL_USER_BY_STATUS,
     USER_DETAILS,
+    REPORT_COUNT_ALL_USERS
 } from "~/service/api";
 import JsCookie from "js-cookie";
 import { UserStatus } from "~/pages/UserManagement/constants/UserStatus";
@@ -22,7 +22,7 @@ const getAllUsers = async (params) => {
 };
 
 const countAll = async () => {
-    let count = await axios.get(REPORT + "/countUser");
+    let count = await axios.get(REPORT_COUNT_ALL_USERS);
     return count;
   }
 
