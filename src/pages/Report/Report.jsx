@@ -16,7 +16,7 @@ import {toast} from "react-toastify";
 const Report = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    useDocumentTitle("Ohana - Thống kê, báo cáo");
+    useDocumentTitle("Ohana - BÁO CÁO, THỐNG KÊ");
     const navigate = useNavigate();
     const {formatter} = dateTimeFormatter();
 
@@ -56,13 +56,23 @@ const Report = () => {
     useEffect(() => {
         (async () => {
             try {
+
+                toggleLoading(true)
+
                 let userAnalysis = await reportService.getUserAnalysis();
+
                 let postAnalysis = await reportService.getPostAnalysis();
+
                 let topTenPost = await reportService.getTopTenPendingPost();
+
                 let unpMonthlyCount = await reportService.countPostAndUserByMonth({
                     startDate: state.startDate,
                     endDate: state.endDate
                 })
+
+                let categoryAnalysis = await reportService.countAllCategory(); 
+
+                let utilityAnalysis = await reportService.countAllUtilty(); 
 
                 setState({
                     ...state,
@@ -70,7 +80,9 @@ const Report = () => {
                     userAnalysis: {...userAnalysis},
                     postAnalysis: {...postAnalysis},
                     topTenPendingPosts: topTenPost.content,
-                    isLoading: false
+                    countCate: categoryAnalysis.data,
+                    countUtility: utilityAnalysis.data,
+                    isLoading: false,
                 })
 
             } catch (error) {
@@ -82,6 +94,9 @@ const Report = () => {
     useEffect(() => {
         (async () => {
             try {
+
+                toggleLoading(true)
+
                 let unpMonthlyCount = await reportService.countPostAndUserByMonth({
                     startDate: state.startDate,
                     endDate: state.endDate
@@ -99,7 +114,6 @@ const Report = () => {
         })();
     }, [state.startDate, state.endDate]);
 
-    console.log(state.chartType)
 
     function handleChangeDate(e) {
         setState({...state, [e.target.name]: e.target.value})
@@ -127,7 +141,7 @@ const Report = () => {
                     justifyContent="space-between"
                     alignItems="center"
                 >
-                    <Header title="Thống kê, báo cáo"/>
+                    <Header title="BÁO CÁO, THỐNG KÊ"/>
 
                     {/* <Box>
       <Button
@@ -182,7 +196,7 @@ const Report = () => {
                         <StatBox
                             title={state.userAnalysis.ALL - 1}
                             subtitle="Số lượng người dùng"
-                            progress="0.50"
+                            // progress="0.50"
                             // increase="+21%"
                             icon={
                                 <PeopleAltOutlined
@@ -201,7 +215,7 @@ const Report = () => {
                         <StatBox
                             title={state.countUtility}
                             subtitle="Số tiện ích"
-                            progress="0.30"
+                            // progress="0.30"
                             // increase="+5%"
                             icon={
                                 <AutoAwesomeOutlined
@@ -221,7 +235,7 @@ const Report = () => {
                         <StatBox
                             title={state.postAnalysis.ALL}
                             subtitle="Tổng số bài viết"
-                            progress="0.80"
+                            // progress="0.80"
                             // increase="+43%"
                             icon={
                                 <PostAddRounded
@@ -230,12 +244,13 @@ const Report = () => {
                             }
                         />
                     </Box>
+
                     <Box
                         gridColumn="span 4"
                         gridRow="span 3"
                         backgroundColor={colors.primary[400]}
                         p="30px"
-                        overflow={"scroll"}
+                        // overflow={"scroll"}
                     >
                         <Typography variant="h5" fontWeight="600">
                             Bài viết
@@ -288,7 +303,7 @@ const Report = () => {
                         gridRow="span 3"
                         backgroundColor={colors.primary[400]}
                         p="30px"
-                        overflow={"scroll"}
+                        // overflow={"scroll"}
                     >
                         <Typography variant="h5" fontWeight="600">
                             Người dùng
@@ -310,7 +325,7 @@ const Report = () => {
                                     datasets: [
                                         {
                                             data: [
-                                                state.userAnalysis.ACTIVATED,
+                                                state.userAnalysis.ACTIVATED - 1,
                                                 state.userAnalysis.DEACTIVATED,
                                                 state.userAnalysis.CONFIRM_EMAIL,
                                             ],
@@ -349,8 +364,7 @@ const Report = () => {
                                 alignItems="center"
                                 borderBottom={`4px solid ${colors.primary[500]}`}
                                 p="15px"
-                            >
-                                <Box maxWidth={200} display={"flex"} flexDirection={"column"}>
+                            > <Box maxWidth={200} display={"flex"} flexDirection={"column"}>
                                     <Typography
                                         role={"button"}
                                         component={"a"}
@@ -386,10 +400,13 @@ const Report = () => {
                                 >
                                     {currencyFormatter.formatVnd(post.rentHouse.roomPrice) + " đ"}
                                 </Box>
+
+                                
                             </Box>
                         ))}
                     </Box>
                 </Box>
+
                 <Box p={3} mt={3} width={"100%"} bgcolor={colors.primary[400]}>
                     <Box display={"flex"} justifyContent={"space-between"} height={50}>
                         <Typography variant="h5" fontWeight="600">
@@ -436,6 +453,7 @@ const Report = () => {
                             </TextField>
                         </Stack>
                     </Box>
+
                     <Box>
                         {state.chartType === "line"
                             ? <CChart

@@ -33,6 +33,8 @@ export const CREATE_NEW_CATEGORY = CATEGORY + "/add-category";
 export const UPDATE_STATUS_CATEGORY_BY_ID = CATEGORY + "";
 
 export const REPORT = MAIN_API + MIDDLE_PATH + "/api/reports";
+export const REPORT_COUNT_ALL_CATEGORY = MAIN_API + MIDDLE_PATH + "/api/reports";
+export const REPORT_COUNT_ALL_UTILITY = MAIN_API + MIDDLE_PATH + "/api/reports";
 export const REPORT_COUNT_ALL_USERS= REPORT + "/countUser";
 export const REPORT_ANALYZE_USERS= REPORT + "/analyze/users";
 export const REPORT_COUNT_ALL_USER_BY_STATUS = REPORT + "";

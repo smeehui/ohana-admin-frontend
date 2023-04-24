@@ -1,7 +1,9 @@
 import { CChart } from "@coreui/react-chartjs";
 import {
-  AutoAwesomeOutlined, CategoryOutlined,
-  PeopleAltOutlined, PostAddRounded
+  AutoAwesomeOutlined,
+  CategoryOutlined,
+  PeopleAltOutlined,
+  PostAddRounded,
 } from "@mui/icons-material";
 import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -11,7 +13,7 @@ import {
   categoryService,
   postService,
   userService,
-  utilitiesService
+  utilitiesService,
 } from "~/service";
 import { tokens } from "~/theme";
 import Header from "../../components/Header";
@@ -22,9 +24,9 @@ const Dashboard = () => {
   const colors = tokens(theme.palette.mode);
   useDocumentTitle("Ohana - Tổng quan");
 
-  const toggleLoading = (isLoading)=>{       
-    setState({...state,isLoading:isLoading})
-}
+  const toggleLoading = (isLoading) => {
+    setState({ ...state, isLoading: isLoading });
+  };
 
   const [state, setState] = useState({
     isLoading: true,
@@ -49,8 +51,7 @@ const Dashboard = () => {
   useEffect(() => {
     (async () => {
       try {
-
-        toggleLoading(true)
+        toggleLoading(true);
 
         let cate = await categoryService.countAll();
 
@@ -79,9 +80,7 @@ const Dashboard = () => {
         let postByStatusREFUSED = await postService.countAllPostByStatus(
           "REFUSED"
         );
-        let postByStatusDRAFT = await postService.countAllPostByStatus(
-          "DRAFT"
-          );
+        let postByStatusDRAFT = await postService.countAllPostByStatus("DRAFT");
         let postByStatusDELETED = await postService.countAllPostByStatus(
           "DELETED"
         );
@@ -115,31 +114,33 @@ const Dashboard = () => {
     })();
   }, []);
 
-  return <>
-  {state.isLoading
-  ?(<Box
-    position={"absolute"}
-    top={0}
-    left={0}
-    right={0}
-    bottom={0}
-    display={"flex"}
-    justifyContent={"center"}
-    alignItems={"center"}
->
-    <CircularProgress color="success" size={80}/>
-</Box>)
-  : (<Box m="20px">
-  {/* HEADER */}
-  <Box
-    mb="60px"
-    display="flex"
-    justifyContent="space-between"
-    alignItems="center"
-  >
-    <Header title="TRANG CHỦ" />
+  return (
+    <>
+      {state.isLoading ? (
+        <Box
+          position={"absolute"}
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          <CircularProgress color="success" size={80} />
+        </Box>
+      ) : (
+        <Box m="20px">
+          {/* HEADER */}
+          <Box
+            mb="60px"
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Header title="TRANG CHỦ" />
 
-    {/* <Box>
+            {/* <Box>
       <Button
         sx={{
           backgroundColor: colors.blueAccent[700],
@@ -153,17 +154,17 @@ const Dashboard = () => {
         Download Reports
       </Button>
     </Box> */}
-  </Box>
+          </Box>
 
-  {/* GRID & CHARTS */}
-  <Box
-    display="grid"
-    gridTemplateColumns="repeat(12, 1fr)"
-    gridAutoRows="140px"
-    gap="20px"
-  >
-    {/* ROW 1 */}
-    <Box
+          {/* GRID & CHARTS */}
+          <Box
+            display="grid"
+            gridTemplateColumns="repeat(12, 1fr)"
+            gridAutoRows="140px"
+            gap="20px"
+          >
+            {/* ROW 1 */}
+            {/* <Box
       gridColumn="span 3"
       backgroundColor={colors.primary[400]}
       display="flex"
@@ -181,27 +182,29 @@ const Dashboard = () => {
           />
         }
       />
-    </Box>
-    <Box
-      gridColumn="span 3"
-      backgroundColor={colors.primary[400]}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <StatBox
-        title={state.countUser}
-        subtitle="Số lượng người dùng"
-        progress="0.50"
-        // increase="+21%"
-        icon={
-          <PeopleAltOutlined
-            sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-          />
-        }
-      />
-    </Box>
-    <Box
+    </Box> */}
+
+            <Box
+              gridColumn="span 3"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <StatBox
+                title="20"
+                subtitle="Số lượng người dùng mới trong tháng 04/2023"
+                progress="0.21"
+                increase="+21%"
+                icon={
+                  <PeopleAltOutlined
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
+              />
+            </Box>
+
+            {/* <Box
       gridColumn="span 3"
       backgroundColor={colors.primary[400]}
       display="flex"
@@ -210,39 +213,39 @@ const Dashboard = () => {
     >
       <StatBox
         title={state.countUtility}
-        subtitle="Số tiện ích"
+        subtitle="Số lượng đánh giá mới"
         progress="0.30"
-        // increase="+5%"
+        increase="4.7/5*"
         icon={
           <AutoAwesomeOutlined
             sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
           />
         }
       />
-    </Box>
+    </Box> */}
 
-    <Box
-      gridColumn="span 3"
-      backgroundColor={colors.primary[400]}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <StatBox
-        title={state.countPost}
-        subtitle="Tổng số bài viết"
-        progress="0.80"
-        // increase="+43%"
-        icon={
-          <PostAddRounded
-            sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-          />
-        }
-      />
-    </Box>
+            <Box
+              gridColumn="span 3"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <StatBox
+                title="25"
+                subtitle="Số bài viết mới trong tháng 04/2023"
+                progress="0.43"
+                increase="+43%"
+                icon={
+                  <PostAddRounded
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
+              />
+            </Box>
 
-    {/* ROW 2 */}
-    {/* <Box
+            {/* ROW 2 */}
+            {/* <Box
       gridColumn="span 8"
       gridRow="span 2"
       backgroundColor={colors.primary[400]}
@@ -283,8 +286,8 @@ const Dashboard = () => {
       </Box>
     </Box> */}
 
-    {/* ROW 3 */}
-    {/* <Box
+            {/* ROW 3 */}
+            {/* <Box
       gridColumn="span 4"
       gridRow="span 2"
       backgroundColor={colors.primary[400]}
@@ -310,7 +313,56 @@ const Dashboard = () => {
         <Typography>Includes extra misc expenditures and costs</Typography>
       </Box>
     </Box> */}
-    <Box
+
+            <Box
+              gridColumn="span 5"
+              gridRow="span 4"
+              backgroundColor={colors.primary[400]}
+              p="30px"
+            >
+              <Typography variant="h5" fontWeight="600" mb="20px">
+                Xu hướng tìm kiếm
+              </Typography>
+              <CChart
+                type="radar"
+                borderWidth="10px"
+                data={{
+                  labels: [
+                    "Văn phòng",
+                    "Chung cư",
+                    "Kí túc xá/Homestay",
+                    "Căn hộ",
+                    "Nhà nguyên căn",
+                    "Phòng ở ghép",
+                    "Phòng trọ",
+                  ],
+                  datasets: [
+                    {
+                      label: "Tháng 03/2023",
+                      backgroundColor: "rgba(220, 220, 220, 0.2)",
+                      borderColor: "rgba(8, 187, 26, 1)",
+                      pointBackgroundColor: "rgba(8, 187, 26, 1)",
+                      pointBorderColor: "#fff",
+                      pointHighlightFill: "rgba(8, 187, 26, 1)",
+                      pointHighlightStroke: "rgba(8, 187, 26, 1)",
+                      data: [65, 59, 90, 81, 56, 55, 40],
+                    },
+                    {
+                      label: "Tháng 04/2023",
+                      backgroundColor: "rgba(151, 187, 205, 0.2)",
+                      borderColor: "rgba(213, 13, 19, 1)",
+                      pointBackgroundColor: "rgba(213, 13, 19, 1)",
+                      pointBorderColor: "#fff",
+                      pointHighlightFill: "rgba(213, 13, 19, 1)",
+                      pointHighlightStroke: "rgba(213, 13, 19, 1)",
+                      data: [28, 48, 40, 19, 96, 27, 100],
+                    },
+                  ],
+                }}
+              />
+            </Box>
+
+            {/* <Box
       gridColumn="span 4"
       gridRow="span 3"
       backgroundColor={colors.primary[400]}
@@ -360,9 +412,9 @@ const Dashboard = () => {
           }}
         />
       </Box>
-    </Box>
+    </Box> */}
 
-    <Box
+            {/* <Box
       gridColumn="span 4"
       gridRow="span 3"
       backgroundColor={colors.primary[400]}
@@ -399,9 +451,9 @@ const Dashboard = () => {
           }}
         />
       </Box>
-    </Box>
+    </Box> */}
 
-    <Box
+            {/* <Box
       gridColumn="span 4"
       gridRow="span 3"
       backgroundColor={colors.primary[400]}
@@ -457,9 +509,9 @@ const Dashboard = () => {
           </Box>
         </Box>
       ))}
-    </Box>
+    </Box> */}
 
-    {/* <Box
+            {/* <Box
       gridColumn="span 4"
       gridRow="span 2"
       backgroundColor={colors.primary[400]}
@@ -475,7 +527,7 @@ const Dashboard = () => {
         <BarChart isDashboard={true} />
       </Box>
     </Box> */}
-    {/* <Box
+            {/* <Box
       gridColumn="span 4"
       gridRow="span 2"
       backgroundColor={colors.primary[400]}
@@ -492,10 +544,11 @@ const Dashboard = () => {
         <GeographyChart isDashboard={true} />
       </Box>
     </Box> */}
-  </Box>
-</Box>)
-  }
-  </>;
+          </Box>
+        </Box>
+      )}
+    </>
+  );
 };
 
 export default Dashboard;
