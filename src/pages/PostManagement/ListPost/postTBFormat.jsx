@@ -15,7 +15,7 @@ function renderCellExpand(params) {
   );
 }
 
-const columns = [
+const postTableColumns = [
   {
     field: "id",
     headerName: "ID",
@@ -29,10 +29,9 @@ const columns = [
     headerName: "BÀI VIẾT",
     sortable: true,
     renderCell: ({ row }) => (
-      <Link to={config.routes.postDetails + row.id}><Typography>{row.title}</Typography></Link>
+      <Link to={config.routes.postDetails + row.id}><Typography textAlign={"start"}>{row.title}</Typography></Link>
     ),
-    width: 350,
-    align: "center",
+    flex: 1,
     headerAlign: "center",
   },
   {
@@ -64,7 +63,6 @@ const columns = [
     maxWidtd: "200px",
     align: "center",
     headerAlign: "center",
-    flex: 1,
   },
   {
     field: "location.line1",
@@ -73,7 +71,6 @@ const columns = [
     renderCell: ({ row }) => row.location.line1,
     align: "center",
     headerAlign: "center",
-    flex: 1,
   },
   {
     field: "createdAt",
@@ -83,7 +80,6 @@ const columns = [
     valueGetter: ({ value }) => value && new Date(value),
     align: "center",
     headerAlign: "center",
-    flex: 1,
   },
   {
     field: "descriptionContent",
@@ -92,7 +88,6 @@ const columns = [
     renderCell: renderCellExpand,
     align: "center",
     headerAlign: "center",
-    flex: 1,
   },
   {
     field: "category",
@@ -137,4 +132,4 @@ const columns = [
   },
 ];
 
-export { columns };
+export { postTableColumns };

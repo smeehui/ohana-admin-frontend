@@ -5,6 +5,7 @@ import {
     REPORT_COUNT_ALL_USER_BY_STATUS,
     REPORT_COUNT_USERS_AND_POSTS_OVER_MONTHS,
     REPORT_COUNT_TOP_TEN_PENDING_POSTS,
+    REPORT_GET_DATA_BY_MONTH,
     REPORT_COUNT_ALL_CATEGORY,
     REPORT_COUNT_ALL_UTILITY
 } from "~/service/api";
@@ -37,5 +38,9 @@ const countAllCategory = async () => {
     return count;
   }
 
-export default {getTopTenPendingPost,getPostAnalysis, getUserAnalysis,countPostAndUserByMonth, countAllCategory, countAllUtilty}
+const getDataByMonth = async (month)=>{
+    let res = await axios.post(REPORT_GET_DATA_BY_MONTH,month,{headers:{"Content-Type": "text/plain"}})
+    return res.data
+}
+export default {getTopTenPendingPost,getPostAnalysis, getUserAnalysis,countPostAndUserByMonth,getDataByMonth,countAllCategory,countAllUtilty}
 

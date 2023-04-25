@@ -43,6 +43,7 @@ export const REPORT_ANALYZE_POSTS= REPORT + "/analyze/posts";
 export const REPORT_COUNT_USERS_AND_POSTS_OVER_MONTHS= REPORT + "/count/monthly/unp";
 export const REPORT_COUNT_ALL_POST_BY_STATUS = MAIN_API + MIDDLE_PATH + "/api/reports";
 export const REPORT_COUNT_TOP_TEN_PENDING_POSTS= REPORT + "/ten/pending_posts";
+export const REPORT_GET_DATA_BY_MONTH= REPORT + "/analyze/monthly";
 
 export const GET_ALL_UTILITIES = MAIN_API + MIDDLE_PATH + "/api/utilities";
 export const GET_UTILITY_BY_ID= MAIN_API + MIDDLE_PATH + "/api/utilities";

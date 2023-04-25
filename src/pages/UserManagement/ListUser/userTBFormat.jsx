@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 import {config} from "~/config";
 import {UserStatus} from "~/pages/UserManagement/constants/UserStatus";
 
-const columns = [
+const userTableColumns = [
   {
     field: "id",
     headerName: "ID",
@@ -77,4 +77,4 @@ const columns = [
   },
 ];
 
-export { columns };
+export { userTableColumns };

@@ -1,6 +1,12 @@
 import {CChart} from "@coreui/react-chartjs";
-import {AutoAwesomeOutlined, CategoryOutlined, PeopleAltOutlined, PostAddRounded} from "@mui/icons-material";
-import {Box, CircularProgress, MenuItem, Stack, TextField, Typography, useTheme} from "@mui/material";
+import {
+    AddOutlined,
+    AutoAwesomeOutlined,
+    CategoryOutlined,
+    PeopleAltOutlined,
+    PostAddRounded, RemoveOutlined
+} from "@mui/icons-material";
+import {Box, Button, CircularProgress, Fade, MenuItem, Stack, TextField, Typography, useTheme} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import {reportService} from "~/service";
@@ -12,17 +18,23 @@ import {useNavigate} from "react-router-dom";
 import dateTimeFormatter from "~/utils/dateTimeFormatter";
 import {currencyFormatter} from "~/utils";
 import {toast} from "react-toastify";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Dialog from "@mui/material/Dialog";
+import Slide from "@mui/material/Slide";
+import {DataGrid} from "@mui/x-data-grid";
+import {userTableColumns} from "~/pages/UserManagement/ListUser/userTBFormat";
+import {postTableColumns} from "~/pages/PostManagement/ListPost/postTBFormat";
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide easing={"enter"} ref={ref} {...props} />;
+});
 const Report = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     useDocumentTitle("Ohana - BÁO CÁO, THỐNG KÊ");
     const navigate = useNavigate();
     const {formatter} = dateTimeFormatter();
-
-    const toggleLoading = (isLoading) => {
-        setState({...state, isLoading: isLoading})
-    }
 
     const [state, setState] = useState({
         isLoading: true,
@@ -50,9 +62,16 @@ const Report = () => {
         },
         postMonthlyCount: [],
         userMonthlyCount: [],
-        chartType: "line"
+        chartType: "line",
+        isShowTableModel: false,
+        listUserByMonth: [],
+        listPostByMonth: [],
+        selectedMonth: "",
+        isShowChart: false
     });
-
+    const toggleLoading = (isLoading) => {
+        setState({...state, isLoading: isLoading})
+    }
     useEffect(() => {
         (async () => {
             try {
@@ -70,9 +89,9 @@ const Report = () => {
                     endDate: state.endDate
                 })
 
-                let categoryAnalysis = await reportService.countAllCategory(); 
+                let categoryAnalysis = await reportService.countAllCategory();
 
-                let utilityAnalysis = await reportService.countAllUtilty(); 
+                let utilityAnalysis = await reportService.countAllUtilty();
 
                 setState({
                     ...state,
@@ -86,6 +105,7 @@ const Report = () => {
                 })
 
             } catch (error) {
+                console.log(error)
                 toast.error("Lấy dữ liệu thất bại!");
             }
         })();
@@ -94,9 +114,6 @@ const Report = () => {
     useEffect(() => {
         (async () => {
             try {
-
-                toggleLoading(true)
-
                 let unpMonthlyCount = await reportService.countPostAndUserByMonth({
                     startDate: state.startDate,
                     endDate: state.endDate
@@ -114,9 +131,30 @@ const Report = () => {
         })();
     }, [state.startDate, state.endDate]);
 
-
     function handleChangeDate(e) {
         setState({...state, [e.target.name]: e.target.value})
+    }
+    const getDataByMonth = (e) => {
+        let points = e.chart.getElementsAtEventForMode(e, 'nearest', {intersect: true}, true);
+        if (points.length) {
+            const firstPoint = points[0];
+            let label = e.chart.data.labels[firstPoint.index];
+            (async () => {
+                try {
+                    let res = await reportService.getDataByMonth(label);
+                    setState((prevState=>{
+                       return  {...prevState,...res, isShowTableModel: true, selectedMonth: label}
+                    }));
+                } catch (err){
+                    console.log(err)
+                    toast.error("Lấy dữ liệu thất bại");
+                }
+            })()
+        }
+    }
+
+    function handleShowChart() {
+        setState({...state, isShowChart: !state.isShowChart})
     }
 
     return <>
@@ -401,7 +439,7 @@ const Report = () => {
                                     {currencyFormatter.formatVnd(post.rentHouse.roomPrice) + " đ"}
                                 </Box>
 
-                                
+
                             </Box>
                         ))}
                     </Box>
@@ -412,6 +450,7 @@ const Report = () => {
                         <Typography variant="h5" fontWeight="600">
                             Biều đổ bài viết và người dùng
                         </Typography>
+
                         <Stack spacing={2} direction={"row"}>
                             <TextField
                                 type="date"
@@ -433,7 +472,7 @@ const Report = () => {
                                 onChange={handleChangeDate}
                                 helperText={<Typography>Chọn ngày kết thúc</Typography>}
                                 value={state.endDate}
-                                InputProps={{inputProps:{min: state.startDate, lang:"vi-VN"}}}
+                                InputProps={{inputProps: {min: state.startDate, lang: "vi-VN"}}}
                             />
                             <TextField
                                 select
@@ -451,62 +490,128 @@ const Report = () => {
                                     Biểu đồ cột
                                 </MenuItem>
                             </TextField>
+                            {state.isShowChart
+                            ?<Button variant={"contained"} onClick={handleShowChart} color={"warning"}>Đóng biểu đồ <RemoveOutlined/></Button>
+                            :<Button variant={"contained"} onClick={handleShowChart} color={"success"}>Xem biểu đồ <AddOutlined/></Button>}
                         </Stack>
                     </Box>
-
-                    <Box>
-                        {state.chartType === "line"
-                            ? <CChart
-                                redraw
-                                type={"line"}
-                                data={{
-                                    labels: state.postMonthlyCount.map(p => p.date),
-                                    datasets: [
-                                        {
-                                            label: "Số bài viết",
-                                            backgroundColor: "rgba(220, 220, 220, 0.2)",
-                                            borderColor: "rgba(220, 220, 220, 1)",
-                                            pointBackgroundColor: "rgba(220, 220, 220, 1)",
-                                            pointBorderColor: "#fff",
-                                            data: state.postMonthlyCount.map(p => p.count),
-                                        },
-                                        {
-                                            label: "Số người dùng",
-                                            backgroundColor: colors.pink[400],
-                                            borderColor: colors.pink[400],
-                                            pointBackgroundColor: colors.pink[400],
-                                            pointBorderColor: "#fff",
-                                            data: state.userMonthlyCount.map(u => u.count),
+                    {
+                        !!state.isShowChart
+                        && (<Fade in={!!state.isShowChart}>
+                            <Box padding={1}>
+                                {state.chartType === "line"
+                                    ? <CChart
+                                        redraw
+                                        type={"line"}
+                                        options=
+                                            {{
+                                                onClick: (e) => getDataByMonth(e)
+                                            }}
+                                        data={{
+                                            labels: state.postMonthlyCount.map(p => p.date),
+                                            datasets: [
+                                                {
+                                                    label: "Số bài viết",
+                                                    backgroundColor: "rgba(220, 220, 220, 0.2)",
+                                                    borderColor: "rgba(220, 220, 220, 1)",
+                                                    pointBackgroundColor: "rgba(220, 220, 220, 1)",
+                                                    pointBorderColor: "#fff",
+                                                    data: state.postMonthlyCount.map(p => p.count),
+                                                },
+                                                {
+                                                    label: "Số người dùng",
+                                                    backgroundColor: colors.pink[400],
+                                                    borderColor: colors.pink[400],
+                                                    pointBackgroundColor: colors.pink[400],
+                                                    pointBorderColor: "#fff",
+                                                    data: state.userMonthlyCount.map(u => u.count),
+                                                }
+                                            ]
                                         }
-                                    ]
+                                        }/>
+                                    : <CChart
+                                        redraw
+                                        options=
+                                            {{
+                                                onClick: (e) => getDataByMonth(e)
+                                            }}
+                                        type={"bar"}
+                                        data={{
+                                            labels: state.postMonthlyCount.map(p => p.date),
+                                            datasets: [
+                                                {
+                                                    label: "Số bài viết",
+                                                    backgroundColor: colors.grey[400],
+                                                    data: state.postMonthlyCount.map(p => p.count),
+                                                },
+                                                {
+                                                    label: "Số người dùng",
+                                                    backgroundColor: colors.pink[400],
+                                                    data: state.userMonthlyCount.map(u => u.count),
+                                                }
+                                            ],
+                                        }}
+                                    />
+
                                 }
-                                }/>
-                            : <CChart
-                                redraw
-                                labels={"month"}
-                                type={"bar"}
-                                data={{
-                                    labels: state.postMonthlyCount.map(p => p.date),
-                                    datasets: [
-                                        {
-                                            label: "Số bài viết",
-                                            backgroundColor: colors.grey[400],
-                                            data: state.postMonthlyCount.map(p => p.count),
-                                        },
-                                        {
-                                            label: "Số người dùng",
-                                            backgroundColor: colors.pink[400],
-                                            data: state.userMonthlyCount.map(u => u.count),
-                                        }
-                                    ],
-                                }}
-                            />
 
-                        }
-
-                    </Box>
+                            </Box>
+                        </Fade>)
+                    }
                 </Box>
-
+                <Dialog
+                    open={!!state.isShowTableModel}
+                    onClose={() => setState({...state, isShowTableModel: false})}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    // onClose={onClose}
+                    aria-describedby="alert-dialog-slide-description"
+                    sx={{
+                        "& .MuiPaper-elevation": {
+                            minWidth: "90vw"
+                        }
+                    }}
+                >
+                    <DialogContent>
+                        <Stack direction="column" justifyContent={"center"}  spacing={1}>
+                            {
+                                state.listUserByMonth.length ===0
+                                && state.listPostByMonth.length ==0
+                                && <Typography>Không có thông tin vê bài viết và người dùng</Typography>
+                            }
+                            {
+                                state.listUserByMonth.length > 0
+                                && (<Box>
+                                    <Typography>Danh sách người dùng mới trong tháng {state.selectedMonth}</Typography>
+                                    <Box>
+                                        <DataGrid getRowId={(row) => {
+                                            return row.id;
+                                        }} autoHeight rows={state.listUserByMonth} columns={userTableColumns}/>
+                                    </Box>
+                                </Box>)
+                            }
+                            {
+                                state.listPostByMonth.length > 0
+                                && (<Box>
+                                    <Typography>Danh sách bài viết mới trong tháng {state.selectedMonth}</Typography>
+                                    <Box>
+                                        <DataGrid getRowId={(row) => row.id} autoHeight rows={state.listPostByMonth}
+                                                  columns={postTableColumns}/>
+                                    </Box>
+                                </Box>)
+                            }
+                        </Stack>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            variant="contained"
+                            color="warning"
+                            onClick={() => setState({...state, isShowTableModel: false})}
+                        >
+                            Đóng
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Box>)
         }
     </>;

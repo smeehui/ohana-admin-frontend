@@ -1,7 +1,7 @@
 import {Box, Stack, useTheme} from "@mui/material";
 import {tokens} from "~/theme";
 import Header from "~/components/Header";
-import {columns} from "./postTBFormat";
+import {postTableColumns} from "./postTBFormat";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {toast} from "react-toastify";
 import {DataGrid, useGridApiRef} from "@mui/x-data-grid";
@@ -148,7 +148,7 @@ const ManagePost = () => {
             >
                 <DataGrid
                     apiRef={apiRef}
-                    columns={columns}
+                    columns={postTableColumns}
                     {...tableState}
                     initialState={{
                         ...tableState,
