@@ -40,7 +40,7 @@ const UserDetails = () => {
         isReloadPage: false,
     });
 
-    useDocumentTitle("Ohana - " +globalState.user.fullName)
+    useDocumentTitle("Ohana - " + globalState.user.fullName)
 
     useEffect(() => {
         (async () => {
@@ -55,19 +55,18 @@ const UserDetails = () => {
                 setState({...state,
                     isLoading: false,
                 });
-                console.log("reload")
             } catch (error) {
                 toast.error("Lấy dữ liệu thất bại!");
                 console.log(error);
             }
         })();
     }, [id,state.isReloadPage]);
-    console.log(state.isReloadPage)
 
     const  handleConfirmChangeStatus = async ()=>{
         try {
             await userService.updateUserStatusById(id,state.modifyingStatus);
             setState(prevState => ({...prevState,isReloadPage:!prevState.isReloadPage,isShowConfirm: false}))
+            toast.success("Cập nhật thành công!")
         } catch (error) {
             toast.error("Cập nhật thất bại!");
             console.log(error);
