@@ -1,7 +1,7 @@
 import {Box, useTheme} from "@mui/material";
 import {tokens} from "~/theme";
 import Header from "~/components/Header";
-import {columns} from "./userTBFormat";
+import {userTableColumns} from "./userTBFormat";
 import {Suspense, useCallback, useEffect, useMemo, useState} from "react";
 import {toast} from "react-toastify";
 import {DataGrid, useGridApiRef} from "@mui/x-data-grid";
@@ -150,7 +150,7 @@ const ManageUser = () => {
                         apiRef={apiRef}
                         autoHeight
                         slots={toolBar}
-                        columns={columns}
+                        columns={userTableColumns}
                         pagination
                         initialState={{
                             ...tableState,

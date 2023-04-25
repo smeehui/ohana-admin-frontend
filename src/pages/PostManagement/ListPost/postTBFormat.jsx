@@ -15,7 +15,7 @@ function renderCellExpand(params) {
   );
 }
 
-const columns = [
+const postTableColumns = [
   {
     field: "id",
     headerName: "ID",
@@ -132,4 +132,4 @@ const columns = [
   },
 ];
 
-export { columns };
+export { postTableColumns };
