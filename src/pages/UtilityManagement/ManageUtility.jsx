@@ -81,7 +81,7 @@ function ManageUtility() {
     const [tableState, setTableState] = useState({
         rows: [],
         loading: true,
-        pageSize: 5,
+        pageSize: 10,
         page: 0,
         rowCount: 0,
     })
@@ -261,10 +261,10 @@ function ManageUtility() {
                 >
                     <DataGrid columns={columns}
                               slots={{toolbar: () => <ToolBar formik={formik}/>}}
-                              pageSizeOptions={[5, 20, 50, 100]}
+                              pageSizeOptions={[10, 20,50, 100]}
                               initialState={{
                                   ...tableState,
-                                  pagination: {paginationModel: {pageSize: 5}},
+                                  pagination: {paginationModel: {pageSize: 10}},
                               }}
                               disableRowSelectionOnClick={true}
                               paginationMode="server"
