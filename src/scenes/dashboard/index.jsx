@@ -7,6 +7,7 @@ import {
 } from "@mui/icons-material";
 import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
+import ProgressCircle from "~/components/ProgressCircle";
 import { mockTransactions } from "~/data/mockData";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import {
@@ -164,7 +165,7 @@ const Dashboard = () => {
             gap="20px"
           >
             {/* ROW 1 */}
-            {/* <Box
+            <Box
       gridColumn="span 3"
       backgroundColor={colors.primary[400]}
       display="flex"
@@ -182,7 +183,7 @@ const Dashboard = () => {
           />
         }
       />
-    </Box> */}
+    </Box>
 
             <Box
               gridColumn="span 3"
@@ -192,10 +193,10 @@ const Dashboard = () => {
               justifyContent="center"
             >
               <StatBox
-                title="20"
-                subtitle="Số lượng người dùng mới trong tháng 04/2023"
-                progress="0.21"
-                increase="+21%"
+                title={state.countUser}
+                subtitle="Số lượng người dùng"
+                // progress="0.21"
+                // increase="+21%"
                 icon={
                   <PeopleAltOutlined
                     sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -204,7 +205,7 @@ const Dashboard = () => {
               />
             </Box>
 
-            {/* <Box
+            <Box
       gridColumn="span 3"
       backgroundColor={colors.primary[400]}
       display="flex"
@@ -213,16 +214,16 @@ const Dashboard = () => {
     >
       <StatBox
         title={state.countUtility}
-        subtitle="Số lượng đánh giá mới"
-        progress="0.30"
-        increase="4.7/5*"
+        subtitle="Số lượng tiện ích"
+        // progress="0.30"
+        // increase="4.7/5*"
         icon={
           <AutoAwesomeOutlined
             sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
           />
         }
       />
-    </Box> */}
+    </Box>
 
             <Box
               gridColumn="span 3"
@@ -232,10 +233,10 @@ const Dashboard = () => {
               justifyContent="center"
             >
               <StatBox
-                title="25"
-                subtitle="Số bài viết mới trong tháng 04/2023"
-                progress="0.43"
-                increase="+43%"
+                title={state.countPost}
+                subtitle="Số bài viết"
+                // progress="0.43"
+                // increase="+43%"
                 icon={
                   <PostAddRounded
                     sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -314,7 +315,7 @@ const Dashboard = () => {
       </Box>
     </Box> */}
 
-            <Box
+            {/* <Box
               gridColumn="span 5"
               gridRow="span 4"
               backgroundColor={colors.primary[400]}
@@ -360,9 +361,9 @@ const Dashboard = () => {
                   ],
                 }}
               />
-            </Box>
+            </Box> */}
 
-            {/* <Box
+            <Box
       gridColumn="span 4"
       gridRow="span 3"
       backgroundColor={colors.primary[400]}
@@ -412,9 +413,9 @@ const Dashboard = () => {
           }}
         />
       </Box>
-    </Box> */}
+    </Box>
 
-            {/* <Box
+            <Box
       gridColumn="span 4"
       gridRow="span 3"
       backgroundColor={colors.primary[400]}
@@ -451,9 +452,9 @@ const Dashboard = () => {
           }}
         />
       </Box>
-    </Box> */}
+    </Box>
 
-            {/* <Box
+            <Box
       gridColumn="span 4"
       gridRow="span 3"
       backgroundColor={colors.primary[400]}
@@ -509,7 +510,7 @@ const Dashboard = () => {
           </Box>
         </Box>
       ))}
-    </Box> */}
+    </Box>
 
             {/* <Box
       gridColumn="span 4"
