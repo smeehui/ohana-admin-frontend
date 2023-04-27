@@ -1,13 +1,20 @@
 import { CChart } from "@coreui/react-chartjs";
+import { config } from "~/config";
 import {
   AutoAwesomeOutlined,
   CategoryOutlined,
   PeopleAltOutlined,
   PostAddRounded,
 } from "@mui/icons-material";
-import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Link,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useEffect, useState } from "react";
-import ProgressCircle from "~/components/ProgressCircle";
 import { mockTransactions } from "~/data/mockData";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import {
@@ -21,6 +28,9 @@ import Header from "../../components/Header";
 import StatBox from "../../components/StatBox";
 
 const Dashboard = () => {
+  
+  const { routes } = config;
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   useDocumentTitle("Ohana - Tổng quan");
@@ -166,24 +176,28 @@ const Dashboard = () => {
           >
             {/* ROW 1 */}
             <Box
-      gridColumn="span 3"
-      backgroundColor={colors.primary[400]}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <StatBox
-        title={state.countCate}
-        subtitle="Danh mục phòng cho thuê"
-        // progress="0.75"
-        // increase="+14%"
-        icon={
-          <CategoryOutlined
-            sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-          />
-        }
-      />
-    </Box>
+              gridColumn="span 3"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <StatBox
+                title={state.countCate}
+                subtitle="Danh mục phòng cho thuê"
+                
+                icon={
+                  <CategoryOutlined
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
+              />
+              <Link marginRight={3} href={routes.category}>
+              <Button sx={{width: 80}} variant="contained" color="success">
+                Chi tiết
+              </Button>
+              </Link>
+            </Box>
 
             <Box
               gridColumn="span 3"
@@ -193,37 +207,43 @@ const Dashboard = () => {
               justifyContent="center"
             >
               <StatBox
-                title={state.countUser}
+                title={state.countUser - 1}
                 subtitle="Số lượng người dùng"
-                // progress="0.21"
-                // increase="+21%"
                 icon={
                   <PeopleAltOutlined
                     sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
                   />
                 }
               />
+              <Link marginRight={3} href={routes.userManagement}>
+              <Button sx={{width: 80}} variant="contained" color="success">
+                Chi tiết
+              </Button>
+              </Link>
             </Box>
 
             <Box
-      gridColumn="span 3"
-      backgroundColor={colors.primary[400]}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <StatBox
-        title={state.countUtility}
-        subtitle="Số lượng tiện ích"
-        // progress="0.30"
-        // increase="4.7/5*"
-        icon={
-          <AutoAwesomeOutlined
-            sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-          />
-        }
-      />
-    </Box>
+              gridColumn="span 3"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <StatBox
+                title={state.countUtility}
+                subtitle="Số lượng tiện ích"
+                icon={
+                  <AutoAwesomeOutlined
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
+              />
+              <Link marginRight={3} href={routes.utilityManagement}>
+              <Button sx={{width: 80}} variant="contained" color="success">
+                Chi tiết
+              </Button>
+              </Link>
+            </Box>
 
             <Box
               gridColumn="span 3"
@@ -243,6 +263,11 @@ const Dashboard = () => {
                   />
                 }
               />
+              <Link marginRight={3} href={routes.postManagement}>
+              <Button sx={{width: 80}} variant="contained" color="success">
+                Chi tiết
+              </Button>
+              </Link>
             </Box>
 
             {/* ROW 2 */}
@@ -364,97 +389,101 @@ const Dashboard = () => {
             </Box> */}
 
             <Box
-      gridColumn="span 4"
-      gridRow="span 3"
-      backgroundColor={colors.primary[400]}
-      p="30px"
-    >
-      <Typography variant="h5" fontWeight="600">
-        Bài viết
-      </Typography>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="left"
-        mt="25px"
-      >
-        <CChart
-          type="doughnut"
-          data={{
-            labels: [
-              "Đang chờ duyệt",
-              "Đã đăng",
-              "Đã thu hồi",
-              "Nháp",
-              "Đã xóa",
-              "Đã hết phòng",
-            ],
-            datasets: [
-              {
-                backgroundColor: [
-                  "#41B883",
-                  "#EC2FEF",
-                  "#DD1B16",
-                  "#00D8FF",
-                  "#6E6767",
-                  "#ECEF2F",
-                ],
-                data: [
-                  state.countPostByStatusPENDING_REVIEW,
-                  state.countPostByStatusPUBLISHED,
-                  state.countPostByStatusREFUSED,
-                  state.countPostByStatusDRAFT,
-                  state.countPostByStatusDELETED,
-                  state.countPostByStatusOVER_ROOM,
-                ],
-                hoverOffset: 6,
-              },
-            ],
-          }}
-        />
-      </Box>
-    </Box>
+              gridColumn="span 4"
+              gridRow="span 3"
+              backgroundColor={colors.primary[400]}
+              p="30px"
+            >
+              <Typography variant="h5" fontWeight="600">
+                Bài viết
+              </Typography>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="left"
+                mt="25px"
+              >
+
+{/* <ProgressBar now={20} label={`20%`} /> */}
+
+                <CChart
+                  type="doughnut"
+                  data={{
+                    labels: [
+                      "Đang chờ duyệt",
+                      "Đã đăng",
+                      "Đã thu hồi",
+                      "Nháp",
+                      "Đã xóa",
+                      "Đã hết phòng",
+                    ],
+                    datasets: [
+                      {
+                        backgroundColor: [
+                          "#41B883",
+                          "#EC2FEF",
+                          "#DD1B16",
+                          "#00D8FF",
+                          "#6E6767",
+                          "#ECEF2F",
+                        ],
+                        data: [
+                          state.countPostByStatusPENDING_REVIEW,
+                          state.countPostByStatusPUBLISHED,
+                          state.countPostByStatusREFUSED,
+                          state.countPostByStatusDRAFT,
+                          state.countPostByStatusDELETED,
+                          state.countPostByStatusOVER_ROOM,
+                        ],
+                        hoverOffset: 6,
+                      },
+                    ],
+                  }}
+                />
+              </Box>
+            </Box>
 
             <Box
-      gridColumn="span 4"
-      gridRow="span 3"
-      backgroundColor={colors.primary[400]}
-      p="30px"
-    >
-      <Typography variant="h5" fontWeight="600">
-        Người dùng
-      </Typography>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="left"
-        mt="25px"
-      >
-        <CChart
-          type="polarArea"
-          data={{
-            labels: [
-              "Đang hoạt động",
-              "Ngừng hoạt động",
-              "Đang chờ xác thực",
-            ],
-            datasets: [
-              {
-                data: [
-                  state.countUserByStatusACTIVATED,
-                  state.countUserByStatusDEACTIVATED,
-                  state.countUserByStatusCONFIRM_EMAIL,
-                ],
-                backgroundColor: ["#4BC0C0", "#FF6384", "#FFCE56"],
-                hoverOffset: 6,
-              },
-            ],
-          }}
-        />
-      </Box>
-    </Box>
+              gridColumn="span 4"
+              gridRow="span 3"
+              backgroundColor={colors.primary[400]}
+              p="30px"
+            >
+              <Typography variant="h5" fontWeight="600">
+                Người dùng
+              </Typography>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="left"
+                mt="25px"
+              >
+                <CChart
+                  type="polarArea"
+                  data={{
+                    labels: [
+                      "Đang hoạt động",
+                      "Ngừng hoạt động",
+                      "Đang chờ xác thực",
+                    ],
+                    datasets: [
+                      {
+                        data: [
+                          state.countUserByStatusACTIVATED,
+                          state.countUserByStatusDEACTIVATED,
+                          state.countUserByStatusCONFIRM_EMAIL,
+                        ],
+                        backgroundColor: ["#4BC0C0", "#FF6384", "#FFCE56"],
+                        hoverOffset: 6,
+                      },
+                    ],
+                  }}
+                />
+              </Box>
+            </Box>
+            
 
-            <Box
+            {/* <Box
       gridColumn="span 4"
       gridRow="span 3"
       backgroundColor={colors.primary[400]}
@@ -510,7 +539,7 @@ const Dashboard = () => {
           </Box>
         </Box>
       ))}
-    </Box>
+    </Box> */}
 
             {/* <Box
       gridColumn="span 4"

@@ -63,6 +63,7 @@ const ManagePost = () => {
     const handleFilter = useCallback(
         async (filter) => {
             try {
+                toggleLoading(true)
                 setTableState({...tableState, isLoading: true})
                 let result = await postService.filterPosts(filter, {
                     page: tableState.page,

@@ -64,16 +64,17 @@ const ManageUser = () => {
         toast.error("Chỉnh sửa thất bại!");
     };
 
-    const handleFilter = useCallback(async (filterParams) => {
+    const handleFilter = useCallback(
+        async (filterParams) => {
         try {
-            toggleLoading(true)
             let result = await userService.filterUsers(filterParams, {
                 page: tableState.page,
                 size: tableState.pageSize,
             });
             addPaginationProperties(result);
+            toast.success("Lọc thành công!")
         } catch (error) {
-            toast.error("Filter errror!");
+            toast.error("Lọc thất bại!");
             console.log(error);
         }
     }, []);

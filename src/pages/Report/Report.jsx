@@ -6,7 +6,7 @@ import {
     PeopleAltOutlined,
     PostAddRounded, RemoveOutlined
 } from "@mui/icons-material";
-import {Box, Button, CircularProgress, Fade, MenuItem, Stack, TextField, Typography, useTheme} from "@mui/material";
+import {Box, Button, CircularProgress, Fade, Link, MenuItem, Stack, TextField, Typography, useTheme} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import {reportService} from "~/service";
@@ -30,6 +30,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide easing={"enter"} ref={ref} {...props} />;
 });
 const Report = () => {
+    const {routes} = config;
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     useDocumentTitle("Ohana - BÁO CÁO, THỐNG KÊ");
@@ -157,7 +158,8 @@ const Report = () => {
         setState({...state, isShowChart: !state.isShowChart})
     }
 
-    return <>
+    return( 
+    <>
         {state.isLoading
             ? (<Box
                 position={"absolute"}
@@ -215,14 +217,17 @@ const Report = () => {
                         <StatBox
                             title={state.countCate}
                             subtitle="Danh mục phòng cho thuê"
-                            // progress="0.75"
-                            // increase="+14%"
                             icon={
                                 <CategoryOutlined
                                     sx={{color: colors.greenAccent[600], fontSize: "26px"}}
                                 />
                             }
                         />
+                        <Link marginRight={3} href={routes.category}>
+              <Button sx={{width: 80}} variant="contained" color="success">
+                Chi tiết
+              </Button>
+              </Link>
                     </Box>
                     <Box
                         gridColumn="span 3"
@@ -234,14 +239,17 @@ const Report = () => {
                         <StatBox
                             title={state.userAnalysis.ALL - 1}
                             subtitle="Số lượng người dùng"
-                            // progress="0.50"
-                            // increase="+21%"
                             icon={
                                 <PeopleAltOutlined
                                     sx={{color: colors.greenAccent[600], fontSize: "26px"}}
                                 />
                             }
                         />
+                        <Link marginRight={3} href={routes.userManagement}>
+              <Button sx={{width: 80}} variant="contained" color="success">
+                Chi tiết
+              </Button>
+              </Link>
                     </Box>
                     <Box
                         gridColumn="span 3"
@@ -253,14 +261,17 @@ const Report = () => {
                         <StatBox
                             title={state.countUtility}
                             subtitle="Số tiện ích"
-                            // progress="0.30"
-                            // increase="+5%"
                             icon={
                                 <AutoAwesomeOutlined
                                     sx={{color: colors.greenAccent[600], fontSize: "26px"}}
                                 />
                             }
                         />
+                        <Link marginRight={3} href={routes.utilityManagement}>
+              <Button sx={{width: 80}} variant="contained" color="success">
+                Chi tiết
+              </Button>
+              </Link>
                     </Box>
 
                     <Box
@@ -273,14 +284,17 @@ const Report = () => {
                         <StatBox
                             title={state.postAnalysis.ALL}
                             subtitle="Tổng số bài viết"
-                            // progress="0.80"
-                            // increase="+43%"
                             icon={
                                 <PostAddRounded
                                     sx={{color: colors.greenAccent[600], fontSize: "26px"}}
                                 />
                             }
                         />
+                        <Link marginRight={3} href={routes.postManagement}>
+              <Button sx={{width: 80}} variant="contained" color="success">
+                Chi tiết
+              </Button>
+              </Link>
                     </Box>
 
                     <Box
@@ -612,9 +626,10 @@ const Report = () => {
                         </Button>
                     </DialogActions>
                 </Dialog>
-            </Box>)
-        }
-    </>;
+            </Box>
+            )}
+    </>
+    );
 };
 
 export default Report;
