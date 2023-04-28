@@ -72,7 +72,6 @@ const ManageUser = () => {
                 size: tableState.pageSize,
             });
             addPaginationProperties(result);
-            toast.success("Lọc thành công!")
         } catch (error) {
             toast.error("Lọc thất bại!");
             console.log(error);

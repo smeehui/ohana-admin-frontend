@@ -16,14 +16,14 @@ function renderCellExpand(params) {
 }
 
 const postTableColumns = [
-  {
-    field: "id",
-    headerName: "ID",
-    align: "center",
-    width: 60,
-    sortable: true,
-    headerAlign: "center",
-  },
+  // {
+  //   field: "id",
+  //   headerName: "ID",
+  //   align: "center",
+  //   width: 60,
+  //   sortable: true,
+  //   headerAlign: "center",
+  // },
   {
     field: "title",
     headerName: "BÀI VIẾT",

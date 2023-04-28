@@ -294,13 +294,13 @@ const handleChangeStatusClose = () => {
 }
 
 const columns = [
-  {
-    field: "id",
-    headerName: "ID",
-    headerAlign: 'center',
-    align: 'center',
-    width: 60,
-  },
+  // {
+  //   field: "id",
+  //   headerName: "ID",
+  //   headerAlign: 'center',
+  //   align: 'center',
+  //   width: 60,
+  // },
   {
     field: "title",
     headerName: "Danh mục",

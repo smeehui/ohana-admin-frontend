@@ -41,7 +41,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
     const toolStyle = {color: colors.greenAccent[300]};
     const [filterParams, setFilterParams] = useState({
         keyword: "",
-        status: undefined,
+        status: PostStatus.PENDING_REVIEW,
         location: {
             provinceId: 46,
             districtId: 474,
@@ -75,7 +75,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
     };
 
     useEffect(() => {
-        if (!isMounted) handleFilter(filterParams);
+         handleFilter(filterParams);
     }, [debouncedFilter, action.isFilter]);
     const handleAction = useCallback(
         (type) => {

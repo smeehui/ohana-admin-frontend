@@ -87,13 +87,13 @@ function ActionButton({ row }) {
     );
 }
 const columns = [
-  {
-    field: "id",
-    headerName: "ID",
-    headerAlign: "center",
-    align: "center",
-    width: 60,
-  },
+  // {
+  //   field: "id",
+  //   headerName: "ID",
+  //   headerAlign: "center",
+  //   align: "center",
+  //   width: 60,
+  // },
   {
     field: "name",
     headerName: "Tên",

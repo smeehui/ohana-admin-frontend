@@ -3,15 +3,15 @@ import {config} from "~/config";
 import {UserStatus} from "~/pages/UserManagement/constants/UserStatus";
 
 const userTableColumns = [
-  {
-    field: "id",
-    headerName: "ID",
-    type: "numericColumn",
-    sortable: true,
-    headerAlign: "center",
-    align: "center",
-    width: 60,
-  },
+  // {
+  //   field: "id",
+  //   headerName: "ID",
+  //   type: "numericColumn",
+  //   sortable: true,
+  //   headerAlign: "center",
+  //   align: "center",
+  //   width: 60,
+  // },
   {
     field: "fullName",
     headerName: "Họ tên",
