@@ -149,7 +149,7 @@ const Dashboard = () => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Header title="TRANG CHỦ" />
+            <Header title="TRANG ADMIN" />
 
             {/* <Box>
       <Button

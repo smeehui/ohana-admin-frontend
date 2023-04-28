@@ -31,7 +31,6 @@ const userTableColumns = [
     sortable: true,
     flex: 1,
     headerAlign: "center",
-    align: "center",
   },
   {
     field: "description",
@@ -55,14 +54,14 @@ const userTableColumns = [
     headerAlign: "center",
     align: "center",
   },
-  {
-    field: "role",
-    headerName: "Role",
-    filter: true,
-    sortable: true,
-    headerAlign: "center",
-    align: "center",
-  },
+  // {
+  //   field: "role",
+  //   headerName: "Role",
+  //   filter: true,
+  //   sortable: true,
+  //   headerAlign: "center",
+  //   align: "center",
+  // },
   {
     field: "status",
     headerName: "Trạng thái",

@@ -175,7 +175,7 @@ const ManageUser = () => {
                         }
                         filterMode="server"
                         paginationMode="server"
-                        checkboxSelection
+                        // checkboxSelection
                         {...tableState}
                         onRowSelectionModelChange={(rows) =>
                             setTableState((prev) => ({
