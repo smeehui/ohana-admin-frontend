@@ -10,6 +10,7 @@ import GlobalLayout from "~/scenes/global/GlobalLatyout";
 import LoginRegLayout from "~/scenes/global/LoginRegLayout";
 import Login from "~/pages/Login/Login";
 import ManageUtility from "~/pages/UtilityManagement/ManageUtility";
+import {PostContext} from "~/pages/PostManagement/PostManagementContext";
 
 const { routes } = config;
 
@@ -19,7 +20,7 @@ const publicRoutes = [
     {path: routes.dashboard, element: Dashboard,layout: GlobalLayout},
     {path: routes.userManagement, element: ManageUser,layout: GlobalLayout},
     {path: routes.userDetails + ":id", element: UserDetails,layout: GlobalLayout},
-    {path: routes.postManagement, element: ManagePost,layout: GlobalLayout},
+    {path: routes.postManagement, element: ManagePost,layout: GlobalLayout,context: PostContext},
     {path: routes.postDetails + ":id", element: PostDetails,layout: GlobalLayout},
     {path: routes.report, element: Report,layout: GlobalLayout},
     {path: routes.category, element: Category,layout: GlobalLayout},

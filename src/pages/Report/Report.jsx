@@ -44,8 +44,8 @@ const Report = () => {
         countUtility: 0,
         countPost: 0,
         topTenPendingPosts: [],
-        startDate: new Date(),
-        endDate: new Date(),
+        startDate: `${new Date().getFullYear()}-${new Date().getMonth()<10? '0'+new Date().getMonth():new Date().getMonth()}`,
+        endDate: `${new Date().getFullYear()}-${new Date().getMonth()<10? '0'+new Date().getMonth():new Date().getMonth()}`,
         userAnalysis: {
             ALL: 0,
             ACTIVATED: 0,
@@ -86,8 +86,8 @@ const Report = () => {
                 let topTenPost = await reportService.getTopTenPendingPost();
 
                 let unpMonthlyCount = await reportService.countPostAndUserByMonth({
-                    startDate: state.startDate,
-                    endDate: state.endDate
+                    startDate: state.startDate + '-01',
+                    endDate: state.endDate + '-01'
                 })
 
                 let categoryAnalysis = await reportService.countAllCategory();
@@ -116,8 +116,8 @@ const Report = () => {
         (async () => {
             try {
                 let unpMonthlyCount = await reportService.countPostAndUserByMonth({
-                    startDate: state.startDate,
-                    endDate: state.endDate
+                    startDate: state.startDate + "-01",
+                    endDate: state.endDate + "-01"
                 })
 
                 setState({
@@ -127,6 +127,7 @@ const Report = () => {
                 })
 
             } catch (error) {
+                console.log(error)
                 toast.error("Lấy dữ liệu thất bại!");
             }
         })();
@@ -467,7 +468,7 @@ const Report = () => {
 
                         <Stack spacing={2} direction={"row"}>
                             <TextField
-                                type="date"
+                                type="month"
                                 name="startDate"
                                 variant="standard"
                                 autoFocus
@@ -479,7 +480,7 @@ const Report = () => {
                             />
                             <TextField
                                 lang={'vi-Vn'}
-                                type="date"
+                                type="month"
                                 name="endDate"
                                 variant="standard"
                                 autoFocus

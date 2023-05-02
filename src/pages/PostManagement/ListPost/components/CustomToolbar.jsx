@@ -1,4 +1,4 @@
-import {memo, useCallback, useEffect, useState} from "react";
+import {memo, useCallback, useContext, useEffect, useState} from "react";
 import {useTheme} from "@emotion/react";
 import {Done, FilterAlt, RemoveDoneOutlined, Restore,} from "@mui/icons-material";
 import {Button, MenuItem, TextField} from "@mui/material";
@@ -11,6 +11,7 @@ import {toast} from "react-toastify";
 import ConfirmationDialog from "~/pages/PostManagement/ListPost/components/ConfirmationDialog";
 import {PostStatus} from "~/pages/PostManagement/ListPost/constants/PostStatus";
 import {postService} from "~/service";
+import {PostContext, postManagementActions} from "~/pages/PostManagement/PostManagementContext/PostManagementContext";
 
 const LockButton = ({onClick}) => (
     <Button
@@ -35,18 +36,13 @@ const UnlockButton = ({onClick}) => (
     </Button>
 );
 
-function CustomToolbar({selectedRows, handleFilter, forceReload}) {
+function CustomToolbar({selectedRows, handleFilter, forceReload,doFiler}) {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const toolStyle = {color: colors.greenAccent[300]};
-    const [filterParams, setFilterParams] = useState({
-        keyword: "",
-        status: PostStatus.PENDING_REVIEW,
-        location: {
-            provinceId: 46,
-            districtId: 474,
-        }
-    });
+    const [state,dispatch] = useContext(PostContext);
+
+    console.log(state)
 
     const [action, setAction] = useState({
         type: "",
@@ -54,9 +50,8 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
         data: selectedRows,
         isFilter: false
     });
-    const isMounted = useIsMount();
 
-    const debouncedFilter = useDebounce(filterParams, 500);
+    const debouncedFilter = useDebounce(state.filter, 500);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -64,19 +59,12 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
     };
 
     const handleChange = (e) => {
-        if (e.target.value === "#")
-            return (prev) => ({
-                ...prev,
-                [e.target.name]: "",
-            });
-        setFilterParams((prev) => {
-            return {...prev, [e.target.name]: e.target.value};
-        });
+       dispatch({type: postManagementActions.SET_FILTER,payload: {[e.target.name]: e.target.value}});
     };
+    useEffect(()=>{
+        dispatch({type: postManagementActions.DO_FILTER,payload: doFiler})
+    },[debouncedFilter])
 
-    useEffect(() => {
-         handleFilter(filterParams);
-    }, [debouncedFilter, action.isFilter]);
     const handleAction = useCallback(
         (type) => {
             setAction((prev) => ({...prev, type: type, isShow: true}));
@@ -107,6 +95,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
         })()
     }, [action.type]);
 
+
     return (
         <GridToolbarContainer className="d-flex justify-content-between my-1">
             <div>
@@ -127,7 +116,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
                         name="keyword"
                         variant="standard"
                         onChange={handleChange}
-                        value={filterParams.keyword}
+                        value={state.filter.keyword}
                         placeholder="Tìm kiếm..."
                     />
                     <TextField
@@ -138,7 +127,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
                         title="Lọc theo trạng thái"
                         onChange={handleChange}
                         name="status"
-                        value={filterParams.status || "#"}
+                        value={state.filter.status || "#"}
                     >
                         <MenuItem value="#">
                             <em>Trạng thái</em>
@@ -164,19 +153,13 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
                         variant="outlined"
                         color="warning"
                         title="Xoá bộ lọc"
-                        onClick={() =>
-                            setFilterParams({
-                                keyword: "",
-                                status: undefined,
-                                role: undefined,
-                            })
-                        }
                     >
                         <Restore/>
                     </Button>
                     <Button variant="outlined" color="success" title="Lọc">
                         <FilterAlt style={toolStyle}
-                                   onClick={() => setAction(prev => ({...prev, isFilter: !prev.isFilter}))}/>
+                                   onClick={() => doFilter()}
+                        />
                     </Button>
                 </Stack>
             </form>

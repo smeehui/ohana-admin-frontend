@@ -1,9 +1,6 @@
-import {useEffect, useReducer} from "react";
+import {useReducer} from "react";
 import GlobalContext from "~/store/GlobalContext";
 import reducer, {initState} from './reducer'
-import {useTheme} from "@mui/material";
-import {tokens} from "~/theme";
-import {GlobalActions} from "~/store/actionConstants";
 
 
 function Provider({children}) {

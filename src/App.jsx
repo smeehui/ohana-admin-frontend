@@ -9,7 +9,7 @@ import LoginRegLayout from "~/scenes/global/LoginRegLayout";
 import Login from "~/pages/Login/Login";
 
 function App() {
-    const [state, dispatch] = useContext(AppContext);
+    const [state] = useContext(AppContext);
     return (
         <>
             <Routes>
@@ -19,11 +19,12 @@ function App() {
                         const {path} = route;
                         const Page = route.element;
                         const Layout = route.layout ? route.layout : null
+                        const Context = route.context ? route.context : null
                         return (
                             <Route
                                 key={path}
                                 path={path}
-                                element={<Layout><Page/></Layout>}
+                                element={<Layout>{!!Context? <Context><Page/></Context>: <Page/>}</Layout>}
                             />
                         );
                     })
