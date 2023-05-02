@@ -144,12 +144,11 @@ const Dashboard = () => {
         <Box m="20px">
           {/* HEADER */}
           <Box
-            mb="60px"
             display="flex"
             justifyContent="space-between"
             alignItems="center"
           >
-            <Header title="TRANG CHỦ" />
+            <Header title="Tổng quan" />
 
             {/* <Box>
       <Button

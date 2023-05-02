@@ -7,7 +7,7 @@ import {
     PostAddRounded, RemoveOutlined
 } from "@mui/icons-material";
 import {Box, Button, CircularProgress, Fade, Link, MenuItem, Stack, TextField, Typography, useTheme} from "@mui/material";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import {reportService} from "~/service";
 import {tokens} from "~/theme";
@@ -73,6 +73,37 @@ const Report = () => {
     const toggleLoading = (isLoading) => {
         setState({...state, isLoading: isLoading})
     }
+    const tableStyles = useMemo(()=>({
+        "& .MuiDataGrid-root": {
+            border: "none",
+        },
+        "& .MuiDataGrid-cell": {
+            borderBottom: "none",
+        },
+        "& .MuiDataGrid-cell:hover": {
+            cursor: "pointer",
+        },
+        "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+            outline: "none !important",
+        },
+        "& .name-column--cell": {
+            color: colors.greenAccent[300],
+        },
+        "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: colors.blueAccent[700],
+                borderBottom: "none",
+        },
+        "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: colors.primary[400],
+        },
+        "& .MuiDataGrid-footerContainer": {
+            borderTop: "none",
+                backgroundColor: colors.blueAccent[700],
+        },
+        "& .MuiCheckbox-root": {
+            color: `${colors.greenAccent[200]} !important`,
+        },
+    }),[])
     useEffect(() => {
         (async () => {
             try {
@@ -431,7 +462,7 @@ const Report = () => {
                                     >
                                         {post.title}
                                     </Typography>
-                                    <Typography component={"a"} onClick={(e) => {
+                                    <Typography role={"button"} component={"a"} onClick={(e) => {
                                         e.preventDefault();
                                         navigate(config.routes.userDetails + post.user.id);
                                     }} color={colors.grey[100]}>{post.user.fullName}</Typography>
@@ -588,7 +619,7 @@ const Report = () => {
                     }}
                 >
                     <DialogContent>
-                        <Stack direction="column" justifyContent={"center"}  spacing={1}>
+                        <Stack sx={tableStyles} direction="column" justifyContent={"center"}  spacing={1}>
                             {
                                 state.listUserByMonth.length ===0
                                 && state.listPostByMonth.length ==0
@@ -597,9 +628,10 @@ const Report = () => {
                             {
                                 state.listUserByMonth.length > 0
                                 && (<Box>
-                                    <Typography>Danh sách người dùng mới trong tháng {state.selectedMonth}</Typography>
+                                    <Typography fontWeight={"bold"} fontSize={20}>Danh sách người dùng mới trong tháng {state.selectedMonth}</Typography>
                                     <Box>
-                                        <DataGrid getRowId={(row) => {
+                                        <DataGrid     hideFooterPagination
+                                                      hideFooterSelectedRowCount getRowId={(row) => {
                                             return row.id;
                                         }} autoHeight rows={state.listUserByMonth} columns={userTableColumns}/>
                                     </Box>
@@ -608,9 +640,10 @@ const Report = () => {
                             {
                                 state.listPostByMonth.length > 0
                                 && (<Box>
-                                    <Typography>Danh sách bài viết mới trong tháng {state.selectedMonth}</Typography>
+                                    <Typography fontWeight={"bold"} fontSize={20}>Danh sách bài viết mới trong tháng {state.selectedMonth}</Typography>
                                     <Box>
-                                        <DataGrid getRowId={(row) => row.id} autoHeight rows={state.listPostByMonth}
+                                        <DataGrid     hideFooterPagination
+                                                      hideFooterSelectedRowCount getRowId={(row) => row.id} autoHeight rows={state.listPostByMonth}
                                                   columns={postTableColumns}/>
                                     </Box>
                                 </Box>)

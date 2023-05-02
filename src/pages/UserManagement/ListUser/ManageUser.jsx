@@ -93,7 +93,6 @@ const ManageUser = () => {
         })();
     }, [tableState.pageSize, tableState.page, tableState.forceReload]);
 
-    console.log(tableState.isLoading);
     const toolBar = useMemo(
         () => ({
             toolbar: () => (
@@ -107,95 +106,93 @@ const ManageUser = () => {
         [tableState.selectedRows,tableState.forceReload],
     );
     return (
-        <Suspense fallback={(<h1>Loading...</h1>)}>
-            <Box m="20px" display={"flex"} flexDirection={"column"}>
-                <Header title="Danh sách người dùng" />
-                <Box
-                    flex={1}
-                    sx={{
-                        "& .MuiDataGrid-root": {
-                            border: "none",
-                        },
-                        "& .MuiDataGrid-cell": {
-                            // borderBottom: "none",
-                        },
-                        "& .MuiDataGrid-cell:hover": {
-                            cursor: "pointer"
-                        },
-                        "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within":
-                            {
-                                outline: "none !important"
-                            }
-                        ,
-                        "& .name-column--cell": {
-                            color: colors.greenAccent[300],
-                        },
-                        "& .MuiDataGrid-columnHeaders": {
-                            backgroundColor: colors.blueAccent[700],
-                            borderBottom: "none",
-                        },
-                        "& .MuiDataGrid-virtualScroller": {
-                            backgroundColor: colors.primary[400],
-                        },
-                        "& .MuiDataGrid-footerContainer": {
-                            borderTop: "none",
-                            backgroundColor: colors.blueAccent[700],
-                        },
-                        "& .MuiCheckbox-root": {
-                            color: `${colors.greenAccent[200]} !important`,
-                        },
+        <Box m="20px" display={"flex"} flexDirection={"column"}>
+            <Header title="Danh sách người dùng" />
+            <Box
+                flex={1}
+                sx={{
+                    "& .MuiDataGrid-root": {
+                        border: "none",
+                    },
+                    "& .MuiDataGrid-cell": {
+                        // borderBottom: "none",
+                    },
+                    "& .MuiDataGrid-cell:hover": {
+                        cursor: "pointer"
+                    },
+                    "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within":
+                        {
+                            outline: "none !important"
+                        }
+                    ,
+                    "& .name-column--cell": {
+                        color: colors.greenAccent[300],
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: colors.blueAccent[700],
+                        borderBottom: "none",
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                        backgroundColor: colors.primary[400],
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                        borderTop: "none",
+                        backgroundColor: colors.blueAccent[700],
+                    },
+                    "& .MuiCheckbox-root": {
+                        color: `${colors.greenAccent[200]} !important`,
+                    },
+                }}
+            >
+                <DataGrid
+                    apiRef={apiRef}
+                    autoHeight
+                    slots={toolBar}
+                    columns={userTableColumns}
+                    pagination
+                    initialState={{
+                        ...tableState,
+                        pagination: {paginationModel: {pageSize: 10}},
                     }}
-                >
-                    <DataGrid
-                        apiRef={apiRef}
-                        autoHeight
-                        slots={toolBar}
-                        columns={userTableColumns}
-                        pagination
-                        initialState={{
-                            ...tableState,
-                            pagination: {paginationModel: {pageSize: 10}},
-                        }}
-                        pageSizeOptions={[10,20,50,100]}
-                        loading={tableState.isLoading}
-                        processRowUpdate={handleCellValueChanged}
-                        onProcessRowUpdateError={handleProcessRowUpdateError}
-                        rowSelection
-                        onPaginationModelChange={(paginationModel) =>
-                            setTableState((prev) => ({
-                                ...prev,
-                                ...paginationModel,
-                            }))
-                        }
-                        onRowEditStart={(row) =>
-                            setTableState((prev) => ({
-                                ...prev,
-                                currentRow: row,
-                            }))
-                        }
-                        filterMode="server"
-                        paginationMode="server"
-                        checkboxSelection
-                        {...tableState}
-                        onRowSelectionModelChange={(rows) =>
-                            setTableState((prev) => ({
-                                ...prev,
-                                selectedRows: [
-                                    ...rows.map((row) =>
-                                        {
-                                            console.log(rows)
-                                            return tableState.rows.find(
-                                                (tRow) => tRow.id === row,
-                                            )
-                                        },
-                                    ),
-                                ],
-                            }))
-                        }
-                    />
-                </Box>
+                    pageSizeOptions={[10,20,50,100]}
+                    loading={tableState.isLoading}
+                    processRowUpdate={handleCellValueChanged}
+                    onProcessRowUpdateError={handleProcessRowUpdateError}
+                    rowSelection
+                    onPaginationModelChange={(paginationModel) =>
+                        setTableState((prev) => ({
+                            ...prev,
+                            ...paginationModel,
+                        }))
+                    }
+                    onRowEditStart={(row) =>
+                        setTableState((prev) => ({
+                            ...prev,
+                            currentRow: row,
+                        }))
+                    }
+                    filterMode="server"
+                    paginationMode="server"
+                    // checkboxSelection
+                    {...tableState}
+                    onRowSelectionModelChange={(rows) =>
+                        setTableState((prev) => ({
+                            ...prev,
+                            selectedRows: [
+                                ...rows.map((row) =>
+                                    {
+                                        console.log(rows)
+                                        return tableState.rows.find(
+                                            (tRow) => tRow.id === row,
+                                        )
+                                    },
+                                ),
+                            ],
+                        }))
+                    }
+                />
             </Box>
-        </Suspense>
+        </Box>
     );
 };
 

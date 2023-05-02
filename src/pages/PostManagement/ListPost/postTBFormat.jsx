@@ -4,6 +4,7 @@ import * as React from "react";
 import GridCellExpand from "~/pages/PostManagement/ListPost/components/GridCellExpand";
 import { PostStatus } from "./constants/PostStatus";
 import {Typography} from "@mui/material";
+import dateTimeFormatter from "~/utils/dateTimeFormatter";
 
 function renderCellExpand(params) {
   return (
@@ -14,6 +15,8 @@ function renderCellExpand(params) {
     />
   );
 }
+
+const {formatter} = dateTimeFormatter();
 
 const postTableColumns = [
   // {
@@ -29,7 +32,7 @@ const postTableColumns = [
     headerName: "BÀI VIẾT",
     sortable: true,
     renderCell: ({ row }) => (
-      <Link to={config.routes.postDetails + row.id}><Typography textAlign={"start"}>{row.title}</Typography></Link>
+      <Link title={row.title} to={config.routes.postDetails + row.id}><Typography textAlign={"start"}>{row.title}</Typography></Link>
     ),
     flex: 1,
     headerAlign: "center",
@@ -56,30 +59,20 @@ const postTableColumns = [
     headerAlign: "center",
   },
   {
-    field: "location.wardName",
-    headerName: "PHƯỜNG/QUẬN",
-    sortable: true,
-    renderCell: ({ row }) => row.location.wardName,
-    maxWidtd: "200px",
-    align: "center",
-    headerAlign: "center",
-  },
-  {
     field: "location.line1",
     headerName: "ĐỊA CHỈ",
     sortable: true,
-    renderCell: ({ row }) => row.location.line1,
-    align: "center",
+    renderCell: ({ row }) => (`${row.location.line1}, ${row.location.wardName}, ${row.location.districtName}`),
     headerAlign: "center",
+    flex: 1
   },
   {
     field: "createdAt",
     headerName: "NGÀY ĐĂNG",
     sortable: true,
-    type: "dateTime",
-    valueGetter: ({ value }) => value && new Date(value),
     align: "center",
     headerAlign: "center",
+    renderCell: ({row})=>(formatter(row.createdAt))
   },
   {
     field: "descriptionContent",
@@ -88,18 +81,6 @@ const postTableColumns = [
     renderCell: renderCellExpand,
     align: "center",
     headerAlign: "center",
-  },
-  {
-    field: "category",
-    headerName: "DANH MỤC",
-    sortable: true,
-    renderCell: ({ row }) => {
-      const { category } = row;
-      return <strong>{category.title}</strong>;
-    },
-    align: "center",
-    headerAlign: "center",
-    flex: 1,
   },
   {
     field: "status",

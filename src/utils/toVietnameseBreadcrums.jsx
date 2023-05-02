@@ -10,7 +10,7 @@ const toVietnameseBreadcrums = (path)=>{
             case "utilities":
                 return "danh sách tiện ích";
             case "categories":
-                return "danh sách danh mục";
+                return "danh sách danh mục phòng";
             case "reports":
                 return "thống kê, báo cáo"
             default:
