@@ -20,7 +20,7 @@ const POSTS = MAIN_API + MIDDLE_PATH + "/api/posts";
 export const GET_ALL_POSTS = POSTS+"";
 export const GET_ALL_POSTS_BY_USERID = POSTS+"";
 export const GET_POST_BY_ID = POSTS+"";
-export const UPDATE_POST_STATUS_BY_ID = POSTS+"";
+export const UPDATE_POST_STATUS_BY_ID = POSTS+"/status";
 export const UPDATE_ALL_POST_STATUS_BY_IDS = POSTS+"";
 export const FILTER_POST = POSTS + "/filter";
 
@@ -50,8 +50,6 @@ export const GET_UTILITY_BY_ID= MAIN_API + MIDDLE_PATH + "/api/utilities";
 export const UPDATE_UTILITY_BY_ID= MAIN_API + MIDDLE_PATH + "/api/utilities";
 export const UPDATE_STATUS_UTILITY_BY_ID= MAIN_API + MIDDLE_PATH + "/api/utilities";
 export const CREATE_NEW_UTILITY= MAIN_API + MIDDLE_PATH + "/api/utilities";
-
-export const SEND_POST_CENSORING_EMAIL = MAIN_API + MIDDLE_PATH + "/api/mail";
 
 
 export const GET_ALL_PROVINCES = BASE_PROVINCE_API +"/";

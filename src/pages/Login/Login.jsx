@@ -106,7 +106,7 @@ function Login() {
                               centered indicatorColor="secondary"
                               textColor="inherit">
                             <Tab label={"Đăng nhập"}/>
-                            <Tab label={"Quên mật khẩu"}/>
+                            {/*<Tab label={"Quên mật khẩu"}/>*/}
                         </Tabs>
                         <TabPanel value={value} index={0}>
                             <Box

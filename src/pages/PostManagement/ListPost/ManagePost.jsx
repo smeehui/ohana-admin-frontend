@@ -57,12 +57,13 @@ const ManagePost = () => {
         }));
     };
 
-    const handleProcessRowUpdateError = async (event) => {
+    const handleProcessRowUpdateError = async () => {
         toast.error("Chỉnh sửa thất bại!");
     };
+
     useEffect(() => {
         handleFilter();
-    }, [tableState.doFilter, tableState.page, tableState.pageSize]);
+    }, [tableState.doFilter, tableState.page, tableState.pageSize,tableState.forceReload]);
 
     const handleFilter = async () => {
         try {
@@ -176,7 +177,6 @@ const ManagePost = () => {
                     resizable
                     onFilterModelChange={handleFilter}
                     onRowSelectionModelChange={(rows) => {
-                        handleFilter();
                         setTableState((prev) => ({
                             ...prev,
                             selectedRows: [

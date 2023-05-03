@@ -36,13 +36,11 @@ const UnlockButton = ({onClick}) => (
     </Button>
 );
 
-function CustomToolbar({selectedRows, handleFilter, forceReload,doFiler}) {
+function CustomToolbar({selectedRows, forceReload,doFiler}) {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const toolStyle = {color: colors.greenAccent[300]};
     const [state,dispatch] = useContext(PostContext);
-
-    console.log(state)
 
     const [action, setAction] = useState({
         type: "",
@@ -53,6 +51,8 @@ function CustomToolbar({selectedRows, handleFilter, forceReload,doFiler}) {
 
     const debouncedFilter = useDebounce(state.filter, 500);
 
+    const isMounted = useIsMount();
+
     const handleSubmit = (e) => {
         e.preventDefault();
         setAction({...action, isFilter: !action.isFilter});
@@ -62,6 +62,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload,doFiler}) {
        dispatch({type: postManagementActions.SET_FILTER,payload: {[e.target.name]: e.target.value}});
     };
     useEffect(()=>{
+        if (isMounted) return;
         dispatch({type: postManagementActions.DO_FILTER,payload: doFiler})
     },[debouncedFilter])
 
@@ -85,7 +86,7 @@ function CustomToolbar({selectedRows, handleFilter, forceReload,doFiler}) {
                 const successfulPosts = data.filter(u => result.succeed.some(rs => rs === u.id));
                 const failedPosts = data.filter(u => result.failed.some(rs => rs === u.id));
                 successfulPosts.forEach(p=>toast.success( `${type===PostStatus.PUBLISHED ? "Đăng ": "Thu hồi "} bài viết ${p.title} thành công!`))
-                failedPosts.forEach(p=>toast.error( `${type===PostStatus.PUBLISHED ? "Đăng ": "Thu hồi "} bài viết ${p.title} thất bại!`))
+                failedPosts.forEach(p => toast.error(`${type === PostStatus.PUBLISHED ? "Đăng " : "Thu hồi "} bài viết ${p.title} thất bại!`));
             } catch (error) {
                 console.log(error);
             } finally {

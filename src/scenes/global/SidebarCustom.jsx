@@ -140,7 +140,7 @@ const SidebarCustom = () => {
 
                     <Box paddingLeft={collapsed ? undefined : "10%"}>
                         <Item
-                            title="Dashboard"
+                            title="Tổng quan"
                             to="/dashboard"
                             className={"pro-inner-item"}
                             icon={<HomeOutlinedIcon />}
