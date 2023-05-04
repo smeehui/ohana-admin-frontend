@@ -117,7 +117,7 @@ const Category = () => {
           let result = await categoryService.getAllCategory({
             page: tableState.page,
             size: tableState.pageSize,
-            status: tableState.filter.status === "" ? undefined : tableState.filter.status
+            status: tableState.filter.status === "#" ? undefined : tableState.filter.status
           });
           setState({...state, category: result.content});
           setTableState({...tableState, loading: false, page: result.number, rowCount: result.totalElements})

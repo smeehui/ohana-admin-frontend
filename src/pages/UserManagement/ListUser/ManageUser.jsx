@@ -2,7 +2,7 @@ import {Box, useTheme} from "@mui/material";
 import {tokens} from "~/theme";
 import Header from "~/components/Header";
 import {userTableColumns} from "./userTBFormat";
-import {Suspense, useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {toast} from "react-toastify";
 import {DataGrid, useGridApiRef} from "@mui/x-data-grid";
 import CustomToolbar from "./CustomToolbar";
@@ -16,7 +16,7 @@ const ManageUser = () => {
     const apiRef = useGridApiRef();
     useDocumentTitle("Ohana - Quản lý người dùng")
 
-    const [state,dispatch] = useContext(UserContext);
+    const [state, dispatch] = useContext(UserContext);
 
     const [tableState, setTableState] = useState({
         pageSize: 10,
@@ -29,18 +29,17 @@ const ManageUser = () => {
         forceReload: false,
         doFilter: true
     });
-    console.log(tableState.page)
     const doFilter = useCallback(() => {
         setTableState((prev) => ({...prev, doFilter: !prev.doFilter}));
     }, []);
 
     const forceReload = useCallback(() => {
-        setTableState((prev) => ({ ...prev, forceReload: !prev.forceReload }));
+        setTableState((prev) => ({...prev, forceReload: !prev.forceReload}));
         apiRef.current.setRowSelectionModel([])
     }, []);
 
     const addPaginationProperties = (result) => {
-        const { totalElements, number, size, content } = result;
+        const {totalElements, number, size, content} = result;
         setTableState((prev) => ({
             ...prev,
             rowCount: totalElements,
@@ -53,18 +52,19 @@ const ManageUser = () => {
 
     const handleFilter = useCallback(
         async (filterParams) => {
-            setTableState({...tableState,isLoading: true})
-        try {
-            let result = await userService.filterUsers(filterParams, {
-                page: tableState.page,
-                size: tableState.pageSize,
-            });
-            addPaginationProperties(result);
-        } catch (error) {
-            toast.error("Lọc thất bại!");
-            console.log(error);
-        }
-    }, [tableState.page]);
+            setTableState({...tableState, isLoading: true})
+            try {
+                filterParams.status= filterParams.status ==="#"?undefined:filterParams.status;
+                let result = await userService.filterUsers(filterParams, {
+                    page: tableState.page,
+                    size: tableState.pageSize,
+                });
+                addPaginationProperties(result);
+            } catch (error) {
+                toast.error("Lọc thất bại!");
+                console.log(error);
+            }
+        }, [tableState.page, tableState.pageSize]);
 
     useEffect(() => {
         (async () => {
@@ -74,7 +74,7 @@ const ManageUser = () => {
                 toast.error("Lấy dữ liệu thất bại!");
             }
         })();
-    }, [tableState.pageSize, tableState.page, tableState.forceReload,tableState.doFilter]);
+    }, [tableState.pageSize, tableState.page, tableState.forceReload, tableState.doFilter]);
 
     const toolBar = useMemo(
         () => ({
@@ -86,11 +86,11 @@ const ManageUser = () => {
                 />
             ),
         }),
-        [tableState.selectedRows,tableState.forceReload],
+        [tableState.selectedRows, tableState.forceReload],
     );
     return (
         <Box m="20px" display={"flex"} flexDirection={"column"}>
-            <Header title="Danh sách người dùng" />
+            <Header title="Danh sách người dùng"/>
             <Box
                 flex={1}
                 sx={{
@@ -137,10 +137,10 @@ const ManageUser = () => {
                         ...tableState,
                         pagination: {paginationModel: {pageSize: 10}},
                     }}
-                    pageSizeOptions={[10,20,50,100]}
+                    pageSizeOptions={[10, 20, 50, 100]}
                     loading={tableState.isLoading}
                     rowSelection
-                    onPaginationModelChange={(paginationModel) =>{
+                    onPaginationModelChange={(paginationModel) => {
                         setTableState((prev) => ({
                             ...prev,
                             ...paginationModel,

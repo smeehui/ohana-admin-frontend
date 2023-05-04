@@ -56,11 +56,11 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
         // setFilter((filter) => !filter);
     };
     const handleChange = (e) => {
-        if (e.target.value === "#")
-            return (prev) => ({
-                ...prev,
-                [e.target.name]: "",
-            });
+        // if (e.target.value === "#")
+        //     return (prev) => ({
+        //         ...prev,
+        //         [e.target.name]: "",
+        //     });
         dispatch({type: userManagementActions.SET_FILTER, payload: {[e.target.name]: e.target.value}})
     };
     useEffect(() => {
@@ -75,28 +75,28 @@ function CustomToolbar({selectedRows, handleFilter, forceReload}) {
         dispatch({type: userManagementActions.DO_FILTER, payload: handleFilter})
     }, [debouncedFilter])
 
-    const handleConfirmAction = useCallback(async () => {
-        const {data, type} = action;
-        try {
-            let result = await userService.updateStatusAll(
-                action.data.map((item) => item.id),
-                type,
-            );
-            const successfulUsers = data.filter(u => result.succeed.some(rs => rs === u.id));
-
-            const failedUsers = data.filter(u => result.failed.some(rs => rs === u.id));
-
-            successfulUsers.forEach(u => toast.success(`${type === UserStatus.DEACTIVATED ? "Huỷ kích hoạt " : "Kích hoạt "} tài khoản ${u.fullName} thành công!`))
-
-            failedUsers.forEach(u => toast.error(`${type === UserStatus.DEACTIVATED ? "Huỷ kích hoạt " : "Kích hoạt "} tài khoản ${u.fullName} thất bại!`))
-
-        } catch (error) {
-
-        } finally {
-            handleCloseDialog();
-            forceReload();
-        }
-    }, [action.type]);
+    // const handleConfirmAction = useCallback(async () => {
+    //     const {data, type} = action;
+    //     try {
+    //         let result = await userService.updateStatusAll(
+    //             action.data.map((item) => item.id),
+    //             type,
+    //         );
+    //         const successfulUsers = data.filter(u => result.succeed.some(rs => rs === u.id));
+    //
+    //         const failedUsers = data.filter(u => result.failed.some(rs => rs === u.id));
+    //
+    //         successfulUsers.forEach(u => toast.success(`${type === UserStatus.DEACTIVATED ? "Huỷ kích hoạt " : "Kích hoạt "} tài khoản ${u.fullName} thành công!`))
+    //
+    //         failedUsers.forEach(u => toast.error(`${type === UserStatus.DEACTIVATED ? "Huỷ kích hoạt " : "Kích hoạt "} tài khoản ${u.fullName} thất bại!`))
+    //
+    //     } catch (error) {
+    //
+    //     } finally {
+    //         handleCloseDialog();
+    //         forceReload();
+    //     }
+    // }, [action.type]);
     return (
         <GridToolbarContainer className="d-flex justify-content-between my-1">
             <div>

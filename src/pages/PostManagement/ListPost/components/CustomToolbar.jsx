@@ -36,7 +36,7 @@ const UnlockButton = ({onClick}) => (
     </Button>
 );
 
-function CustomToolbar({selectedRows, forceReload,doFiler}) {
+function CustomToolbar({selectedRows, forceReload, doFiler}) {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const toolStyle = {color: colors.greenAccent[300]};
@@ -76,7 +76,7 @@ function CustomToolbar({selectedRows, forceReload,doFiler}) {
     const handleCloseDialog = useCallback((type) => {
         setAction((prev) => ({...prev, type: type, isShow: false}));
     }, []);
-    
+
     const handleConfirmAction = useCallback(() => {
         (async ()=>{
             const { data, type } = action;
@@ -153,7 +153,8 @@ function CustomToolbar({selectedRows, forceReload,doFiler}) {
                     <Button
                         variant="outlined"
                         color="warning"
-                        title="Xoá bộ lọc"
+                        title="Tải lại"
+                        onClick={()=>doFiler()}
                     >
                         <Restore/>
                     </Button>

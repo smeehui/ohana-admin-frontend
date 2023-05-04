@@ -69,6 +69,7 @@ const ManagePost = () => {
         try {
             toggleLoading(true);
             setTableState({...tableState, isLoading: true});
+            state.filter.status = state.filter.status === "#" ? undefined : state.filter.status;
             let result = await postService.filterPosts(state.filter, {
                 page: tableState.page,
                 size: tableState.pageSize,
