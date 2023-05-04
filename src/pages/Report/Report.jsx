@@ -399,7 +399,7 @@ const Report = () => {
                             mt="25px"
                         >
                             <CChart
-                                type="polarArea"
+                                type="pie"
                                 data={{
                                     labels: [
                                         "Đang hoạt động",

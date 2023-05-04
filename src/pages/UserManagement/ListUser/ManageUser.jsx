@@ -2,12 +2,13 @@ import {Box, useTheme} from "@mui/material";
 import {tokens} from "~/theme";
 import Header from "~/components/Header";
 import {userTableColumns} from "./userTBFormat";
-import {Suspense, useCallback, useEffect, useMemo, useState} from "react";
+import {Suspense, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {toast} from "react-toastify";
 import {DataGrid, useGridApiRef} from "@mui/x-data-grid";
 import CustomToolbar from "./CustomToolbar";
 import {userService} from "~/service";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
+import {UserContext} from "~/pages/UserManagement/UserManagementContext/UserManagementContext";
 
 const ManageUser = () => {
     const theme = useTheme();
@@ -15,6 +16,7 @@ const ManageUser = () => {
     const apiRef = useGridApiRef();
     useDocumentTitle("Ohana - Quản lý người dùng")
 
+    const [state,dispatch] = useContext(UserContext);
 
     const [tableState, setTableState] = useState({
         pageSize: 10,
@@ -25,11 +27,12 @@ const ManageUser = () => {
         currentRow: {},
         isLoading: true,
         forceReload: false,
+        doFilter: true
     });
-
-    const toggleLoading = (isLoading)=>{       
-        setTableState({...tableState,isLoading:isLoading})
-    }
+    console.log(tableState.page)
+    const doFilter = useCallback(() => {
+        setTableState((prev) => ({...prev, doFilter: !prev.doFilter}));
+    }, []);
 
     const forceReload = useCallback(() => {
         setTableState((prev) => ({ ...prev, forceReload: !prev.forceReload }));
@@ -48,24 +51,9 @@ const ManageUser = () => {
         }));
     };
 
-    const handleCellValueChanged = async (row) => {
-        toggleLoading(true)
-        try {
-            await userService.updateUserStatusById(row.id, row.status);
-            toast.success("Chỉnh sửa thành công!");
-        } catch (error) {
-            console.log(error);
-        }
-        toggleLoading(false)
-        return row;
-    };
-
-    const handleProcessRowUpdateError = async (event) => {
-        toast.error("Chỉnh sửa thất bại!");
-    };
-
     const handleFilter = useCallback(
         async (filterParams) => {
+            setTableState({...tableState,isLoading: true})
         try {
             let result = await userService.filterUsers(filterParams, {
                 page: tableState.page,
@@ -76,29 +64,24 @@ const ManageUser = () => {
             toast.error("Lọc thất bại!");
             console.log(error);
         }
-    }, []);
+    }, [tableState.page]);
 
     useEffect(() => {
         (async () => {
-            let paginationParams = {
-                page: tableState.page,
-                size: tableState.pageSize,
-            };
             try {
-                let result = await userService.getAllUsers(paginationParams);
-                addPaginationProperties(result);
+                await handleFilter(state.filter)
             } catch {
                 toast.error("Lấy dữ liệu thất bại!");
             }
         })();
-    }, [tableState.pageSize, tableState.page, tableState.forceReload]);
+    }, [tableState.pageSize, tableState.page, tableState.forceReload,tableState.doFilter]);
 
     const toolBar = useMemo(
         () => ({
             toolbar: () => (
                 <CustomToolbar
                     selectedRows={tableState.selectedRows}
-                    handleFilter={handleFilter}
+                    handleFilter={doFilter}
                     forceReload={forceReload}
                 />
             ),
@@ -156,14 +139,15 @@ const ManageUser = () => {
                     }}
                     pageSizeOptions={[10,20,50,100]}
                     loading={tableState.isLoading}
-                    processRowUpdate={handleCellValueChanged}
-                    onProcessRowUpdateError={handleProcessRowUpdateError}
                     rowSelection
-                    onPaginationModelChange={(paginationModel) =>
+                    onPaginationModelChange={(paginationModel) =>{
                         setTableState((prev) => ({
                             ...prev,
                             ...paginationModel,
                         }))
+                        console.log(paginationModel)
+                    }
+
                     }
                     onRowEditStart={(row) =>
                         setTableState((prev) => ({
@@ -175,21 +159,6 @@ const ManageUser = () => {
                     paginationMode="server"
                     // checkboxSelection
                     {...tableState}
-                    onRowSelectionModelChange={(rows) =>
-                        setTableState((prev) => ({
-                            ...prev,
-                            selectedRows: [
-                                ...rows.map((row) =>
-                                    {
-                                        console.log(rows)
-                                        return tableState.rows.find(
-                                            (tRow) => tRow.id === row,
-                                        )
-                                    },
-                                ),
-                            ],
-                        }))
-                    }
                 />
             </Box>
         </Box>

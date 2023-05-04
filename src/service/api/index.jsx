@@ -36,6 +36,7 @@ export const REPORT = MAIN_API + MIDDLE_PATH + "/api/reports";
 export const REPORT_COUNT_ALL_CATEGORY = MAIN_API + MIDDLE_PATH + "/api/reports";
 export const REPORT_COUNT_ALL_UTILITY = MAIN_API + MIDDLE_PATH + "/api/reports";
 export const REPORT_COUNT_ALL_USERS= REPORT + "/countUser";
+export const REPORT_GET_FIVE_USERS_WITH_MOST_POSTS= REPORT + "/analyze/fiveMostContributedUser";
 export const REPORT_ANALYZE_USERS= REPORT + "/analyze/users";
 export const REPORT_COUNT_ALL_USER_BY_STATUS = REPORT + "";
 export const REPORT_COUNT_ALL_POSTS= MAIN_API + MIDDLE_PATH + "/countPost";

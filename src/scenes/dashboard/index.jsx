@@ -6,11 +6,11 @@ import {
   PeopleAltOutlined,
   PostAddRounded,
 } from "@mui/icons-material";
+import {Link} from "react-router-dom";
 import {
   Box,
   Button,
   CircularProgress,
-  Link,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -19,13 +19,14 @@ import { mockTransactions } from "~/data/mockData";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import {
   categoryService,
-  postService,
+  postService, reportService,
   userService,
   utilitiesService,
 } from "~/service";
 import { tokens } from "~/theme";
 import Header from "../../components/Header";
 import StatBox from "../../components/StatBox";
+import {toast} from "react-toastify";
 
 const Dashboard = () => {
   
@@ -57,6 +58,7 @@ const Dashboard = () => {
     countPostByStatusDRAFT: 0,
     countPostByStatusDELETED: 0,
     countPostByStatusOVER_ROOM: 0,
+    fiveMostContributingUsers: []
   });
 
   useEffect(() => {
@@ -98,7 +100,7 @@ const Dashboard = () => {
         let postByStatusOVER_ROOM = await postService.countAllPostByStatus(
           "OVER_ROOM"
         );
-
+        let fiveMostContributingUsers = await reportService.getFiveUserWithMostPost();
         setState({
           ...state,
           countCate: cate.data,
@@ -118,8 +120,10 @@ const Dashboard = () => {
           countPostByStatusOVER_ROOM: postByStatusOVER_ROOM.data,
 
           isLoading: false,
+          fiveMostContributingUsers
         });
       } catch (error) {
+        console.log(error)
         toast.error("Lấy dữ liệu thất bại!");
       }
     })();
@@ -458,7 +462,7 @@ const Dashboard = () => {
                 mt="25px"
               >
                 <CChart
-                  type="polarArea"
+                  type="pie"
                   data={{
                     labels: [
                       "Đang hoạt động",
@@ -482,7 +486,7 @@ const Dashboard = () => {
             </Box>
             
 
-            {/* <Box
+            <Box
       gridColumn="span 4"
       gridRow="span 3"
       backgroundColor={colors.primary[400]}
@@ -497,12 +501,12 @@ const Dashboard = () => {
         p="15px"
       >
         <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-          Bài viết gần nhất chờ xét duyệt
+          Top 5 người dùng có nhiều bài viết nhất
         </Typography>
       </Box>
-      {mockTransactions.map((transaction, i) => (
+      {state.fiveMostContributingUsers.map((details, i) => (
         <Box
-          key={`${transaction.txId}-${i}`}
+          key={details[0]}
           display="flex"
           justifyContent="space-between"
           alignItems="center"
@@ -510,35 +514,37 @@ const Dashboard = () => {
           p="15px"
         >
           <Box>
-            <Typography
-              color={colors.greenAccent[500]}
-              variant="h5"
-              fontWeight="600"
-            >
-              Tên bài viết
-            </Typography>
-            <Typography color={colors.grey[100]}>Tên người dùng</Typography>
+            <Link to={config.routes.userDetails + details[0]}>
+              <Typography
+                  color={colors.greenAccent[500]}
+                  variant="h5"
+                  fontWeight="600"
+              >
+                {details[1]}
+              </Typography>
+            </Link>
+            <Typography color={colors.grey[100]}>{details[2]}</Typography>
           </Box>
-          <Box color={colors.grey[100]}>
-            <Typography
-              color={colors.greenAccent[500]}
-              variant="h6"
-              fontWeight="600"
-            >
-              Ngày đăng
-            </Typography>
-            {transaction.date}
-          </Box>
+          {/*<Box color={colors.grey[100]}>*/}
+          {/*  <Typography*/}
+          {/*    color={colors.greenAccent[500]}*/}
+          {/*    variant="h6"*/}
+          {/*    fontWeight="600"*/}
+          {/*  >*/}
+          {/*    Email*/}
+          {/*  </Typography>*/}
+          {/*  {details[2]}*/}
+          {/*</Box>*/}
           <Box
             backgroundColor={colors.greenAccent[500]}
             p="5px 10px"
             borderRadius="4px"
           >
-            ${transaction.cost}
+            {details[3]} Bài viết
           </Box>
         </Box>
       ))}
-    </Box> */}
+    </Box>
 
             {/* <Box
       gridColumn="span 4"

@@ -11,6 +11,7 @@ import LoginRegLayout from "~/scenes/global/LoginRegLayout";
 import Login from "~/pages/Login/Login";
 import ManageUtility from "~/pages/UtilityManagement/ManageUtility";
 import {PostContext} from "~/pages/PostManagement/PostManagementContext";
+import {UserContext} from "~/pages/UserManagement/UserManagementContext";
 
 const { routes } = config;
 
@@ -18,7 +19,7 @@ const publicRoutes = [
     {path: routes.home, element: Dashboard,layout: GlobalLayout},
     {path: routes.login, element: Login,layout: LoginRegLayout},
     {path: routes.dashboard, element: Dashboard,layout: GlobalLayout},
-    {path: routes.userManagement, element: ManageUser,layout: GlobalLayout},
+    {path: routes.userManagement, element: ManageUser,layout: GlobalLayout,context: UserContext},
     {path: routes.userDetails + ":id", element: UserDetails,layout: GlobalLayout},
     {path: routes.postManagement, element: ManagePost,layout: GlobalLayout,context: PostContext},
     {path: routes.postDetails + ":id", element: PostDetails,layout: GlobalLayout},

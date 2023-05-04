@@ -7,7 +7,7 @@ import {
     REPORT_COUNT_TOP_TEN_PENDING_POSTS,
     REPORT_GET_DATA_BY_MONTH,
     REPORT_COUNT_ALL_CATEGORY,
-    REPORT_COUNT_ALL_UTILITY
+    REPORT_COUNT_ALL_UTILITY, REPORT_GET_FIVE_USERS_WITH_MOST_POSTS
 } from "~/service/api";
 
 const getTopTenPendingPost = async ()=>{
@@ -21,6 +21,11 @@ const getUserAnalysis = async ()=>{
 }
 const getPostAnalysis = async ()=>{
     let res = await axios.get(REPORT_ANALYZE_POSTS);
+    return res.data;
+}
+
+const getFiveUserWithMostPost = async ()=>{
+    let res = await axios.get(REPORT_GET_FIVE_USERS_WITH_MOST_POSTS);
     return res.data;
 }
 const countPostAndUserByMonth = async (params)=>{
@@ -42,5 +47,5 @@ const getDataByMonth = async (month)=>{
     let res = await axios.post(REPORT_GET_DATA_BY_MONTH,month,{headers:{"Content-Type": "text/plain"}})
     return res.data
 }
-export default {getTopTenPendingPost,getPostAnalysis, getUserAnalysis,countPostAndUserByMonth,getDataByMonth,countAllCategory,countAllUtilty}
+export default {getTopTenPendingPost,getFiveUserWithMostPost,getPostAnalysis, getUserAnalysis,countPostAndUserByMonth,getDataByMonth,countAllCategory,countAllUtilty}
 

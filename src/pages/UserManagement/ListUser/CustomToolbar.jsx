@@ -3,7 +3,7 @@ import {FilterAlt, Lock, LockOpen, Restore,} from "@mui/icons-material";
 import {Button, MenuItem, TextField} from "@mui/material";
 import {Stack} from "@mui/system";
 import {GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector,} from "@mui/x-data-grid";
-import {memo, useCallback, useEffect, useState} from "react";
+import {memo, useCallback, useContext, useEffect, useState} from "react";
 import useDebounce from "~/hooks/useDebounce";
 import {useIsMount} from "~/hooks/useIsMount";
 import {tokens} from "~/theme";
@@ -11,19 +11,20 @@ import ConfirmationDialog from "./ConfirmationDialog";
 import {toast} from "react-toastify";
 import {userService} from "~/service";
 import {UserStatus} from "~/pages/UserManagement/constants/UserStatus";
+import {UserContext, userManagementActions} from "~/pages/UserManagement/UserManagementContext/UserManagementContext";
 
-const LockButton = ({ onClick }) => (
+const LockButton = ({onClick}) => (
     <Button
         color="error"
         variant="contained"
         onClick={() => onClick(UserStatus.DEACTIVATED)}
         title="Huỷ kích hoạt"
     >
-        <Lock />
+        <Lock/>
     </Button>
 );
 
-const UnlockButton = ({ onClick }) => (
+const UnlockButton = ({onClick}) => (
     <Button
         className="align-self-end"
         color="success"
@@ -31,20 +32,16 @@ const UnlockButton = ({ onClick }) => (
         onClick={() => onClick(UserStatus.ACTIVATED)}
         title="Kích hoạt"
     >
-        <LockOpen />
+        <LockOpen/>
     </Button>
 );
 
-function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
+function CustomToolbar({selectedRows, handleFilter, forceReload}) {
+    const [state, dispatch] = useContext(UserContext);
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const toolStyle = { color: colors.greenAccent[300] };
-    const [filterParams, setFilterParams] = useState({
-        keyword: "",
-        status: undefined,
-        role: undefined,
-    });
-    const [filter, setFilter] = useState(false);
+    const toolStyle = {color: colors.greenAccent[300]};
+    // const [filter, setFilter] = useState(false);
 
     const [action, setAction] = useState({
         type: "",
@@ -53,12 +50,10 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
     });
 
     const isMounted = useIsMount();
-
-    const debouncedFilter = useDebounce(filterParams, 500);
-
+    const debouncedFilter = useDebounce(state.filter, 500);
     const handleSubmit = (e) => {
         e.preventDefault();
-        setFilter((filter) => !filter);
+        // setFilter((filter) => !filter);
     };
     const handleChange = (e) => {
         if (e.target.value === "#")
@@ -66,42 +61,37 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                 ...prev,
                 [e.target.name]: "",
             });
-        setFilterParams((prev) => {
-            return { ...prev, [e.target.name]: e.target.value };
-        });
+        dispatch({type: userManagementActions.SET_FILTER, payload: {[e.target.name]: e.target.value}})
     };
     useEffect(() => {
-        if (!isMounted) handleFilter(filterParams);
-    }, [debouncedFilter, filter]);
-
-    const handleAction = useCallback(
-        (type) => {
-            setAction((prev) => ({ ...prev, type: type, isShow: true }));
-        },
-        [action.isShow],
-    );
-
+        if (!isMounted) handleFilter(state.filter);
+    }, [debouncedFilter]);
     const handleCloseDialog = useCallback((type) => {
-        setAction((prev) => ({ ...prev, type: type, isShow: false }));
+        setAction((prev) => ({...prev, type: type, isShow: false}));
     }, []);
-    
+
+    useEffect(() => {
+        if (isMounted) return;
+        dispatch({type: userManagementActions.DO_FILTER, payload: handleFilter})
+    }, [debouncedFilter])
+
     const handleConfirmAction = useCallback(async () => {
-        const { data, type } = action;
+        const {data, type} = action;
         try {
             let result = await userService.updateStatusAll(
                 action.data.map((item) => item.id),
                 type,
             );
             const successfulUsers = data.filter(u => result.succeed.some(rs => rs === u.id));
-            
+
             const failedUsers = data.filter(u => result.failed.some(rs => rs === u.id));
 
-            successfulUsers.forEach(u=>toast.success( `${type===UserStatus.DEACTIVATED ? "Huỷ kích hoạt ": "Kích hoạt "} tài khoản ${u.fullName} thành công!`))
+            successfulUsers.forEach(u => toast.success(`${type === UserStatus.DEACTIVATED ? "Huỷ kích hoạt " : "Kích hoạt "} tài khoản ${u.fullName} thành công!`))
 
-            failedUsers.forEach(u=>toast.error( `${type===UserStatus.DEACTIVATED ? "Huỷ kích hoạt ": "Kích hoạt "} tài khoản ${u.fullName} thất bại!`))
-        
+            failedUsers.forEach(u => toast.error(`${type === UserStatus.DEACTIVATED ? "Huỷ kích hoạt " : "Kích hoạt "} tài khoản ${u.fullName} thất bại!`))
+
         } catch (error) {
-            
+
         } finally {
             handleCloseDialog();
             forceReload();
@@ -110,8 +100,8 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
     return (
         <GridToolbarContainer className="d-flex justify-content-between my-1">
             <div>
-                <GridToolbarColumnsButton style={toolStyle} />
-                <GridToolbarDensitySelector style={toolStyle} />
+                <GridToolbarColumnsButton style={toolStyle}/>
+                <GridToolbarDensitySelector style={toolStyle}/>
             </div>
             <form className="flex-grow-1 d-flex" onSubmit={handleSubmit}>
                 <Stack
@@ -126,7 +116,7 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                         name="keyword"
                         variant="standard"
                         onChange={handleChange}
-                        value={filterParams.keyword}
+                        value={state.filter.keyword}
                         placeholder="Tìm kiếm..."
                     />
 
@@ -150,11 +140,11 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                         select
                         variant="standard"
                         defaultValue={"#"}
-                        sx={{ minWidth: 120 }}
+                        sx={{minWidth: 120}}
                         title="Lọc theo trạng thái"
                         onChange={handleChange}
                         name="status"
-                        value={filterParams.status || "#"}
+                        value={state.filter.status || "#"}
                     >
                         <MenuItem value="#">
                             <em>Trạng thái</em>
@@ -171,18 +161,13 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                         variant="outlined"
                         color="warning"
                         title="Xoá bộ lọc"
-                        onClick={() =>
-                            setFilterParams({
-                                keyword: "",
-                                status: undefined,
-                                role: undefined,
-                            })
+                        onClick={() => dispatch({type: userManagementActions.RESET_FILTER})
                         }
                     >
-                        <Restore />
+                        <Restore/>
                     </Button>
                     <Button variant="outlined" color="success" title="Lọc">
-                        <FilterAlt style={toolStyle} />
+                        <FilterAlt style={toolStyle}/>
                     </Button>
                 </Stack>
             </form>
@@ -201,13 +186,13 @@ function CustomToolbar({ selectedRows, handleFilter, forceReload }) {
                         <UnlockButton onClick={handleAction} />
                     </>
                 ) : null)} */}
-            {action.isShow && (
-                <ConfirmationDialog
-                    action={action}
-                    onClose={handleCloseDialog}
-                    onAgree={handleConfirmAction}
-                />
-            )}
+            {/*{action.isShow && (*/}
+            {/*    <ConfirmationDialog*/}
+            {/*        action={action}*/}
+            {/*        onClose={handleCloseDialog}*/}
+            {/*        onAgree={handleConfirmAction}*/}
+            {/*    />*/}
+            {/*)}*/}
         </GridToolbarContainer>
     );
 }
