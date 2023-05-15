@@ -4,7 +4,7 @@ import {cldConfig} from "~/config/cloudinary";
 import {thumbnail} from "@cloudinary/url-gen/actions/resize";
 import {byRadius} from "@cloudinary/url-gen/actions/roundCorners";
 
-import noImage from  "~/assets/img/no-image.jpg"
+import noImage from  "~/resources/assets/img/no-image.jpg"
 
 function CldImage({ id,w = 80,h=80,r=5,alt = "image" }) {
     const img =cldConfig.cld.image(`/${id}`)

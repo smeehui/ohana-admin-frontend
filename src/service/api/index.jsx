@@ -1,7 +1,7 @@
 export const PORT = 8080;
 export const FE_PORT = 5173
 const DOMAIN = "http://localhost:"
-const MAIN_API = DOMAIN + PORT;
+const MAIN_API = location.origin;
 const MIDDLE_PATH = "";
 const BASE_PROVINCE_API = "https://vapi.vnappmob.com/api/province"
 

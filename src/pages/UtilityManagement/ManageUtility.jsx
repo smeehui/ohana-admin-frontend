@@ -7,7 +7,7 @@ import {toast} from "react-toastify";
 import {tokens} from "~/theme";
 import {columns} from "~/pages/UtilityManagement/utilityTableFormat";
 import {allUtilityIcons} from "~/pages/UtilityManagement/data/allUtilities";
-import "~/assets/fonts/icon-ohana.ttf"
+import "~/resources/assets/fonts/icon-ohana.ttf"
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import {AddOutlined} from "@mui/icons-material";

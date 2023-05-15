@@ -12,10 +12,10 @@ import {
     Typography,
     useTheme
 } from "@mui/material";
-import poster from "~/assets/img/sign-in-poster.jpg"
+import poster from "~/resources/assets/img/sign-in-poster.jpg"
 import {Image} from "react-bootstrap";
 import {tokens} from "~/theme";
-import {HomeIcon} from "~/assets/icons/icons";
+import {HomeIcon} from "~/resources/assets/icons/icons";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import {useFormik} from "formik";
 import * as Yup from "yup";

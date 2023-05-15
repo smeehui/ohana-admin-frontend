@@ -9,7 +9,7 @@ import ImageGallery from 'react-image-gallery';
 import "react-image-gallery/styles/css/image-gallery.css"
 import {Grow, Typography, useTheme} from "@mui/material";
 import {CancelOutlined, Downloading} from "@mui/icons-material";
-import noImage from '~/assets/img/no-image.jpg'
+import noImage from '~/resources/assets/img/no-image.jpg'
 import {tokens} from "~/theme";
 
 

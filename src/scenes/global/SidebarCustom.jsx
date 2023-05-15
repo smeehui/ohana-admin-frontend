@@ -6,7 +6,7 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import {sideBarData} from "~/scenes/global/sideBarData";
 import {useState} from "react";
-import {HomeIcon} from "~/assets/icons/icons";
+import {HomeIcon} from "~/resources/assets/icons/icons";
 
 const Item = ({
     title,

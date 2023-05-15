@@ -1,0 +1,27 @@
+:root {
+    --default-header-height: 50px;
+    --default-header-nav-height: 44px;
+    --default-button-height: 32px;
+    --primary-bg-color: #fff;
+    --secondary-bg-color: #eee;
+    --primary-font-color: #444;
+    --secondary-font-color: #3e3a39;
+    --default-hover-bg-color: #c1ceda;
+    --default-light-color: #a6b1bb;
+    --default-animation-timing: 150ms;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+.content{
+    width: 100%;
+    font-family: "Source Sans Pro", sans-serif;
+    position: relative;
+    overflow-x: hidden;
+}

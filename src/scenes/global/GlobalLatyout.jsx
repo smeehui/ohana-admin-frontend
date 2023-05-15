@@ -5,7 +5,7 @@ import {ProSidebarProvider} from "react-pro-sidebar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import {Box} from "@mui/system";
-import styles from "~/assets/css/GlobalStyles.module.scss"
+import styles from "~/resources/assets/css/GlobalStyles.module.scss"
 import clsx from "clsx";
 import SidebarCustom from "~/scenes/global/SidebarCustom";
 import Topbar from "~/scenes/global/Topbar";

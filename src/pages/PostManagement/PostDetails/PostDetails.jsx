@@ -21,7 +21,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {toast} from "react-toastify";
-import defaultUserImg from "~/assets/img/default-user.png"
+import defaultUserImg from "~/resources/assets/img/default-user.png"
 import {cloudinaryService, postService} from "~/service";
 import styles from "./PostDetails.module.scss";
 import clsx from "clsx";
@@ -40,7 +40,7 @@ import {
 import { currencyFormatter } from "~/utils";
 import CldImage from "~/components/CldImage";
 import dateTimeFormatter from "~/utils/dateTimeFormatter";
-import "~/assets/css/ohanaIcons.css";
+import "~/resources/assets/css/ohanaIcons.css";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
@@ -49,7 +49,7 @@ import { PostStatus } from "~/pages/PostManagement/ListPost/constants/PostStatus
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import { AppContext } from "~/store";
 import { GlobalActions } from "~/store/actionConstants";
-import noImage from "~/assets/img/no-image.jpg";
+import noImage from "~/resources/assets/img/no-image.jpg";
 import {config} from "~/config";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
