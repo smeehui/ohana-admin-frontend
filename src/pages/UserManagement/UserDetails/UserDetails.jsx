@@ -17,7 +17,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Slide from "@mui/material/Slide";
 import {postTableColumns} from "~/pages/PostManagement/ListPost/postTBFormat";
-import noImage from "~/assets/img/no-image.jpg"
+import noImage from "~/resources/assets/img/no-image.jpg"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide easing={"enter"} ref={ref} {...props} />;

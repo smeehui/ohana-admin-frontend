@@ -37,23 +37,23 @@ function BreadCrumbs() {
         return toVietnameseBreadcrums(path);
     }
 
-    const breadcrumbs = paths.map(
+    const breadcrumbs = paths.filter(p => p !== "admin").map(
         (path, index) => {
             const pathRs = calculatePathValue(path)
-           return (
-               <Link
-                   underline="hover"
-                   sx={{cursor: "pointer"}}
-                   key={index}
-                   fontWeight={700}
-                   color={
-                       paths[paths.length - 1] === path ? colors.pink[400] : "inherit"
-                   }
-                   onClick={(e) => onClick(e, index)}
-               >
-                   {pathRs}
-               </Link>
-           )
+            return (
+                <Link
+                    underline="hover"
+                    sx={{cursor: "pointer"}}
+                    key={index}
+                    fontWeight={700}
+                    color={
+                        paths[paths.length - 1] === path ? colors.pink[400] : "inherit"
+                    }
+                    onClick={(e) => onClick(e, index)}
+                >
+                    {pathRs}
+                </Link>
+            )
         });
     return (
         <Stack direction={"row"} width={"100%"} alignItems={"center"} justifyContent={"space-between"}>
@@ -65,7 +65,7 @@ function BreadCrumbs() {
                 {breadcrumbs}
             </Breadcrumbs>
             <Stack cursor={"pointer"} direction={"row"} spacing={1} paddingX={2}>
-                <IconButton  onClick={() => {
+                <IconButton onClick={() => {
                     if (!(location.key === 'default')) navigate(-1)
                 }} disabled={location.key === 'default'}>
                     <ArrowBackIos style={{color: colors.pink[400]}} sx={{justifySelf: "flex-end"}}/>
@@ -73,7 +73,7 @@ function BreadCrumbs() {
                 <IconButton onClick={() => {
                     if (!(location.key === 'default')) navigate(+1)
                 }} disabled={location.key === 'default'}>
-                    <ArrowForwardIos  style={{color: colors.pink[400]}} sx={{justifySelf: "flex-end"}}/>
+                    <ArrowForwardIos style={{color: colors.pink[400]}} sx={{justifySelf: "flex-end"}}/>
                 </IconButton>
             </Stack>
         </Stack>

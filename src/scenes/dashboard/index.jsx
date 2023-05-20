@@ -195,7 +195,7 @@ const Dashboard = () => {
                   />
                 }
               />
-              <Link marginRight={3} href={routes.category}>
+              <Link marginRight={3} to={routes.category}>
               <Button sx={{width: 80}} variant="contained" color="success">
                 Chi tiết
               </Button>
@@ -218,7 +218,7 @@ const Dashboard = () => {
                   />
                 }
               />
-              <Link marginRight={3} href={routes.userManagement}>
+              <Link marginRight={3} to={routes.userManagement}>
               <Button sx={{width: 80}} variant="contained" color="success">
                 Chi tiết
               </Button>
@@ -241,7 +241,7 @@ const Dashboard = () => {
                   />
                 }
               />
-              <Link marginRight={3} href={routes.utilityManagement}>
+              <Link marginRight={3} to={routes.utilityManagement}>
               <Button sx={{width: 80}} variant="contained" color="success">
                 Chi tiết
               </Button>
@@ -266,7 +266,7 @@ const Dashboard = () => {
                   />
                 }
               />
-              <Link marginRight={3} href={routes.postManagement}>
+              <Link marginRight={3} to={routes.postManagement}>
               <Button sx={{width: 80}} variant="contained" color="success">
                 Chi tiết
               </Button>

@@ -2,7 +2,7 @@ import React, {useMemo} from 'react'
 import {ColorModeContext, useMode} from "~/theme";
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import clsx from "clsx";
-import styles from "~/assets/css/GlobalStyles.module.scss";
+import styles from "~/resources/assets/css/GlobalStyles.module.scss";
 import Topbar from "~/scenes/global/Topbar";
 import {ToastContainer} from "react-toastify";
 

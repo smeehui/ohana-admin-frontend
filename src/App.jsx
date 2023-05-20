@@ -1,6 +1,5 @@
-import {useContext, useMemo, useState} from "react";
+import {useContext} from "react";
 import {Route, Routes} from "react-router-dom";
-import {useMode} from "./theme.jsx";
 import {publicRoutes} from "~/routes/index.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
